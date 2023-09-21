@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    
+    <title>Farm Scuttlebucket</title>
+</head>
+<body>
+    <div class="content">
+        <div class='divider'></div>
+        <div class="header">
+            <a href="index.html">
+                <h1 class='all-text'>The Farm Scuttlebucket 🚜</h1>
+            </a>
+        </div>
+        <div class='divider'></div>
+        <!-- <div class="cover-photo"> -->
+            <!-- <img src="assets\pexels-ákos-szabó-440731.jpg"> -->
+        <!-- </div> -->
+        <div id="timeline-header">
+
+        </div>
+        
+        <div id="tweets-timeline-column">
+          <h2 id='buckets-header' class='all-text'>Recent Buckets</h2>
+        </div>
+    </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
+          authDomain: "theskuttlebucket.firebaseapp.com",
+          projectId: "theskuttlebucket",
+          storageBucket: "theskuttlebucket.appspot.com",
+          messagingSenderId: "694795060337",
+          appId: "1:694795060337:web:587136163506c2f83d47d0",
+          measurementId: "G-BLWVYSCCS5"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+      <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-storage.js"></script>
+    <script type="module" src="timeline.js"></script>
+</body>
+</html>
