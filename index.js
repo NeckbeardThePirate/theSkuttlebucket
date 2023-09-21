@@ -97,6 +97,7 @@ var users = {
         ]
     }
 };
+const storage = firebase.storage();
 
 
 const queryString = window.location.search;
