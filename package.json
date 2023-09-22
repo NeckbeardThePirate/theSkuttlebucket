@@ -1,0 +1,24 @@
+{
+  "name": "theskuttlebucket",
+  "version": "1.0.0",
+  "description": "Demo social media site",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeckbeardThePirate/theSkuttlebucket.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "socialmedia",
+    "demo"
+  ],
+  "author": "Judah Helland <judah@hellands.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NeckbeardThePirate/theSkuttlebucket/issues"
+  },
+  "homepage": "https://github.com/NeckbeardThePirate/theSkuttlebucket#readme"
+}
