@@ -21,11 +21,31 @@ const firebaseConfig = {
     var email = document.getElementById('email').value
     var password = document.getElementById('password').value
     var fullName = document.getElementById('full-name').value
+    var userName = document.getElementById('username').value
+
+
     
-    if (validateEmail(email) == false || validatePassword(password) == false || validateFields(fullName) == false) {
+    if (
+        validateEmail(email) == false || 
+        validatePassword(password) == false || 
+        validateFields(fullName) == false ||
+        validateUsername(userName) == false
+        ) {
         alert('invalid input')
         return
     }
+
+    const usersRef = collection(database, 'users');
+    const query = query(usersRef, where('userName', '==', userName));
+
+    getDocs(query)
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                alert('That Username is already in use');
+                return;
+            }
+        })
+
 
     createUserWithEmailAndPassword(auth, email, password)
     .then(function() {
@@ -35,7 +55,8 @@ const firebaseConfig = {
         var userData = {
             email: email,
             fullName: fullName,
-            lastLogin: Date.now()
+            lastLogin: Date.now(),
+            userName: userName,
         };
 
         set(child(databaseRef, 'users/' + user.uid), userData);        
@@ -92,7 +113,15 @@ const firebaseConfig = {
         return false;
     }
   }
-
+  
+  function validateUsername(userName) {
+    var expression = /^[^@]+@\w+(\.\w+)+\w$/
+    if (expression.test(email) == true) {
+        return false
+    } else {
+        return true;
+    }
+  }
 
   function validatePassword(password) {
     if (password < 6) {
