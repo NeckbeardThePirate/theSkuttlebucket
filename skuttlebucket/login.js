@@ -2,12 +2,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
     // authDomain: "theskuttlebucket.firebaseapp.com", <- this is my real domain
-    authDomain: "http://localhost:9099", //this is the testing one
-    databaseURL: "http://localhost:9000", //<-remove this for live site
+    authDomain: "theskuttlebucket.firebaseapp.com",
     projectId: "theskuttlebucket",
     storageBucket: "theskuttlebucket.appspot.com",
     messagingSenderId: "694795060337",
@@ -148,6 +146,6 @@ function validateFields(field) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("register-button").addEventListener("click", register);
+  document.getElementById("login-button").addEventListener("click", login);
 });
 
