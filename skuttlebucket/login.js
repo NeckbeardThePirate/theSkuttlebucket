@@ -86,17 +86,21 @@ function login () {
 
   signInWithEmailAndPassword(auth, email, password)
   .then(function() {
-      const user = auth.currentUser
-      const usersCollection = collection(firestore, 'users');
-      const userRef = doc(usersCollection, user.uid);
-      const userData = {
+      var user = auth.currentUser
+      var usersCollection = collection(firestore, 'users');
+      var userRef = doc(usersCollection, user.uid);
+      var userData = {
           lastLogin: Date.now()
       };
 
       updateDoc(userRef, userData);        
+      console.log(user)
+      localStorage.setItem('user', JSON.stringify(user));
+
+      window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version
+
+
       
-      
-      alert('user logged in')
   })
   .catch(function(error) {
       var errorCode = error.code;

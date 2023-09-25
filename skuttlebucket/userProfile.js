@@ -1,117 +1,63 @@
-
-var users = {
-    user1: {
-        userName: '@elsiehasattitude',
-        displayName: 'Elsie Da Milk Cow',
-        joinedDate: 'June 2022',
-        followingCount: 17,
-        followerCount: 54,
-        profileDescription: 'Hey Im Elsie! I love making the humans chase me all over the place and being a pain in the neck',
-        avatarURL: 'assets/pexels-pixabay-36347.jpg',
-        coverPhotoURL: 'assets/pexels-helena-lopes-4731090.jpg',
-        tweets: [
-            {
-                text: 'finna make these stupid humans chase me all over the farm again',
-                timestamp: '9/10/2023 00:01:20'
-            },
-            {
-                text: 'took a romantic nap with buford today',
-                timestamp: '8/09/2023 18:37:12'
-            },
-            {
-                text: 'These flies are out of control!!!',
-                timestamp: '7/14/2023 12:11:51'
-            },
-            {
-                text: 'its gon be a cooker',
-                timestamp: '2/10/2023 00:01:20'
-            },
-            {
-                text: 'SOMEONE GET THESE STEERS AWAY FROM ME',
-                timestamp: '2/09/2023 18:37:12'
-            },
-            {
-                text: 'partay at the back of the South Pasture 2nite! bring your own hay or grass, refreshment will not be provided but we will bump the tunes and be turnin up the fade',
-                timestamp: '2/09/2023 12:11:51'
-            }
-        ]
-    },
-
-    user2: {
-        userName: '@mrbean',
-        displayName: 'Mr. Bean',
-        joinedDate: 'June 2009',
-        followingCount: 274,
-        followerCount: 4,
-        profileDescription: 'I wanna know what\'s in that barn bruh',
-        avatarURL: 'assets/billgates.jpg',
-        coverPhotoURL: 'assets/billgates-cover.jpeg',
-        tweets: [
-            {
-                text: 'Hey anyone want to hangout?',
-                timestamp: '2/10/2023 00:01:20'
-            },
-            {
-                text: 'Bruh im dying to know what is in that barn',
-                timestamp: '2/09/2023 18:37:12'
-            },
-            {
-                text: 'Someone tell @lillygotkids to stop headbutting me',
-                timestamp: '2/09/2023 12:11:51'
-            }
-        ]
-    },
-    user3: {
-        userName: '@reelscreamo',
-        displayName: 'Screamo',
-        joinedDate: 'June 2009',
-        followingCount: 0,
-        followerCount: 0,
-        profileDescription: 'Screamo was a loud goat and we loved him for it - @nitwitdagowt',
-        avatarURL: 'assets/billgates.jpg',
-        coverPhotoURL: 'assets/billgates-cover.jpeg',
-        tweets: [
-            {
-                text: 'Hey everyone this is @nitwitdagowt on my brothers account I regret to inform you that @reelscreamo is dead',
-                timestamp: '2/10/2023 00:01:20'
-            },
-            {
-                text: 'Hey why is zach walking towards me with that big knife?',
-                timestamp: '2/09/2023 18:37:12'
-            },
-            {
-                text: 'Someone tell @lillygotkids to stop headbutting me',
-                timestamp: '2/09/2023 12:11:51'
-            },
-            {
-                text: 'hey @boss_wesley_ladies_man you kinda stink bro',
-                timestamp: '2/10/2023 00:01:20'
-            },
-            {
-                text: 'i screamed for nine hours today and my brother @nitwitdagowt talked to a post for three and then peed on his own head',
-                timestamp: '2/09/2023 18:37:12'
-            },
-            {
-                text: 'BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!',
-                timestamp: '2/09/2023 12:11:51'
-            }
-        ]
-    }
-};
-const storage = firebase.storage();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 
-const queryString = window.location.search;
-console.log('query', queryString);
 
-if (queryString !== '') {
-    const params = new URLSearchParams(queryString);
-    console.log('params', params);
-    var selectedUser = params.get('user');
-    console.log('selected User', selectedUser);
-} else {
-    selectedUser = 'user1';
+const firebaseConfig = {
+    apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
+    // authDomain: "theskuttlebucket.firebaseapp.com", <- this is my real domain
+    authDomain: "theskuttlebucket.firebaseapp.com", 
+    projectId: "theskuttlebucket",
+    storageBucket: "theskuttlebucket.appspot.com",
+    messagingSenderId: "694795060337",
+    appId: "1:694795060337:web:587136163506c2f83d47d0",
+    measurementId: "G-BLWVYSCCS5"
+    };
+
+//VERY IMPORTANT TO REMOVE THE ["host": "localhost",] line from the firebase.json file before going live
+const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+const auth = getAuth(app); 
+
+const userFromLogin = JSON.parse(localStorage.getItem('user'));
+const userUID = userFromLogin.uid
+
+const usersCollection = collection(firestore, 'users');
+const findUserQuery = query(usersCollection, where('userID', '==', userUID));
+
+const userRef = await getDocs(findUserQuery);
+
+if (!userRef.empty) {
+    var DocID = userRef.docs[0].id;
+    
 }
+
+
+const docRef = doc(firestore, 'users', DocID);
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+    var userData = docSnap.data();
+    console.log('full name is ',userData.fullName)
+    if (userData.buckets && typeof userData.buckets === 'object') {
+        // userData.buckets is an object
+        for (const key in userData.buckets) {
+            if (userData.buckets.hasOwnProperty(key)) {
+                console.log('Key:', key);
+                console.log('Value:', userData.buckets[key]);
+                // You can perform any operations you need with each key-value pair here
+            }
+        }
+    } else {
+        console.log('Buckets data is missing or not an array.');
+    }
+} else {
+    console.log('no such doc')
+}
+
+
+
 var userDisplayName = document.createElement('h2');
 
 var profileHeader = document.getElementById('profile-header');
@@ -128,9 +74,9 @@ var followerCount = document.createElement('p');
 
 var joinDate = document.createElement('p');
 
-var tweetsColumn = document.getElementById('tweets-column');
+var bucketsColumn = document.getElementById('buckets-column');
 
-var tweets = users[selectedUser].tweets;
+var userBuckets = userData.buckets
 
 var userDescription = document.createElement('h4');
 
@@ -138,9 +84,9 @@ var userDescription = document.createElement('h4');
 
 
 subProfileInfo.id = 'subprofile-info';
-followingCount.textContent = `Following: ${users[selectedUser].followingCount}`;
-followerCount.textContent = `Followers: ${users[selectedUser].followerCount}`;
-joinDate.textContent = `Member since: ${users[selectedUser].joinedDate}`;
+followingCount.textContent = `Following: ${userData.followingCount}`;
+followerCount.textContent = `Followers: ${userData.followerCount}`;
+// joinDate.textContent = `Member since: ${userData.folloCount].joinedDate}`;
 followingCount.id = 'following-count'
 followerCount.id = 'follower-count'
 joinDate.id = 'join-date'
@@ -151,14 +97,15 @@ joinDate.classList.add('identifying-numbers')
 userDisplayNameContainer.id = 'user-identifiers'
 userDisplayNameContainer.style.backgroundColor = '#D1D1D1';
 
-userDisplayName.textContent = `${users[selectedUser].displayName}`
+userDisplayName.textContent = `${userData.fullName}`//this is the one
+console.log('user display name is ', userData.fullName)
 userDisplayName.classList.add('all-text');
 userDisplayName.id = 'user-display-name'
 
 userHandle.id = 'handle'
-userHandle.textContent = `${users[selectedUser].userName}`
+userHandle.textContent = `@${userData.userName}`
 
-userDescription.textContent = `${users[selectedUser].profileDescription}`
+userDescription.textContent = `${userData.userDescription}`
 userDescription.classList.add('identifying-numbers', 'all-text')
 
 profileHeader.appendChild(userDisplayNameContainer);
@@ -172,18 +119,80 @@ profileHeader.appendChild(userDescription);
 
 
 
-for (let tweet of tweets) {
-  var showTweet = document.createElement('div');
-  var tweetText = document.createElement('h3');
-  var tweetDate = document.createElement('p');
-  var checkUserHandle = users[selectedUser].userName;
-  showTweet.classList.add('tweet-block');
-  tweetText.classList.add('all-text');
-  tweetDate.classList.add('all-text');
-  tweetText.textContent = `${tweet.text}`;
-  tweetDate.textContent = `${tweet.timestamp}`;
-  tweetsColumn.appendChild(showTweet);
-  showTweet.appendChild(tweetText);
-  showTweet.appendChild(tweetDate);
+for (let bucket in userBuckets) {
+    if (userBuckets.hasOwnProperty(bucket)) {
+        const bucketContent = userBuckets[bucket];
+        var showBucket = document.createElement('div');
+        var bucketText = document.createElement('h3');
+        var bucketAuthor = document.createElement('p');
+        showBucket.classList.add('tweet-block');
+        bucketText.classList.add('all-text'); 
+        bucketAuthor.classList.add('all-text'); 
+        bucketText.textContent = `${bucketContent}`;
+        bucketAuthor.textContent = `@${userData.userName}`;
+
+        bucketsColumn.appendChild(showBucket);
+        showBucket.appendChild(bucketAuthor);
+        showBucket.appendChild(bucketText);
+    }
+    
+  
+//   var bucketDate = document.createElement('p');
+
+//   var checkUserHandle = userData.userName;
+  
+//   bucketDate.classList.add('all-text');
+  
+//   bucketDate.textContent = `${tweet.timestamp}`;
+  
+//   showBucket.appendChild(bucketDate);
 }
 
+const createNewBucketWindow = document.getElementById('create-bucket-window');
+const openNewBucketWindow = document.getElementById('buckets-header');
+const closeNewBucketWindow = document.getElementById('close-bucket-window-button')
+
+
+function createNewBucket() {
+    createNewBucketWindow.style.display = 'block';
+    console.log('wll you clicked it')
+}
+
+function closeBucketCreationWindow() {
+    createNewBucketWindow.style.display = 'none';
+}
+
+openNewBucketWindow.addEventListener('click', createNewBucket);
+closeNewBucketWindow.addEventListener('click', closeBucketCreationWindow);
+
+window.addEventListener('click', (event) => {
+    if (event.target === createNewBucketWindow) {
+        closeBucketCreationWindow();
+    }
+})
+
+
+const dumpBucketButton = document.getElementById('dump-bucket-button');
+
+
+
+function dumpBucket() {
+    const newBucketText = document.getElementById('new-bucket-text').value
+    console.log('well the function ran', newBucketText)
+    userData.buckets[`bucket${Date.now()}`] = newBucketText;
+    console.log(userData.buckets);
+    updateDoc(docRef, {buckets: userData.buckets})
+        .then(() => {
+            console.log('Firestore document updated successfully.');
+        })
+        .catch((error) => {
+            console.error('Error updating Firestore document:', error);
+            alert('there was an error dumping your bucket, please contact our tech support at (placeholder)')
+        });
+        closeBucketCreationWindow();
+        setTimeout(() => {
+            location.reload(true);
+            }, 1000);
+}
+
+dumpBucketButton.addEventListener('click', dumpBucket);

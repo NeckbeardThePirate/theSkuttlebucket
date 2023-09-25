@@ -57,7 +57,11 @@ function register() {
                           fullName: fullName,
                           lastLogin: Date.now(),
                           userName: userName,
-                          buckets: {}
+                          buckets: {},
+                          userID: user.uid,
+                          joinDate: Date.now(),
+                          followerCount: 0,
+                          followingCount: 0,
                       };
 
                       const userRef = await addDoc(usersCollection, userData);        
@@ -97,8 +101,6 @@ function login () {
 
       updateDoc(userRef, userData);        
       
-      
-      alert('user logged in')
   })
   .catch(function(error) {
       var errorCode = error.code;

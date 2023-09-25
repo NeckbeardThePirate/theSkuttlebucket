@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="deprecatedStyles.css">
     
     <title>Farm Scuttlebucket</title>
 </head>
@@ -24,10 +24,28 @@
         </div>
         <div class="profile-details">
         </div>
-        <div id="tweets-column">
-          <h2 id='buckets-header' class='all-text'>Your Empty Buckets</h2>
+        <div id="buckets-column">
+            <!-- Temporarily offline while i figure some stuff out <button id="create-bucket" class="create-bucket-button"></button> -->
+            <div id="bucket-button">
+                <button id='buckets-header' class='all-text'>Create New Bucket</button>
+            </div>
+
+
+            <div id="create-bucket-window" class="new-bucket-window">
+                <span class="close" id="close-bucket-window-button">&times;</span>
+                <div class="new-bucket-content">
+                    <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
+                    <textarea id="new-bucket-text" class="all-text"></textarea>
+                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>
+                    
+                </div>
+            </div>
+
+
         </div>
     </div>
-    <script type="module" src="index.js"></script>
+    <script type="module" src="userProfile.js"></script>
+
+
 </body>
 </html>
