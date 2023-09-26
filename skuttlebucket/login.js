@@ -93,6 +93,12 @@ function validateFields(field) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("login-button").addEventListener("click", login);
+  const loginButton = document.getElementById("login-button");
+  loginButton.addEventListener("click", login);
+  loginButton.addEventListener("keyup",function(event) {
+    if(event.keyCode === 13) {
+        register;
+        }
+    });
 });
 

@@ -6,7 +6,6 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
-    // authDomain: "theskuttlebucket.firebaseapp.com", <- this is my real domain
     authDomain: "theskuttlebucket.firebaseapp.com", 
     projectId: "theskuttlebucket",
     storageBucket: "theskuttlebucket.appspot.com",
@@ -15,7 +14,6 @@ const firebaseConfig = {
     measurementId: "G-BLWVYSCCS5"
     };
 
-//VERY IMPORTANT TO REMOVE THE ["host": "localhost",] line from the firebase.json file before going live
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app); 
@@ -128,35 +126,52 @@ subProfileInfo.appendChild(followerCount);
 subProfileInfo.appendChild(joinDate);
 profileHeader.appendChild(userDescription);
 
-
+const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  
+  const daysOfWeek = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  ];
+  
 
 for (let bucket in userBuckets) {
     if (userBuckets.hasOwnProperty(bucket)) {
-        const bucketContent = userBuckets[bucket];
+        const subBucket = userBuckets[bucket]
+        const bucketContent = subBucket['bucketText'];
         var showBucket = document.createElement('div');
         var bucketText = document.createElement('h3');
         var bucketAuthor = document.createElement('p');
+        var bucketDate = document.createElement('p');
+        bucketDate.classList.add('all-text');
+
+        const postedBucketDate = new Date(subBucket['bucketTimestamp']);
+        const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
+        const postedBucketMonth = months[postedBucketDate.getMonth()];
+        const postedBucketMonthDay = postedBucketDate.getDate();
+        const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
+        const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
+
+        bucketDate.textContent = `${fullPostTime}`;
+
         showBucket.classList.add('tweet-block');
         bucketText.classList.add('all-text'); 
         bucketAuthor.classList.add('all-text'); 
         bucketText.textContent = `${bucketContent}`;
-        bucketAuthor.textContent = `@${userData.userName}`;
+        bucketAuthor.textContent = `@${subBucket['bucketAuthor']}`;
+        bucketDate.style.fontSize = '10px';
 
         bucketsColumn.appendChild(showBucket);
         showBucket.appendChild(bucketAuthor);
+        showBucket.appendChild(bucketDate);
         showBucket.appendChild(bucketText);
     }
     
   
-//   var bucketDate = document.createElement('p');
 
 //   var checkUserHandle = userData.userName;
-  
-//   bucketDate.classList.add('all-text');
-  
-//   bucketDate.textContent = `${tweet.timestamp}`;
-  
-//   showBucket.appendChild(bucketDate);
+
 }
 
 const createNewBucketWindow = document.getElementById('create-bucket-window');
@@ -189,8 +204,15 @@ const dumpBucketButton = document.getElementById('dump-bucket-button');
 
 function dumpBucket() {
     const newBucketText = document.getElementById('new-bucket-text').value
-    console.log('well the function ran', newBucketText)
-    userData.buckets[`bucket${Date.now()}`] = newBucketText;
+    const newBucketTimestamp = Date.now();
+    const newBucketAuthor = userData.userName;
+    const newBucket = {
+        bucketTimestamp: newBucketTimestamp,
+        bucketAuthor: newBucketAuthor,
+        bucketText: newBucketText,
+    };
+    console.log('well the function ran heres the full bucket object', newBucket)
+    userData.buckets[`bucket${Date.now()}`] = newBucket;
     console.log(userData.buckets);
     updateDoc(docRef, {buckets: userData.buckets})
         .then(() => {
@@ -225,6 +247,12 @@ function closeEditProfileWindow() {
 }
 
 dumpBucketButton.addEventListener('click', dumpBucket);
+dumpBucketButton.addEventListener('keyup', function(event) {
+    if(event.keyCode === 13) {
+        dumpBucket();
+    }
+});
+
 userDescription.addEventListener('click', editProfileDescription); 
 closeEditProfileWindowButton.addEventListener('click', closeEditProfileWindow);
 
@@ -255,3 +283,8 @@ function saveNewProfileDescription() {
 
 
 saveNewProfileDescriptionButton.addEventListener('click', saveNewProfileDescription);
+saveNewProfileDescriptionButton.addEventListener('keyup', function(event) {
+    if(event.keyCode === 13) {
+        saveNewProfileDescription();
+    }
+});

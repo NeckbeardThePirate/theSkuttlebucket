@@ -23,7 +23,6 @@ function register() {
   var password = document.getElementById('password').value
   var fullName = document.getElementById('full-name').value
   var userName = document.getElementById('username').value
-  var userDescriptionDefaultText = 'click me to tell us a bit about yourself'
   
 
   
@@ -60,7 +59,7 @@ function register() {
                           joinDate: Date.now(),
                           followerCount: 0,
                           followingCount: 0,
-                          userDescription: userDescriptionDefaultText,
+                          userDescription: '',
                       };
 
                       const userRef = await addDoc(usersCollection, userData);        
@@ -94,14 +93,23 @@ function validateEmail(email) {
 }
 
 function validateUsername(userName) {
-  var expression = /^[^@]+@\w+(\.\w+)+\w$/
-  if (expression.test(email) == true) {
-      return false
+  var expression = /[^a-zA-Z0-9.-_]/g;
+  if (expression.test(userName) == true) {
+    alert('[INVALID USERNAME] UserNames may only contain alphanumeric upper and lowercase letters and the special charachters "-", "_", and "."')  
+    return false
   } else {
       return true;
   }
 }
-
+function validateName(fullName) {
+    var expression = /[^a-zA-Z]/g;
+    if (expression.test(userName) == true) {
+        alert('[INVALID FULL NAME]');
+        return false
+    } else {
+        return true;
+    }
+  }
 function validatePassword(password) {
   if (password < 6) {
       return false
@@ -122,6 +130,12 @@ function validateFields(field) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("register-button").addEventListener("click", register);
-});
+    const registerButton = document.getElementById("register-button")
+    registerButton.addEventListener("click", register);
+    registerButton.addEventListener("keyup",function(event) {
+        if(event.keyCode === 13) {
+            register;
+            }
+        });
+    });
 

@@ -156,3 +156,14 @@ input {
     text-decoration: none;
     text-align: center;
 }
+
+#register-button:focus {
+    outline: 2px solid slategray;
+}
+
+#login-button:focus {
+    outline: 2px solid slategray;
+}
+#button_container a:focus {
+    outline: 2px solid slategray;   
+}
