@@ -48,6 +48,7 @@ function register() {
           } else {
               createUserWithEmailAndPassword(auth, email, password)
                   .then(async function() {
+                    localStorage.setItem('userName', userName);
                       const user = auth.currentUser
                       var userData = {
                           email: email,
@@ -64,6 +65,7 @@ function register() {
 
                       const userRef = await addDoc(usersCollection, userData);        
                       localStorage.setItem('user', JSON.stringify(user));
+                      
 
                       window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version
 

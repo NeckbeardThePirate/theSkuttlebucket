@@ -72,3 +72,17 @@ body {
     font-size: 2rem;
     margin: 1rem;
 }
+
+.follow-button {
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 10px 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    margin: 0.75rem 3rem;
+    background-color: grey;
+    border: 2px solid black;
+    display: none;
+    transition: ease all;
+}

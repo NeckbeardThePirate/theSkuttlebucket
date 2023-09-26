@@ -23,8 +23,6 @@ const allUsersRef = await getDocs(usersCollection);
 
 const searchButton = document.getElementById('button-for-searching');
 
-// const searchTerm = searchInputBar.value
-
 
 const allUserNames = [];
 
@@ -52,18 +50,112 @@ function checkForMatchingUserNames(allUserNames, searchTerm) {
         }
     }
 }
+function delay(milliseconds) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, milliseconds);
+    });
+  }
+
+
+const userFromLogin = JSON.parse(localStorage.getItem('user'));
+const userUID = userFromLogin.uid
+const loginCheckUsersCollection = collection(firestore, 'users');
+const findUserQuery = query(loginCheckUsersCollection, where('userID', '==', userUID));
+
+const userRef = await getDocs(findUserQuery);
+
+if (!userRef.empty) {
+    var DocID = userRef.docs[0].id;    
+}
+
+
+const docRef = doc(firestore, 'users', DocID);
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+    var loggedInUserData = docSnap.data();
+    var loggedInUserName = loggedInUserData.userName;
+    console.log(loggedInUserName)
+}
+
+
+
+function followUserFunction(goingToFollow) {
+    console.log('it at least tried')
+    allUsersRef.forEach(async (doc) => {
+        if(doc.exists()) {
+            const checkUserData = doc.data();
+            const checkUserName = checkUserData.userName;
+            const followers = checkUserData.followerList || {};
+            if (goingToFollow === checkUserName) {
+                console.log('Match found for', goingToFollow)
+                followers[loggedInUserName] = loggedInUserName;
+
+                const userDocRef = doc.ref;
+                try {
+                    await updateDoc(userDocRef, {followerList: followers });
+                    console.log('successfully followed user')
+                } catch (error) {
+                    console.error(`Error following ${goingToFollow}:`, error);
+                }
+
+            }
+        }
+    })
+}
+
 
 
 function displayMatchingSearchResults(filteredUsers) {
     for (let i = 0; i < filteredUsers.length; i++) {
         const showMatchingUser = document.createElement('div');
         const matchingUserName = document.createElement('h3');
+        const followUser = document.createElement('button');
+        followUser.textContent = `Follow`;
+        followUser.classList.add('follow-button')
         matchingUserName.textContent = `@${filteredUsers[i]}`
         showMatchingUser.classList.add('found-user')
         matchingUserName.classList.add('found-username')
-
+        
         resultsContainer.appendChild(showMatchingUser);
+        resultsContainer.appendChild(followUser);
         showMatchingUser.appendChild(matchingUserName);
+
+        let mouseIsOverUserBlock = false;
+        let isMouseOverFollowButton = false;
+
+        showMatchingUser.addEventListener('mouseover', function() {
+            followUser.style.display = 'block';
+            mouseIsOverUserBlock = true;
+        });
+
+        showMatchingUser.addEventListener('mouseleave', function() {
+            mouseIsOverUserBlock = false;
+            isMouseOverFollowButton = false;
+            setTimeout(() => {
+                if (!mouseIsOverUserBlock && !isMouseOverFollowButton) {
+                    followUser.style.display = 'none';
+                    isMouseOverFollowButton = true;
+                }
+            }, 220);
+        });
+
+        followUser.addEventListener('mouseenter', function() {
+            followUser.style.display = 'block';
+            isMouseOverFollowButton = true;
+        });
+
+        followUser.addEventListener('mouseleave', function() {
+            setTimeout(() => {
+                followUser.style.display = 'none';                
+            }, 220);
+        });
+
+        followUser.addEventListener('click', function() {
+           let goingToFollow = filteredUsers[i];
+            console.log('Follow clicked for user:', goingToFollow);
+            followUserFunction(goingToFollow);
+        });
     };
 };
 
