@@ -52,26 +52,58 @@ const filledBuckets = {};
 bucketTimestampArray.forEach((subobject, index) => {
     filledBuckets[`subobject${index + 1}`] = subobject;
 });
-
+console.log('filledBuckets: ', filledBuckets)
 
 var bucketsTimelineColumn = document.getElementById('buckets-timeline-column')
+
+
+const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  
+const daysOfWeek = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ];
+
+
+
 
 for (const key in filledBuckets) {
     if (filledBuckets.hasOwnProperty(key)) {
         const bucketData = filledBuckets[key];
         const bucketContent = bucketData['bucketText']
-        console.log(`Bucket Key: ${key}`);
-        console.log(`Bucket Text: ${bucketContent}`);
-        console.log('---');
-        var showTweet = document.createElement('div');
-        var tweetText = document.createElement('h3');
-        showTweet.classList.add('tweet-block');
-        tweetText.classList.add('all-text');
-        // tweetDate.classList.add('all-text');
-        tweetText.textContent = `${bucketContent['bucketText']}`;
+        console.log('bucketContent', bucketContent)
+        var showBucket = document.createElement('div');
+        var bucketText = document.createElement('h3');
+        var bucketAuthor = document.createElement('p');
+        var bucketDate = document.createElement('p');
+        bucketDate.classList.add('all-text');
+
+        const postedBucketDate = new Date(bucketContent['bucketTimestamp']);
+        const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
+        const postedBucketMonth = months[postedBucketDate.getMonth()];
+        const postedBucketMonthDay = postedBucketDate.getDate();
+        const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
+        const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
+
+
+        console.log(fullPostTime)
+        bucketDate.textContent = `${fullPostTime}`;
+
+        showBucket.classList.add('tweet-block');
+        bucketText.classList.add('all-text');
         
-        bucketsTimelineColumn.appendChild(showTweet);
-        showTweet.appendChild(tweetText);
+        bucketAuthor.classList.add('all-text'); 
+        bucketText.textContent = `${bucketContent['bucketText']}`;
+        bucketAuthor.textContent = `@${bucketContent['bucketAuthor']}`;
+        bucketDate.style.fontSize = '10px';
+
+
+        bucketsTimelineColumn.appendChild(showBucket);
+        showBucket.appendChild(bucketAuthor);
+        showBucket.appendChild(bucketDate);
+        showBucket.appendChild(bucketText);
 
 
     }
