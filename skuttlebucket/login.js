@@ -4,7 +4,6 @@ import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc
 
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
-    // authDomain: "theskuttlebucket.firebaseapp.com", <- this is my real domain
     authDomain: "theskuttlebucket.firebaseapp.com",
     projectId: "theskuttlebucket",
     storageBucket: "theskuttlebucket.appspot.com",
@@ -13,66 +12,11 @@ const firebaseConfig = {
     measurementId: "G-BLWVYSCCS5"
     };
 
-//VERY IMPORTANT TO REMOVE THE ["host": "localhost",] line from the firebase.json file before going live
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const firestore = getFirestore(app);
 
 
-function register() {
-  var email = document.getElementById('email').value
-  var password = document.getElementById('password').value
-  var fullName = document.getElementById('full-name').value
-  var userName = document.getElementById('username').value
-
-
-  
-  if (
-      validateEmail(email) == false || 
-      validatePassword(password) == false || 
-      validateFields(fullName) == false ||
-      validateUsername(userName) == false
-      ) {
-      alert('invalid input')
-      return
-  }
-
-
-  const usersCollection = collection(firestore, 'users');
-  const usernameAvailabilityQuery = query(usersCollection, where('userName', '==', userName));
-
-  getDocs(usernameAvailabilityQuery)
-      .then((querySnapshot) => {
-          if (!querySnapshot.empty) {
-              alert('that username is unavailable');
-              return;
-          } else {
-              createUserWithEmailAndPassword(auth, email, password)
-                  .then(async function() {
-                      const user = auth.currentUser
-                      var userData = {
-                          email: email,
-                          fullName: fullName,
-                          lastLogin: Date.now(),
-                          userName: userName,
-                          buckets: {}
-                      };
-
-                      const userRef = await addDoc(usersCollection, userData);        
-                      
-                      alert('user created')
-                  })
-                  .catch(function(error) {
-                      var errorCode = error.code;
-                      var errorMessage = error.message;
-
-                      alert(errorMessage, errorCode)
-                  })
-                          }
-                      })
-  
-
-}
 function login () {
   // var userName = document.getElementById('username').value
   var email = document.getElementById('email').value
@@ -94,7 +38,6 @@ function login () {
       };
 
       updateDoc(userRef, userData);        
-      console.log(user)
       localStorage.setItem('user', JSON.stringify(user));
 
       window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version

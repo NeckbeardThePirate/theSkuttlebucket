@@ -5,9 +5,7 @@ import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc
 
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
-    // authDomain: "theskuttlebucket.firebaseapp.com", <- this is my real domain
-    authDomain: "http://localhost:9099", //this is the testing one
-    databaseURL: "http://localhost:9000", //<-remove this for live site
+    authDomain: "theskuttlebucket.firebaseapp.com",
     projectId: "theskuttlebucket",
     storageBucket: "theskuttlebucket.appspot.com",
     messagingSenderId: "694795060337",
@@ -15,7 +13,6 @@ const firebaseConfig = {
     measurementId: "G-BLWVYSCCS5"
     };
 
-//VERY IMPORTANT TO REMOVE THE ["host": "localhost",] line from the firebase.json file before going live
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const firestore = getFirestore(app);
@@ -26,7 +23,8 @@ function register() {
   var password = document.getElementById('password').value
   var fullName = document.getElementById('full-name').value
   var userName = document.getElementById('username').value
-
+  var userDescriptionDefaultText = 'click me to tell us a bit about yourself'
+  
 
   
   if (
@@ -62,11 +60,15 @@ function register() {
                           joinDate: Date.now(),
                           followerCount: 0,
                           followingCount: 0,
+                          userDescription: userDescriptionDefaultText,
                       };
 
                       const userRef = await addDoc(usersCollection, userData);        
+                      localStorage.setItem('user', JSON.stringify(user));
+
+                      window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version
+
                       
-                      alert('user created')
                   })
                   .catch(function(error) {
                       var errorCode = error.code;
@@ -79,37 +81,7 @@ function register() {
   
 
 }
-function login () {
-  // var userName = document.getElementById('username').value
-  var email = document.getElementById('email').value
-  var password = document.getElementById('password').value
-  
-  
-  if (validateEmail(email) == false || validatePassword(password) == false) {
-      alert('invalid input')
-      return
-  }
 
-  signInWithEmailAndPassword(auth, email, password)
-  .then(function() {
-      const user = auth.currentUser
-      const usersCollection = collection(firestore, 'users');
-      const userRef = doc(usersCollection, user.uid);
-      const userData = {
-          lastLogin: Date.now()
-      };
-
-      updateDoc(userRef, userData);        
-      
-  })
-  .catch(function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-
-      alert(errorMessage, errorCode)
-  })
-
-}
 
 
 function validateEmail(email) {

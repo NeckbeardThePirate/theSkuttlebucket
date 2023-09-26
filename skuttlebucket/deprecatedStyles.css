@@ -276,6 +276,18 @@ a {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
 }
+
+.edit-description-window {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
 .new-bucket-content {
     margin: 10% auto;
     padding: 20px;
@@ -288,10 +300,25 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-
-    
+    justify-content: center;    
 }
+
+.edit-profile-description-content {
+    margin: 10% auto;
+    padding: 20px;
+    width: 60%;
+    height: 60%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border-radius: 25px;
+    background-color: rgb(100, 20, 20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;    
+}
+
+
 .close {
     position: absolute;
     top: 10px;
@@ -299,9 +326,16 @@ a {
     font-size: 20px;
     cursor: pointer;
 }
+
+
 #new-bucket-header {
     font-size: 40px;
 }
+
+#edit-profile-description-header {
+    font-size: 40px;
+}
+
 
 #new-bucket-text {
     height: 70%;
@@ -314,7 +348,27 @@ a {
     font-size: 22px;
     font-weight: 800;
 }
+#edit-profile-description-text {
+    height: 70%;
+    width: 80%;
+    border-radius: 20px;
+    border: 4px solid grey;
+    background-color: #f2f2f2;
+    margin-top: 1rem;
+    padding: 2rem;
+    font-size: 22px;
+    font-weight: 800;
+}
+
 #dump-bucket-button {
+    height: 80px;
+    width: 160px;
+    background-color: grey;
+    border-radius: 20px;
+    border: none;
+    margin: 2rem;
+}
+#save-profile-description-button {
     height: 80px;
     width: 160px;
     background-color: grey;

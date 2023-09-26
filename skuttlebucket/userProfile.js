@@ -78,15 +78,20 @@ var bucketsColumn = document.getElementById('buckets-column');
 
 var userBuckets = userData.buckets
 
-var userDescription = document.createElement('h4');
+var userDescription = document.createElement('button');
 
+const userJoinDate = new Date(userData.joinDate);
 
+const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
+const joinYear = userJoinDate.getFullYear();
+
+const formattedJoinDate = `${joinMonth} ${joinYear}`; 
 
 
 subProfileInfo.id = 'subprofile-info';
 followingCount.textContent = `Following: ${userData.followingCount}`;
 followerCount.textContent = `Followers: ${userData.followerCount}`;
-// joinDate.textContent = `Member since: ${userData.folloCount].joinedDate}`;
+joinDate.textContent = `Member since: ${formattedJoinDate}`;
 followingCount.id = 'following-count'
 followerCount.id = 'follower-count'
 joinDate.id = 'join-date'
@@ -100,13 +105,19 @@ userDisplayNameContainer.style.backgroundColor = '#D1D1D1';
 userDisplayName.textContent = `${userData.fullName}`//this is the one
 console.log('user display name is ', userData.fullName)
 userDisplayName.classList.add('all-text');
-userDisplayName.id = 'user-display-name'
+userDisplayName.id = 'user-display-name';
 
-userHandle.id = 'handle'
-userHandle.textContent = `@${userData.userName}`
+userHandle.id = 'handle';
+userHandle.textContent = `@${userData.userName}`;
 
-userDescription.textContent = `${userData.userDescription}`
-userDescription.classList.add('identifying-numbers', 'all-text')
+if (userData.userDescription === '') {
+    userDescription.textContent = `Click me to tell us a bit about yourself!`;
+
+} else {
+    userDescription.textContent = `${userData.userDescription}`;
+}
+userDescription.classList.add('identifying-numbers', 'all-text');
+userDescription.id = 'profile-description';
 
 profileHeader.appendChild(userDisplayNameContainer);
 userDisplayNameContainer.appendChild(userDisplayName);
@@ -195,4 +206,52 @@ function dumpBucket() {
             }, 1000);
 }
 
+const editProfileWindow = document.getElementById('edit-profile-description-window');
+const openEditProfileWindowButton = document.getElementById('profile-description');
+const closeEditProfileWindowButton = document.getElementById('close-profile-description-window-button');
+const saveNewProfileDescriptionButton = document.getElementById('save-profile-description-button')
+
+function editProfileDescription() {
+    editProfileWindow.style.display = 'block';
+    const oldProfileDescriptionText = userData.userDescription;
+    const oldProfileDescriptionTextArea = document.getElementById('edit-profile-description-text');
+    oldProfileDescriptionTextArea.value = `${oldProfileDescriptionText}`
+
+    
+}
+
+function closeEditProfileWindow() {
+    editProfileWindow.style.display = 'none';
+}
+
 dumpBucketButton.addEventListener('click', dumpBucket);
+userDescription.addEventListener('click', editProfileDescription); 
+closeEditProfileWindowButton.addEventListener('click', closeEditProfileWindow);
+
+window.addEventListener('click', (event) => {
+    if (event.target === editProfileWindow) {
+        closeEditProfileWindow();
+    }
+})
+
+function saveNewProfileDescription() {
+    const newProfileDescriptionText = document.getElementById('edit-profile-description-text').value;
+    console.log(newProfileDescriptionText);
+    userData.userDescription = newProfileDescriptionText;
+    console.log(userData.userDescription);
+    updateDoc(docRef, {userDescription: newProfileDescriptionText})
+        .then(() => {
+            console.log('firestore updated profile description successfully');
+        })
+        .catch((error) => {
+            console.error('Error updating Firestore document:', error);
+            alert('there was an error updating your profile, please contact our tech support at (placeholder)')
+        });
+        closeEditProfileWindow();
+        setTimeout(() => {
+            location.reload(true);
+            }, 1000);
+}
+
+
+saveNewProfileDescriptionButton.addEventListener('click', saveNewProfileDescription);
