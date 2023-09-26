@@ -37,18 +37,14 @@ const docSnap = await getDoc(docRef);
 
 if (docSnap.exists()) {
     var userData = docSnap.data();
-    console.log('full name is ',userData.fullName)
     if (userData.buckets && typeof userData.buckets === 'object') {
-        // userData.buckets is an object
+        
         for (const key in userData.buckets) {
             if (userData.buckets.hasOwnProperty(key)) {
-                console.log('Key:', key);
-                console.log('Value:', userData.buckets[key]);
-                // You can perform any operations you need with each key-value pair here
             }
         }
     } else {
-        console.log('Buckets data is missing or not an array.');
+        console.log('Buckets data is missing or not an object.');
     }
 } else {
     console.log('no such doc')
@@ -74,7 +70,7 @@ var joinDate = document.createElement('p');
 
 var bucketsColumn = document.getElementById('buckets-column');
 
-var userBuckets = userData.buckets
+const originalUserBuckets = userData.buckets
 
 var userDescription = document.createElement('button');
 
@@ -84,6 +80,15 @@ const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 const joinYear = userJoinDate.getFullYear();
 
 const formattedJoinDate = `${joinMonth} ${joinYear}`; 
+
+const bucketTimestampArray = Object.values(originalUserBuckets);
+
+bucketTimestampArray.sort((a, b) => b.bucketTimestamp - a.bucketTimestamp);
+
+const userBuckets = {};
+bucketTimestampArray.forEach((subobject, index) => {
+    userBuckets[`subobject${index + 1}`] = subobject;
+});
 
 
 subProfileInfo.id = 'subprofile-info';
@@ -170,7 +175,6 @@ for (let bucket in userBuckets) {
     
   
 
-//   var checkUserHandle = userData.userName;
 
 }
 
@@ -181,7 +185,6 @@ const closeNewBucketWindow = document.getElementById('close-bucket-window-button
 
 function createNewBucket() {
     createNewBucketWindow.style.display = 'block';
-    console.log('wll you clicked it')
 }
 
 function closeBucketCreationWindow() {
@@ -211,9 +214,9 @@ function dumpBucket() {
         bucketAuthor: newBucketAuthor,
         bucketText: newBucketText,
     };
-    console.log('well the function ran heres the full bucket object', newBucket)
     userData.buckets[`bucket${Date.now()}`] = newBucket;
-    console.log(userData.buckets);
+
+
     updateDoc(docRef, {buckets: userData.buckets})
         .then(() => {
             console.log('Firestore document updated successfully.');
@@ -264,9 +267,7 @@ window.addEventListener('click', (event) => {
 
 function saveNewProfileDescription() {
     const newProfileDescriptionText = document.getElementById('edit-profile-description-text').value;
-    console.log(newProfileDescriptionText);
     userData.userDescription = newProfileDescriptionText;
-    console.log(userData.userDescription);
     updateDoc(docRef, {userDescription: newProfileDescriptionText})
         .then(() => {
             console.log('firestore updated profile description successfully');

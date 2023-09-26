@@ -30,8 +30,7 @@ function register() {
       validateEmail(email) == false || 
       validatePassword(password) == false || 
       validateFields(fullName) == false ||
-      validateUsername(userName) == false ||
-      validateName(fullName) == false
+      validateUsername(userName) == false
       ) {
       alert('invalid input')
       return
