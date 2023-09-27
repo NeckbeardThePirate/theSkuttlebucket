@@ -80,6 +80,45 @@ if (docSnap.exists()) {
 
 
 
+
+function addFoundUserToFollowing(foundUserName) {
+    console.log('got to the function')
+    if (!loggedInUserData.following || !loggedInUserData.following[foundUserName]) {
+        console.log('got inside the first if block')
+        // If not already following, add the found user to the following object
+        if (!loggedInUserData.following) {
+            console.log('got to the second if block')
+            loggedInUserData.following = {};
+        }
+        loggedInUserData.following[foundUserName] = foundUserName;
+
+        // Increase the following count by 1
+        loggedInUserData.followingCount++;
+        console.log('are we still rolling?', loggedInUserData.followingCount)
+        // Update the user's document in Firestore
+        updateDoc(docRef, {
+            following: loggedInUserData.following,
+            followingCount: loggedInUserData.followingCount
+        })
+        .then(() => {
+            console.log('Successfully followed user:', foundUserName);
+        })
+        .catch((error) => {
+            console.error('Error following user:', foundUserName, error);
+        });
+    } else {
+        console.log('Already following user:', foundUserName);
+    }
+}
+
+// Usage:
+// You can call this function with the username of the user you want to follow
+// For example, to follow a user with the username 'exampleUser':
+// addFoundUserToFollowing('exampleUser');
+
+
+
+
 function followUserFunction(goingToFollow) {
     console.log('it at least tried')
     allUsersRef.forEach(async (doc) => {
@@ -88,12 +127,17 @@ function followUserFunction(goingToFollow) {
             const checkUserName = checkUserData.userName;
             const followers = checkUserData.followerList || {};
             if (goingToFollow === checkUserName) {
-                console.log('Match found for', goingToFollow)
+                const updatedFollowerCount = checkUserData.followerCount + 1;
                 followers[loggedInUserName] = loggedInUserName;
+
 
                 const userDocRef = doc.ref;
                 try {
-                    await updateDoc(userDocRef, {followerList: followers });
+                    await updateDoc(userDocRef, {
+                        followerList: followers,
+                        followerCount: updatedFollowerCount,
+                    }
+                        );
                     console.log('successfully followed user')
                 } catch (error) {
                     console.error(`Error following ${goingToFollow}:`, error);
@@ -155,6 +199,7 @@ function displayMatchingSearchResults(filteredUsers) {
            let goingToFollow = filteredUsers[i];
             console.log('Follow clicked for user:', goingToFollow);
             followUserFunction(goingToFollow);
+            addFoundUserToFollowing(filteredUsers[i])
         });
     };
 };

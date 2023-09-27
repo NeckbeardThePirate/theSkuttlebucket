@@ -61,6 +61,8 @@ function register() {
                           followerCount: 0,
                           followingCount: 0,
                           userDescription: '',
+                          followingList: {},
+                          followerList: {},
                       };
 
                       const userRef = await addDoc(usersCollection, userData);        

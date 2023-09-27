@@ -62,9 +62,9 @@ var userHandle = document.createElement('p');
 
 var subProfileInfo = document.createElement('div');
 
-var followingCount = document.createElement('p');
+var followingCount = document.createElement('button');
 
-var followerCount = document.createElement('p');
+var followerCount = document.createElement('button');
 
 var joinDate = document.createElement('p');
 
@@ -75,6 +75,9 @@ const originalUserBuckets = userData.buckets
 var userDescription = document.createElement('button');
 
 const userJoinDate = new Date(userData.joinDate);
+
+const followerList = userData.followerList;
+const followingList = userData.followingList
 
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 const joinYear = userJoinDate.getFullYear();
@@ -236,6 +239,25 @@ const openEditProfileWindowButton = document.getElementById('profile-description
 const closeEditProfileWindowButton = document.getElementById('close-profile-description-window-button');
 const saveNewProfileDescriptionButton = document.getElementById('save-profile-description-button')
 
+const searchRedirectButton = document.getElementById('search-link');
+
+const followersListWindow = document.getElementById('followers-list-window');
+const showFollowersButton = document.getElementById('follower-count')
+const hideFollowersButton = document.getElementById('close-follower-list-window-button');
+const followersListBlock = document.getElementById('show-followers-window-content');
+
+
+const followingListWindow = document.getElementById('following-list-window');
+const showFollowingButton = document.getElementById('following-count')
+const hideFollowingButton = document.getElementById('close-following-list-window-button');
+const followingListBlock = document.getElementById('show-following-window-content');
+
+
+
+searchRedirectButton.addEventListener('click', function() {
+    window.location.href = 'search.html';
+});
+
 function editProfileDescription() {
     editProfileWindow.style.display = 'block';
     const oldProfileDescriptionText = userData.userDescription;
@@ -287,5 +309,86 @@ saveNewProfileDescriptionButton.addEventListener('click', saveNewProfileDescript
 saveNewProfileDescriptionButton.addEventListener('keyup', function(event) {
     if(event.keyCode === 13) {
         saveNewProfileDescription();
+    }
+});
+
+let followersLoadInstance = 0;
+
+
+function showFollowers() {
+    if (followersLoadInstance === 0) {
+        followersLoadInstance++
+        followersListWindow.style.display = 'block';
+        for (const follower in followerList) {
+            console.log(followersListBlock);
+            const userFollowerBubble = document.createElement('div');
+            const userFollowerUserName = document.createElement('p');
+            userFollowerBubble.classList.add('follower-div')
+            userFollowerUserName.classList.add('follower-list-username-text')
+
+            userFollowerUserName.classList.add('all-text');
+            userFollowerUserName.textContent = `@${follower}`;
+            followersListBlock.appendChild(userFollowerBubble);
+            userFollowerBubble.appendChild(userFollowerUserName);
+        }
+    } else {
+        followersListWindow.style.display = 'block';
+    }
+}
+
+let followingLoadInstance = 0;
+
+
+function showFollowing() {
+    if (followingLoadInstance === 0) {
+        followingLoadInstance++
+        console.log('load instance', followingLoadInstance)
+        followingListWindow.style.display = 'block';
+        for (const following in followingList) {
+            console.log(following)
+            const userFollowingBubble = document.createElement('div');
+            const userFollowingUserName = document.createElement('p');
+            userFollowingBubble.classList.add('following-div')
+            userFollowingUserName.classList.add('following-list-username-text')
+
+            userFollowingUserName.classList.add('all-text');
+            userFollowingUserName.textContent = `@${following}`;
+            followingListBlock.appendChild(userFollowingBubble);
+            userFollowingBubble.appendChild(userFollowingUserName);
+        }
+    } else {
+        console.log('load instance', followingLoadInstance)
+        followingListWindow.style.display = 'block';
+    }
+}
+
+function hideFollowersWindow() {
+    followersListWindow.style.display = 'none';
+};
+
+function hideFollowingWindow() {
+    followingListWindow.style.display = 'none'
+};
+
+
+showFollowersButton.addEventListener('click', showFollowers);
+
+hideFollowersButton.addEventListener('click', function() {
+    hideFollowersWindow();
+});
+
+showFollowingButton.addEventListener('click', showFollowing);
+
+hideFollowingButton.addEventListener('click', hideFollowingWindow);
+
+window.addEventListener('click', (event) => {
+    if (event.target === followersListWindow) {
+        hideFollowersWindow();
+    }
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === followingListWindow) {
+        hideFollowingWindow();
     }
 });
