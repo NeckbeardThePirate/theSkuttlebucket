@@ -23,6 +23,9 @@ const usersCollection = collection(firestore, 'users');
 
 const waterTroughRef = await getDocs(usersCollection);
 
+const returnToUserProfileButton = document.getElementById('profile-button');
+
+
 const originalBuckets = {};
 
 waterTroughRef.forEach((doc) => {
@@ -108,3 +111,7 @@ for (const key in filledBuckets) {
 
     }
 }
+
+returnToUserProfileButton.addEventListener('click', function() {
+    window.location.href = 'skuttlebukket_user.html'
+});
