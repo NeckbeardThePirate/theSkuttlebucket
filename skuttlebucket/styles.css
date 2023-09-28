@@ -493,3 +493,25 @@ a {
     font-size: 48px;
 }
 
+#logout-and-search-div {
+    display: flex;
+}
+
+#logout-button:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+}
+#following-count:hover {
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+#follower-count:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
+#profile-description:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+}

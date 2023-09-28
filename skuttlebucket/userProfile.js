@@ -93,6 +93,8 @@ bucketTimestampArray.forEach((subobject, index) => {
     userBuckets[`subobject${index + 1}`] = subobject;
 });
 
+const logoutButton = document.getElementById('logout-button');
+
 
 subProfileInfo.id = 'subprofile-info';
 followingCount.textContent = `Following: ${userData.followingCount}`;
@@ -205,7 +207,6 @@ window.addEventListener('click', (event) => {
 
 
 const dumpBucketButton = document.getElementById('dump-bucket-button');
-
 
 
 function dumpBucket() {
@@ -391,4 +392,8 @@ window.addEventListener('click', (event) => {
     if (event.target === followingListWindow) {
         hideFollowingWindow();
     }
+});
+
+logoutButton.addEventListener('click', function() {
+    window.location.href = 'login.html';
 });

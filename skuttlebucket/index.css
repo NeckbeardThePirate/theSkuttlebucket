@@ -1,8 +1,6 @@
 html, body {
     width: 100%;
     height: 100%;
-    background: -webkit-linear-gradient(25deg, #FFBE0B, #FB5607, #FF006E, #8338EC, #3A86FF);
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,11 +21,10 @@ html, body {
 #form_container {
     width: 100%;
     height: 100%;
-
-    background-color: #370617;
+    background-color: rgb(100, 20, 20);
     box-shadow: 0 0 50px -20px #000;
     border-radius: 2%;
-
+    border: 3px solid black;
     overflow: hidden;
 }
 
@@ -45,22 +42,16 @@ html, body {
     padding-top: 30px;
 
     border-bottom: 1px solid transparent;
-    border-image: -webkit-linear-gradient(25deg, #FFBE0B, #FB5607, #FF006E, #8338EC, #3A86FF) 20;
-    background: #000;
+    background-color: grey;
 }
 
 #form_header {
     display: inline-block;
     font-size: 15px;
-    font-family: Bowlby One SC;
-    font-weight: 900;
+    font-weight: bolder;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 3px;
 
-
-    background: -webkit-linear-gradient(25deg, #FFBE0B, #FB5607, #FF006E, #8338EC, #3A86FF);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
 }
 
 #form_content_container {
@@ -91,24 +82,23 @@ input {
     padding-left: 10px;
     margin-bottom: 20px;
 
-    background: #000;
+    background: whitesmoke;
     font-family: Montserrat;
-    font-weight: 500;
+    font-weight: 900;
     color: #fff;
     font-size: 12px;
 
     border-bottom: 2px solid transparent;
     border-top-left-radius: 2%;
     border-top-right-radius: 2%;
-    border-image: -webkit-linear-gradient(25deg, #FFBE0B, #FB5607, #FF006E, #8338EC, #3A86FF) 1;
 }
 
 #button_container {
     width: 100%;
     height: 10%;
 
-    background-image: linear-gradient(80deg, #FFBE0B, #FB5607 50%, #FF006E 50%, #8338EC);
-    color: #fff;
+    background-color: grey;
+    color: black;
 
     float: left;
 
@@ -167,3 +157,6 @@ input {
 #button_container a:focus {
     outline: 2px solid slategray;   
 }
+.all-text {
+    font-family: 'monospace', 'Lucida Console', 'Courier New';
+    }
