@@ -18,10 +18,8 @@ const firestore = getFirestore(app);
 
 
 function login () {
-  // var userName = document.getElementById('username').value
   var email = document.getElementById('email').value
-  var password = document.getElementById('password').value
-  
+  var password = document.getElementById('password').value 
   
   if (validateEmail(email) == false || validatePassword(password) == false) {
       alert('invalid input')
@@ -40,9 +38,7 @@ function login () {
       updateDoc(userRef, userData);        
       localStorage.setItem('user', JSON.stringify(user));
 
-      window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version
-
-
+      window.location.href = 'skuttlebukket_user.html'
       
   })
   .catch(function(error) {
@@ -51,9 +47,7 @@ function login () {
 
       alert(errorMessage, errorCode)
   })
-
 }
-
 
 function validateEmail(email) {
   var expression = /^[^@]+@\w+(\.\w+)+\w$/

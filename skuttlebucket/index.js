@@ -23,26 +23,23 @@ function register() {
   var password = document.getElementById('password').value
   var fullName = document.getElementById('full-name').value
   var userName = document.getElementById('username').value
-  
 
-  
-  if (
-      validateEmail(email) == false || 
-      validatePassword(password) == false || 
-      validateFields(fullName) == false ||
-      validateUsername(userName) == false
-      ) {
-      alert('invalid input')
-      return
-  }
+    if (
+        validateEmail(email) == false || 
+        validatePassword(password) == false || 
+        validateFields(fullName) == false ||
+        validateUsername(userName) == false
+        ) {
+        alert('invalid input')
+        return
+    }
 
+    const usersCollection = collection(firestore, 'users');
+    const usernameAvailabilityQuery = query(usersCollection, where('userName', '==', userName));
 
-  const usersCollection = collection(firestore, 'users');
-  const usernameAvailabilityQuery = query(usersCollection, where('userName', '==', userName));
-
-  getDocs(usernameAvailabilityQuery)
-      .then((querySnapshot) => {
-          if (!querySnapshot.empty) {
+    getDocs(usernameAvailabilityQuery)
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
               alert('that username is unavailable');
               return;
           } else {
@@ -67,25 +64,18 @@ function register() {
 
                       const userRef = await addDoc(usersCollection, userData);        
                       localStorage.setItem('user', JSON.stringify(user));
-                      
-
-                      window.location.href = 'skuttlebukket_user.html' //this needs to inclue skuttlebucket.judahhelland.com/ for live version
-
+                      window.location.href = 'skuttlebukket_user.html' 
                       
                   })
                   .catch(function(error) {
-                      var errorCode = error.code;
-                      var errorMessage = error.message;
+                      const errorCode = error.code;
+                      const errorMessage = error.message;
 
                       alert(errorMessage, errorCode)
                   })
                           }
                       })
-  
-
 }
-
-
 
 function validateEmail(email) {
   var expression = /^[^@]+@\w+(\.\w+)+\w$/
@@ -105,6 +95,7 @@ function validateUsername(userName) {
       return true;
   }
 }
+
 function validateName(fullName) {
     var expression = /[^a-zA-Z]/g;
     if (expression.test(userName) == true) {
@@ -113,7 +104,8 @@ function validateName(fullName) {
     } else {
         return true;
     }
-  }
+}
+
 function validatePassword(password) {
   if (password < 6) {
       return false
@@ -141,5 +133,4 @@ document.addEventListener("DOMContentLoaded", function() {
             register;
             }
         });
-    });
-
+});

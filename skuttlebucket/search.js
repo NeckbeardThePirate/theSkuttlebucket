@@ -14,26 +14,30 @@ const firebaseConfig = {
     };
 
 const app = initializeApp(firebaseConfig);
+
 const firestore = getFirestore(app);
+
 const auth = getAuth(app);
 
 const usersCollection = collection(firestore, 'users');
-
 
 const allUsersRef = await getDocs(usersCollection);
 
 const searchButton = document.getElementById('button-for-searching');
 
-
 const allUserNames = [];
 
-var searchBarField = document.getElementById('search-space');
+const searchBarField = document.getElementById('search-space');
+
 const resultsContainer = document.getElementById('results-container');
 
 const timelineButton = document.getElementById('timeline-button');
+
 const profileButton = document.getElementById('profile-button');
+
 const logoutButton = document.getElementById('logout-button');
 
+let filteredUsers = [];
 
 allUsersRef.forEach((doc) => {
     if(doc.exists()) {
@@ -42,9 +46,6 @@ allUsersRef.forEach((doc) => {
         allUserNames.push(userName);
     }
 })
-
-let filteredUsers = [];
-
 
 function checkForMatchingUserNames(allUserNames, searchTerm) {
     filteredUsers = [];
@@ -67,13 +68,11 @@ const userFromLogin = JSON.parse(localStorage.getItem('user'));
 const userUID = userFromLogin.uid
 const loginCheckUsersCollection = collection(firestore, 'users');
 const findUserQuery = query(loginCheckUsersCollection, where('userID', '==', userUID));
-
 const userRef = await getDocs(findUserQuery);
 
 if (!userRef.empty) {
     var DocID = userRef.docs[0].id;    
 }
-
 
 const docRef = doc(firestore, 'users', DocID);
 const docSnap = await getDoc(docRef);
@@ -81,27 +80,15 @@ const docSnap = await getDoc(docRef);
 if (docSnap.exists()) {
     var loggedInUserData = docSnap.data();
     var loggedInUserName = loggedInUserData.userName;
-    console.log(loggedInUserName)
 }
 
-
-
-
 function addFoundUserToFollowing(foundUserName) {
-    console.log('got to the function')
     if (!loggedInUserData.following || !loggedInUserData.following[foundUserName]) {
-        console.log('got inside the first if block')
-        // If not already following, add the found user to the following object
         if (!loggedInUserData.following) {
-            console.log('got to the second if block')
             loggedInUserData.following = {};
         }
         loggedInUserData.following[foundUserName] = foundUserName;
-
-        // Increase the following count by 1
         loggedInUserData.followingCount++;
-        console.log('are we still rolling?', loggedInUserData.followingCount)
-        // Update the user's document in Firestore
         updateDoc(docRef, {
             following: loggedInUserData.following,
             followingCount: loggedInUserData.followingCount
@@ -116,9 +103,6 @@ function addFoundUserToFollowing(foundUserName) {
         console.log('Already following user:', foundUserName);
     }
 }
-
-
-
 
 function followUserFunction(goingToFollow) {
     console.log('it at least tried')
@@ -149,8 +133,6 @@ function followUserFunction(goingToFollow) {
     })
 }
 
-
-
 function displayMatchingSearchResults(filteredUsers) {
     if (filteredUsers.length === 0){
         const showNoResults = document.createElement('div');
@@ -170,7 +152,6 @@ function displayMatchingSearchResults(filteredUsers) {
             matchingUserName.textContent = `@${filteredUsers[i]}`
             showMatchingUser.classList.add('found-user')
             matchingUserName.classList.add('found-username')
-
             resultsContainer.appendChild(showMatchingUser);
             resultsContainer.appendChild(followUser);
             showMatchingUser.appendChild(matchingUserName);

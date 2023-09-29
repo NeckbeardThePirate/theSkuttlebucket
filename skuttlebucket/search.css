@@ -18,7 +18,6 @@ body {
 }
 
 .search-bar {
-    
     background-color: #f2f2f2;
     border-radius: 25px;
     padding: 10px 20px;
@@ -29,7 +28,6 @@ body {
     outline: none;
     border: 2px solid grey;
     margin: 2rem;
-
 }
 
 .search-bar:hover {
@@ -51,9 +49,6 @@ body {
     transform: scale(1.05);
 }
 
-#header-text {
-    
-}
 
 .found-user {
     border-radius: 25px;
@@ -86,24 +81,25 @@ body {
     border: 2px solid black;
     transition: ease all;
 }
+
 #search-header-box {
-border-radius: 15px;
-text-align: center;
-align-items: center;
-border: 0.15rem solid black;
-margin: 2rem;
-background-color: grey;
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    border: 0.15rem solid black;
+    margin: 2rem;
+    background-color: grey;
 }
 
 .nav-button {
-border-radius: 15px;
-text-align: center;
-align-items: center;
-margin: auto;
-border: 0.15rem solid black;
-margin: 0rem 0.3rem;
-background-color: grey;
-width: 30%;
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    border: 0.15rem solid black;
+    margin: 0rem 0.3rem;
+    background-color: grey;
+    width: 30%;
 }
 
 .nav-button:hover {

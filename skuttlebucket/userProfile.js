@@ -3,7 +3,6 @@ import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
     authDomain: "theskuttlebucket.firebaseapp.com", 
@@ -15,15 +14,20 @@ const firebaseConfig = {
     };
 
 const app = initializeApp(firebaseConfig);
+
 const firestore = getFirestore(app);
+
 const auth = getAuth(app); 
+
 if (localStorage.length === 0) {
     window.location.href = 'login.html'
 };
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
+
 const userUID = userFromLogin.uid
 
 const usersCollection = collection(firestore, 'users');
+
 const findUserQuery = query(usersCollection, where('userID', '==', userUID));
 
 const userRef = await getDocs(findUserQuery);
@@ -33,8 +37,8 @@ if (!userRef.empty) {
     
 }
 
-
 const docRef = doc(firestore, 'users', DocID);
+
 const docSnap = await getDoc(docRef);
 
 if (docSnap.exists()) {
@@ -52,36 +56,36 @@ if (docSnap.exists()) {
     console.log('no such doc')
 }
 
+const userDisplayName = document.createElement('h2');
 
+const profileHeader = document.getElementById('profile-header');
 
-var userDisplayName = document.createElement('h2');
+const userDisplayNameContainer = document.createElement('div');
 
-var profileHeader = document.getElementById('profile-header');
+const userHandle = document.createElement('p');
 
-var userDisplayNameContainer = document.createElement('div');
+const subProfileInfo = document.createElement('div');
 
-var userHandle = document.createElement('p');
+const followingCount = document.createElement('button');
 
-var subProfileInfo = document.createElement('div');
+const followerCount = document.createElement('button');
 
-var followingCount = document.createElement('button');
+const joinDate = document.createElement('p');
 
-var followerCount = document.createElement('button');
-
-var joinDate = document.createElement('p');
-
-var bucketsColumn = document.getElementById('buckets-column');
+const bucketsColumn = document.getElementById('buckets-column');
 
 const originalUserBuckets = userData.buckets
 
-var userDescription = document.createElement('button');
+const userDescription = document.createElement('button');
 
 const userJoinDate = new Date(userData.joinDate);
 
 const followerList = userData.followerList;
+
 const followingList = userData.followingList
 
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
+
 const joinYear = userJoinDate.getFullYear();
 
 const formattedJoinDate = `${joinMonth} ${joinYear}`; 
@@ -109,15 +113,11 @@ joinDate.id = 'join-date'
 followingCount.classList.add('identifying-numbers')
 followerCount.classList.add('identifying-numbers')
 joinDate.classList.add('identifying-numbers')
-
 userDisplayNameContainer.id = 'user-identifiers'
 userDisplayNameContainer.style.backgroundColor = '#D1D1D1';
-
 userDisplayName.textContent = `${userData.fullName}`//this is the one
-console.log('user display name is ', userData.fullName)
 userDisplayName.classList.add('all-text');
 userDisplayName.id = 'user-display-name';
-
 userHandle.id = 'handle';
 userHandle.textContent = `@${userData.userName}`;
 
@@ -129,7 +129,6 @@ if (userData.userDescription === '') {
 }
 userDescription.classList.add('identifying-numbers', 'all-text');
 userDescription.id = 'profile-description';
-
 profileHeader.appendChild(userDisplayNameContainer);
 userDisplayNameContainer.appendChild(userDisplayName);
 userDisplayNameContainer.appendChild(userHandle);
@@ -147,49 +146,54 @@ const months = [
   const daysOfWeek = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   ];
-  
 
 for (let bucket in userBuckets) {
     if (userBuckets.hasOwnProperty(bucket)) {
         const subBucket = userBuckets[bucket]
+
         const bucketContent = subBucket['bucketText'];
-        var showBucket = document.createElement('div');
-        var bucketText = document.createElement('h3');
-        var bucketAuthor = document.createElement('p');
-        var bucketDate = document.createElement('p');
+
+        const showBucket = document.createElement('div');
+
+        const bucketText = document.createElement('h3');
+
+        const bucketAuthor = document.createElement('p');
+
+        const bucketDate = document.createElement('p');
+
         bucketDate.classList.add('all-text');
 
         const postedBucketDate = new Date(subBucket['bucketTimestamp']);
+
         const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
+
         const postedBucketMonth = months[postedBucketDate.getMonth()];
+
         const postedBucketMonthDay = postedBucketDate.getDate();
+
         const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
+
         const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
         bucketDate.textContent = `${fullPostTime}`;
-
         showBucket.classList.add('tweet-block');
         bucketText.classList.add('all-text'); 
         bucketAuthor.classList.add('all-text'); 
         bucketText.textContent = `${bucketContent}`;
         bucketAuthor.textContent = `@${subBucket['bucketAuthor']}`;
         bucketDate.style.fontSize = '10px';
-
         bucketsColumn.appendChild(showBucket);
         showBucket.appendChild(bucketAuthor);
         showBucket.appendChild(bucketDate);
         showBucket.appendChild(bucketText);
     }
-    
-  
-
-
 }
 
 const createNewBucketWindow = document.getElementById('create-bucket-window');
-const openNewBucketWindow = document.getElementById('buckets-header');
-const closeNewBucketWindow = document.getElementById('close-bucket-window-button')
 
+const openNewBucketWindow = document.getElementById('buckets-header');
+
+const closeNewBucketWindow = document.getElementById('close-bucket-window-button')
 
 function createNewBucket() {
     createNewBucketWindow.style.display = 'block';
@@ -208,21 +212,21 @@ window.addEventListener('click', (event) => {
     }
 })
 
-
 const dumpBucketButton = document.getElementById('dump-bucket-button');
-
 
 function dumpBucket() {
     const newBucketText = document.getElementById('new-bucket-text').value
+
     const newBucketTimestamp = Date.now();
+
     const newBucketAuthor = userData.userName;
+
     const newBucket = {
         bucketTimestamp: newBucketTimestamp,
         bucketAuthor: newBucketAuthor,
         bucketText: newBucketText,
     };
     userData.buckets[`bucket${Date.now()}`] = newBucket;
-
 
     updateDoc(docRef, {buckets: userData.buckets})
         .then(() => {
@@ -239,24 +243,30 @@ function dumpBucket() {
 }
 
 const editProfileWindow = document.getElementById('edit-profile-description-window');
+
 const openEditProfileWindowButton = document.getElementById('profile-description');
+
 const closeEditProfileWindowButton = document.getElementById('close-profile-description-window-button');
+
 const saveNewProfileDescriptionButton = document.getElementById('save-profile-description-button')
 
 const searchRedirectButton = document.getElementById('search-link');
 
 const followersListWindow = document.getElementById('followers-list-window');
+
 const showFollowersButton = document.getElementById('follower-count')
+
 const hideFollowersButton = document.getElementById('close-follower-list-window-button');
+
 const followersListBlock = document.getElementById('show-followers-window-content');
 
-
 const followingListWindow = document.getElementById('following-list-window');
+
 const showFollowingButton = document.getElementById('following-count')
+
 const hideFollowingButton = document.getElementById('close-following-list-window-button');
+
 const followingListBlock = document.getElementById('show-following-window-content');
-
-
 
 searchRedirectButton.addEventListener('click', function() {
     window.location.href = 'search.html';
@@ -266,9 +276,7 @@ function editProfileDescription() {
     editProfileWindow.style.display = 'block';
     const oldProfileDescriptionText = userData.userDescription;
     const oldProfileDescriptionTextArea = document.getElementById('edit-profile-description-text');
-    oldProfileDescriptionTextArea.value = `${oldProfileDescriptionText}`
-
-    
+    oldProfileDescriptionTextArea.value = `${oldProfileDescriptionText}`    
 }
 
 function closeEditProfileWindow() {
@@ -276,6 +284,7 @@ function closeEditProfileWindow() {
 }
 
 dumpBucketButton.addEventListener('click', dumpBucket);
+
 dumpBucketButton.addEventListener('keyup', function(event) {
     if(event.keyCode === 13) {
         dumpBucket();
@@ -283,6 +292,7 @@ dumpBucketButton.addEventListener('keyup', function(event) {
 });
 
 userDescription.addEventListener('click', editProfileDescription); 
+
 closeEditProfileWindowButton.addEventListener('click', closeEditProfileWindow);
 
 window.addEventListener('click', (event) => {
@@ -308,8 +318,8 @@ function saveNewProfileDescription() {
             }, 1000);
 }
 
-
 saveNewProfileDescriptionButton.addEventListener('click', saveNewProfileDescription);
+
 saveNewProfileDescriptionButton.addEventListener('keyup', function(event) {
     if(event.keyCode === 13) {
         saveNewProfileDescription();
@@ -324,12 +334,12 @@ function showFollowers() {
         followersLoadInstance++
         followersListWindow.style.display = 'block';
         for (const follower in followerList) {
-            console.log(followersListBlock);
             const userFollowerBubble = document.createElement('div');
+
             const userFollowerUserName = document.createElement('p');
+
             userFollowerBubble.classList.add('follower-div')
             userFollowerUserName.classList.add('follower-list-username-text')
-
             userFollowerUserName.classList.add('all-text');
             userFollowerUserName.textContent = `@${follower}`;
             followersListBlock.appendChild(userFollowerBubble);
@@ -342,26 +352,23 @@ function showFollowers() {
 
 let followingLoadInstance = 0;
 
-
 function showFollowing() {
     if (followingLoadInstance === 0) {
         followingLoadInstance++
-        console.log('load instance', followingLoadInstance)
         followingListWindow.style.display = 'block';
         for (const following in followingList) {
-            console.log(following)
             const userFollowingBubble = document.createElement('div');
+
             const userFollowingUserName = document.createElement('p');
+
             userFollowingBubble.classList.add('following-div')
             userFollowingUserName.classList.add('following-list-username-text')
-
             userFollowingUserName.classList.add('all-text');
             userFollowingUserName.textContent = `@${following}`;
             followingListBlock.appendChild(userFollowingBubble);
             userFollowingBubble.appendChild(userFollowingUserName);
         }
     } else {
-        console.log('load instance', followingLoadInstance)
         followingListWindow.style.display = 'block';
     }
 }
@@ -373,7 +380,6 @@ function hideFollowersWindow() {
 function hideFollowingWindow() {
     followingListWindow.style.display = 'none'
 };
-
 
 showFollowersButton.addEventListener('click', showFollowers);
 

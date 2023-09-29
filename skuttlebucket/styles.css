@@ -5,32 +5,36 @@
     padding: 0;
 
 }
+
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 #container {
     padding-bottom: 40vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 #header-text {
     font-size: 4rem;
     margin: 0;
 }
+
 #contact-form {
     max-width: 30%;
 }
+
 .contact-field {
     height: 4rem;
     width: 30rem;
     margin: 2rem;
     background-color: rgba(0, 0, 0, 0);
     border: 3px solid black;
-    padding: 1rem;
-    
+    padding: 1rem;    
 }
 
 .contact-field::placeholder {
@@ -38,6 +42,7 @@ body {
     color: black;
     font-size: 1.2rem;
 }
+
 #message{
     height: 10rem;
     resize: none;
@@ -46,7 +51,6 @@ body {
 #message::placeholder {
     font-size: 1.4rem;
 }
-
 
 #submit-button {
     height: 4rem;
@@ -81,6 +85,7 @@ body {
     justify-content: center;
     margin: auto;
 }
+
 #header {
     display: flex;
     align-items: center;
@@ -92,14 +97,16 @@ body {
     flex-wrap: wrap;
     padding: 2rem;
 }
+
 #links {
     margin: 5rem;
 }
+
 #logo-main {
     max-width: 30rem;
 }
 
-.subtitles{ 
+.subtitles { 
     color: white;
     font-size: 45px;
     margin: 10px 0;
@@ -112,6 +119,7 @@ body {
     
 
 }
+
 .button:hover {
     transform: scale(1.05);
     transition: 0.3 ease all;
@@ -121,6 +129,7 @@ body {
 #scuttle-content-block{
     background-color: white;
 }
+
 #about-me {
     text-align: center;
     background-color: rgba(245, 245, 245, 0.4);
@@ -129,101 +138,109 @@ body {
     justify-content: center;
     align-items: center;
 }
+
 h1 {
 font-size: 3rem;
 margin: 0;
 text-align: center;
 }
+
 h1:hover{
     opacity: 0.8;
     transform: scale(1.04);
 }
 
 .all-text {
-font-family: 'Lucida Console', 'Courier New', 'monospace';
+    font-family: 'Lucida Console', 'Courier New', 'monospace';
 }
-.content {
-display: flex;
-flex-direction: column;
-align-items: center;
-max-width: 85vw;
-margin: auto;
-}
-#buckets-column{
-background-color: rgba(134, 16, 13, 0.85);
-padding: .75rem 1.4rem;
-border: 5px solid black;
-border-radius: 10px;
-margin: 1rem;
-position: relative;
 
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 85vw;
+    margin: auto;
 }
-#buckets-timeline-column{
+
+#buckets-column {
     background-color: rgba(134, 16, 13, 0.85);
     padding: .75rem 1.4rem;
     border: 5px solid black;
     border-radius: 10px;
     margin: 1rem;
-    
-    }
+    position: relative;
+}
+
+#buckets-timeline-column{
+    background-color: rgba(134, 16, 13, 0.85);
+    padding: .75rem 1.4rem;
+    border: 5px solid black;
+    border-radius: 10px;
+    margin: 1rem;    
+}
+
 #profile-header {
-display: flex;
-flex-direction: column;
-align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-.tweet-block{
-background-color: white;
-border: 2px solid black;
-margin: 20px 0;
-padding: 0.8rem 2rem;
-border-radius: 12px;
 
+.tweet-block {
+    background-color: white;
+    border: 2px solid black;
+    margin: 20px 0;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
 }
+
 #user-identifiers {
-display: inline-block;
-flex-direction: column;
-padding: 1rem;
-border-radius: 15px;
-text-align: center;
-align-items: center;
-margin: auto;
-border: 0.20rem solid black;
+    display: inline-block;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    border: 0.20rem solid black;
 }
-#user-display-name {
-font-size: 3rem;
-margin: 0;
 
+#user-display-name {
+    font-size: 3rem;
+    margin: 0;
 }
+
 #subprofile-info {
-display: flex;
-margin: 1rem auto;
+    display: flex;
+    margin: 1rem auto;
 }
 
 .identifying-numbers{
-margin: .5rem;
+    margin: .5rem;
+    background-color: #D1D1D1;
+    padding: 0.75rem;
+    border-radius: 15px;
+    max-width: 85%;
+    border: 0.15rem solid black;
+}
 
-background-color: #D1D1D1;
-padding: 0.75rem;
-border-radius: 15px;
-max-width: 85%;
-border: 0.15rem solid black;
-}
 .divider {
-height: 4px;
-background-color: black;
-width: 80vw;
-margin: 2rem;
+    height: 4px;
+    background-color: black;
+    width: 80vw;
+    margin: 2rem;
 }
+
 #buckets-header {
-text-align: center;
-font-size: 2.7rem;
-background-color: white;
-border: 2px solid black;
-border-radius: 12px;
-padding: 1rem;
-width: 60%;
-margin: auto;
+    text-align: center;
+    font-size: 2.7rem;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 60%;
+    margin: auto;
 }
+
 #buckets-header:hover {
     cursor: pointer;
     transform: scale(1.05);
@@ -233,6 +250,7 @@ a {
     color: inherit;
     text-decoration: none;
 }
+
 .in-dev {
     background-color: white;
     color: black;
@@ -241,6 +259,7 @@ a {
     font-size: 38px;
     text-align: center;
 }
+
 /* Temporarily offline while i figure some stuff out #create-bucket {
     height: 2rem;
     width: 5rem;
@@ -257,9 +276,6 @@ a {
     margin-bottom: 2rem;
     display: flex;
 }
-
-
-
 
 .new-bucket-window {
     display: none;
@@ -331,7 +347,6 @@ a {
     font-size: 40px;
 }
 
-
 #new-bucket-text {
     height: 70%;
     width: 80%;
@@ -343,6 +358,7 @@ a {
     font-size: 22px;
     font-weight: 800;
 }
+
 #edit-profile-description-text {
     height: 70%;
     width: 80%;
@@ -363,6 +379,7 @@ a {
     border: none;
     margin: 2rem;
 }
+
 #save-profile-description-button {
     height: 80px;
     width: 160px;
@@ -440,6 +457,7 @@ a {
     align-items: center;
     justify-content: center;
 }
+
 #following-list-window {
     display: none;
     position: fixed;
@@ -516,8 +534,6 @@ a {
     cursor: pointer;
 }
 
-
-
 .nav-button {
     border-radius: 15px;
     text-align: center;
@@ -543,5 +559,13 @@ a {
     display: flex;
     margin: 2rem;
     justify-content: center;
+}
 
+#timeline-button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+#logout-button:hover {
+    transform: scale(1.05);
 }

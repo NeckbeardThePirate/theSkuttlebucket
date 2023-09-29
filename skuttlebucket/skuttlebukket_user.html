@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    
     <title>Farm Scuttlebucket</title>
 </head>
 <body>
@@ -20,16 +19,14 @@
             <!-- <img src="assets\pexels-ákos-szabó-440731.jpg"> -->
         </div>
         <div id="profile-header">
-
         </div>
         <div id="logout-and-search-div">
-            <button id="timeline-button" class="all-text, identifying-numbers" style="font-weight: 700; font-size: 20px;">Main timeline</button>
+            <button id="timeline-button" class="all-text, nav-button, identifying-numbers" style="font-weight: 700; font-size: 20px;">Main timeline</button>
             <button id='search-link'class="identifying-numbers">
                 <h2 class="all-text">🔎Find Other Users Here</h2>
             </button>
             <button id='logout-button'class="all-text, identifying-numbers" style="font-weight: 700; font-size: 20px;">Logout</button>
         </div>
-        
         <div class="profile-details">
             <div id="edit-profile-description-window" class="edit-description-window">
                 <span class="close" id="close-profile-description-window-button">&times;</span>
@@ -39,7 +36,6 @@
                 <button id="save-profile-description-button" class="all-text">Save</button>
                 </div>
             </div>
-
             <div id="followers-list-window"> 
                 <div class="show-follower-list-window-content" id="show-followers-window-content">
                     <span class="close" id="close-follower-list-window-button">&times;</span>
@@ -56,38 +52,22 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-
-
-        
-
-
-
-
         <div id="buckets-column">
             <!-- Temporarily offline while i figure some stuff out <button id="create-bucket" class="create-bucket-button"></button> -->
             <div id="bucket-button">
                 <button id='buckets-header' class='all-text'>Create New Bucket</button>
             </div>
-
-
             <div id="create-bucket-window" class="new-bucket-window">
                 <span class="close" id="close-bucket-window-button">&times;</span>
                 <div class="new-bucket-content">
                     <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
                     <textarea id="new-bucket-text" class="all-text"></textarea>
-                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>
-                    
+                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
                 </div>
             </div>
-
-
         </div>
     </div>
     <script type="module" src="userProfile.js"></script>
-
-
 </body>
 </html>

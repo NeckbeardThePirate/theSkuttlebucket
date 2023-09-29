@@ -2,8 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebas
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-
-
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
     authDomain: "theskuttlebucket.firebaseapp.com", 
@@ -15,18 +13,23 @@ const firebaseConfig = {
     };
 
 const app = initializeApp(firebaseConfig);
+
 const firestore = getFirestore(app);
+
 const auth = getAuth(app); 
+
 if (localStorage.length === 0) {
     window.location.href = 'login.html'
 };
-const usersCollection = collection(firestore, 'users');
 
+const usersCollection = collection(firestore, 'users');
 
 const waterTroughRef = await getDocs(usersCollection);
 
 const returnToUserProfileButton = document.getElementById('profile-button');
+
 const searchButton = document.getElementById('search-button');
+
 const logoutButton = document.getElementById('logout-button');
 
 const originalBuckets = {};
@@ -55,63 +58,61 @@ const bucketTimestampArray = Object.values(originalBuckets);
 bucketTimestampArray.sort((a, b) => b.bucketTimestamp - a.bucketTimestamp);
 
 const filledBuckets = {};
+
 bucketTimestampArray.forEach((subobject, index) => {
     filledBuckets[`subobject${index + 1}`] = subobject;
 });
-console.log('filledBuckets: ', filledBuckets)
 
-var bucketsTimelineColumn = document.getElementById('buckets-timeline-column')
-
+const bucketsTimelineColumn = document.getElementById('buckets-timeline-column')
 
 const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-  
+
 const daysOfWeek = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
 
-
-
-
 for (const key in filledBuckets) {
     if (filledBuckets.hasOwnProperty(key)) {
         const bucketData = filledBuckets[key];
+        
         const bucketContent = bucketData['bucketText']
-        console.log('bucketContent', bucketContent)
-        var showBucket = document.createElement('div');
-        var bucketText = document.createElement('h3');
-        var bucketAuthor = document.createElement('p');
-        var bucketDate = document.createElement('p');
+        
+        const showBucket = document.createElement('div');
+        
+        const bucketText = document.createElement('h3');
+        
+        const bucketAuthor = document.createElement('p');
+        
+        const bucketDate = document.createElement('p');
+        
         bucketDate.classList.add('all-text');
 
         const postedBucketDate = new Date(bucketContent['bucketTimestamp']);
+        
         const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
+        
         const postedBucketMonth = months[postedBucketDate.getMonth()];
+        
         const postedBucketMonthDay = postedBucketDate.getDate();
+        
         const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
+        
         const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
-
-        console.log(fullPostTime)
         bucketDate.textContent = `${fullPostTime}`;
-
         showBucket.classList.add('tweet-block');
         bucketText.classList.add('all-text');
-        
         bucketAuthor.classList.add('all-text'); 
         bucketText.textContent = `${bucketContent['bucketText']}`;
         bucketAuthor.textContent = `@${bucketContent['bucketAuthor']}`;
         bucketDate.style.fontSize = '10px';
-
-
         bucketsTimelineColumn.appendChild(showBucket);
         showBucket.appendChild(bucketAuthor);
         showBucket.appendChild(bucketDate);
         showBucket.appendChild(bucketText);
-
-
     }
 }
 
