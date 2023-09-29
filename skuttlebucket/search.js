@@ -152,60 +152,74 @@ function followUserFunction(goingToFollow) {
 
 
 function displayMatchingSearchResults(filteredUsers) {
-    for (let i = 0; i < filteredUsers.length; i++) {
-        const showMatchingUser = document.createElement('div');
-        const matchingUserName = document.createElement('h3');
-        const followUser = document.createElement('button');
-        followUser.textContent = `Follow`;
-        followUser.classList.add('follow-button')
-        matchingUserName.textContent = `@${filteredUsers[i]}`
-        showMatchingUser.classList.add('found-user')
-        matchingUserName.classList.add('found-username')
+    if (filteredUsers.length === 0){
+        const showNoResults = document.createElement('div');
+        const showNoResultsMessage = document.createElement('h3');
+        showNoResultsMessage.textContent = 'No results found';
+        showNoResults.classList.add('found-user');
+        showNoResultsMessage.classList.add('found-username');
+        resultsContainer.appendChild(showNoResults);
+        showNoResults.appendChild(showNoResultsMessage);
+    } else {
+        for (let i = 0; i < filteredUsers.length; i++) {
+            const showMatchingUser = document.createElement('div');
+            const matchingUserName = document.createElement('h3');
+            const followUser = document.createElement('button');
+            followUser.textContent = `Follow`;
+            followUser.classList.add('follow-button')
+            matchingUserName.textContent = `@${filteredUsers[i]}`
+            showMatchingUser.classList.add('found-user')
+            matchingUserName.classList.add('found-username')
 
-        resultsContainer.appendChild(showMatchingUser);
-        resultsContainer.appendChild(followUser);
-        showMatchingUser.appendChild(matchingUserName);
+            resultsContainer.appendChild(showMatchingUser);
+            resultsContainer.appendChild(followUser);
+            showMatchingUser.appendChild(matchingUserName);
 
-        let mouseIsOverUserBlock = false;
-        let isMouseOverFollowButton = false;
+            let mouseIsOverUserBlock = false;
+            let isMouseOverFollowButton = false;
 
-        showMatchingUser.addEventListener('mouseover', function() {
-            followUser.style.display = 'block';
-            mouseIsOverUserBlock = true;
-        });
+            showMatchingUser.addEventListener('mouseover', function() {
+                followUser.style.display = 'block';
+                mouseIsOverUserBlock = true;
+            });
 
-        showMatchingUser.addEventListener('mouseleave', function() {
-            mouseIsOverUserBlock = false;
-            isMouseOverFollowButton = false;
-            setTimeout(() => {
-                if (!mouseIsOverUserBlock && !isMouseOverFollowButton) {
-                    followUser.style.display = 'none';
-                    isMouseOverFollowButton = true;
-                }
-            }, 220);
-        });
+            showMatchingUser.addEventListener('mouseleave', function() {
+                mouseIsOverUserBlock = false;
+                isMouseOverFollowButton = false;
+                setTimeout(() => {
+                    if (!mouseIsOverUserBlock && !isMouseOverFollowButton) {
+                        followUser.style.display = 'none';
+                        isMouseOverFollowButton = true;
+                    }
+                }, 220);
+            });
 
-        followUser.addEventListener('mouseenter', function() {
-            followUser.style.display = 'block';
-            isMouseOverFollowButton = true;
-        });
+            followUser.addEventListener('mouseenter', function() {
+                followUser.style.display = 'block';
+                isMouseOverFollowButton = true;
+            });
 
-        followUser.addEventListener('mouseleave', function() {
-            setTimeout(() => {
-                followUser.style.display = 'none';                
-            }, 220);
-        });
+            followUser.addEventListener('mouseleave', function() {
+                setTimeout(() => {
+                    followUser.style.display = 'none';                
+                }, 220);
+            });
 
-        followUser.addEventListener('click', function() {
-           let goingToFollow = filteredUsers[i];
-            console.log('Follow clicked for user:', goingToFollow);
-            followUserFunction(goingToFollow);
-            addFoundUserToFollowing(filteredUsers[i])
-        });
-    };
+            followUser.addEventListener('click', function() {
+            let goingToFollow = filteredUsers[i];
+                console.log('Follow clicked for user:', goingToFollow);
+                followUserFunction(goingToFollow);
+                addFoundUserToFollowing(filteredUsers[i])
+            });
+        };
+    }
 };
 
 searchButton.addEventListener('click', function() {
+    while (resultsContainer.firstChild) {
+        resultsContainer.removeChild(resultsContainer.firstChild)
+    }
+    filteredUsers = []
     var searchTerm = searchBarField.value;
     checkForMatchingUserNames(allUserNames, searchTerm);
     console.log(filteredUsers);
