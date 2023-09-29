@@ -17,7 +17,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app); 
-
+if (localStorage.length === 0) {
+    window.location.href = 'login.html'
+};
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
 const userUID = userFromLogin.uid
 
@@ -95,6 +97,7 @@ bucketTimestampArray.forEach((subobject, index) => {
 
 const logoutButton = document.getElementById('logout-button');
 
+const timelineButton = document.getElementById('timeline-button');
 
 subProfileInfo.id = 'subprofile-info';
 followingCount.textContent = `Following: ${userData.followingCount}`;
@@ -395,5 +398,10 @@ window.addEventListener('click', (event) => {
 });
 
 logoutButton.addEventListener('click', function() {
+    localStorage.clear();
     window.location.href = 'login.html';
 });
+
+timelineButton.addEventListener('click', function() {
+    window.location.href = 'timeline.html';
+})

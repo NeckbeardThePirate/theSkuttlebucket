@@ -17,14 +17,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app); 
-
+if (localStorage.length === 0) {
+    window.location.href = 'login.html'
+};
 const usersCollection = collection(firestore, 'users');
 
 
 const waterTroughRef = await getDocs(usersCollection);
 
 const returnToUserProfileButton = document.getElementById('profile-button');
-
+const searchButton = document.getElementById('search-button');
+const logoutButton = document.getElementById('logout-button');
 
 const originalBuckets = {};
 
@@ -114,4 +117,15 @@ for (const key in filledBuckets) {
 
 returnToUserProfileButton.addEventListener('click', function() {
     window.location.href = 'skuttlebukket_user.html'
+});
+
+searchButton.addEventListener('click', function() {
+    console.log('clicked search button')
+    window.location.href = 'search.html';
+
+});
+
+logoutButton.addEventListener('click', function() {
+    localStorage.clear();
+    window.location.href = 'login.html';
 });

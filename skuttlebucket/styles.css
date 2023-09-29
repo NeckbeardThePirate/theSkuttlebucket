@@ -516,8 +516,32 @@ a {
     cursor: pointer;
 }
 
-#profile-button {
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0);
-    border: none;
+
+
+.nav-button {
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    border: 0.15rem solid black;
+    margin: 0rem 0.3rem;
+    background-color: grey;
+    width: 30%;
+    height: 5rem;
+}
+
+.nav-button h4 {
+    font-size: 30px;
+}
+    
+.nav-button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+#header-buttons {
+    display: flex;
+    margin: 2rem;
+    justify-content: center;
+
 }

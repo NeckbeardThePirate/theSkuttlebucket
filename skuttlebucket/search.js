@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -14,7 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
-
+const auth = getAuth(app);
 
 const usersCollection = collection(firestore, 'users');
 
@@ -29,6 +30,10 @@ const allUserNames = [];
 var searchBarField = document.getElementById('search-space');
 const resultsContainer = document.getElementById('results-container');
 
+const timelineButton = document.getElementById('timeline-button');
+const profileButton = document.getElementById('profile-button');
+const logoutButton = document.getElementById('logout-button');
+
 
 allUsersRef.forEach((doc) => {
     if(doc.exists()) {
@@ -37,7 +42,6 @@ allUsersRef.forEach((doc) => {
         allUserNames.push(userName);
     }
 })
-console.log(allUserNames)
 
 let filteredUsers = [];
 
@@ -55,7 +59,9 @@ function delay(milliseconds) {
       setTimeout(resolve, milliseconds);
     });
   }
-
+if (localStorage.length === 0) {
+    window.location.href = 'login.html'
+};
 
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
 const userUID = userFromLogin.uid
@@ -111,11 +117,6 @@ function addFoundUserToFollowing(foundUserName) {
     }
 }
 
-// Usage:
-// You can call this function with the username of the user you want to follow
-// For example, to follow a user with the username 'exampleUser':
-// addFoundUserToFollowing('exampleUser');
-
 
 
 
@@ -160,7 +161,7 @@ function displayMatchingSearchResults(filteredUsers) {
         matchingUserName.textContent = `@${filteredUsers[i]}`
         showMatchingUser.classList.add('found-user')
         matchingUserName.classList.add('found-username')
-        
+
         resultsContainer.appendChild(showMatchingUser);
         resultsContainer.appendChild(followUser);
         showMatchingUser.appendChild(matchingUserName);
@@ -210,3 +211,17 @@ searchButton.addEventListener('click', function() {
     console.log(filteredUsers);
     displayMatchingSearchResults(filteredUsers);
 })
+
+timelineButton.addEventListener('click', function() {
+    window.location.href = 'timeline.html';
+});
+
+profileButton.addEventListener('click', function() {
+    window.location.href = 'skuttlebukket_user.html';
+});
+
+logoutButton.addEventListener('click', function() {
+        console.log('Signed Out');
+        localStorage.clear();
+        window.location.href = 'login.html' 
+});
