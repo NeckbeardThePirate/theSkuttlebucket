@@ -55,7 +55,12 @@ waterTroughRef.forEach((doc) => {
 
 const bucketTimestampArray = Object.values(originalBuckets);
 
-bucketTimestampArray.sort((a, b) => b.bucketTimestamp - a.bucketTimestamp);
+bucketTimestampArray.sort((a, b) => {
+    const timestampA = a.bucketText.bucketTimestamp;
+    const timestampB = b.bucketText.bucketTimestamp;
+
+    return timestampB - timestampA;
+});
 
 const filledBuckets = {};
 

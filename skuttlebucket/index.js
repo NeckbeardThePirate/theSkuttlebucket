@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 
@@ -43,7 +43,7 @@ function register() {
               alert('that username is unavailable');
               return;
           } else {
-              createUserWithEmailAndPassword(auth, email, password)
+                createUserWithEmailAndPassword(auth, email, password)
                   .then(async function() {
                     localStorage.setItem('userName', userName);
                       const user = auth.currentUser
@@ -134,3 +134,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 });
+
+// Does not work...
+// function sendVerificationEmail() {
+//     const user = auth.currentUser;
+//     user.sendEmailVerification().then(function() {
+//         console.log('email sent')
+//     }).catch(function(error) {
+//         console.log('email failed to send')
+//     });
+// }
