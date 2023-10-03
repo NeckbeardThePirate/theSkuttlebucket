@@ -8,27 +8,30 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="index.css">      
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <link rel="icon" href="Favicontractor.ico" type="image/x-icon">
+
     </head>
     <body>
         <div id="content_container">
             <div id="form_container">
                 <div id="form_header_container">
-                    <h2 id="form_header">theSkuttlebucket LOGIN</h2>
+                    <h1 id="form_header" class="all-text">theSkuttlebucket SignUP</h1>
                 </div>
-                <div id="form_content_container">
+                <div id="form_content_container" class="'all-text">
                     <div id="form_content_inner_container">
+                        <input type="text" id="full-name" placeholder="Full name">
+                        <input type="text" id="username" placeholder="User name">
                         <input type="email" id="email" placeholder="Email">
-                        <input type="password" id="password" placeholder="Password">
-
+                        <input type="password" id="password" placeholder="New Password">
                         <div id="button_container">
-                            <button id="login-button">Login</button>
-                            <a id="switch-to-register-button" href='index.html'>Not a user yet?<br>Sign Up Here!</a>
+                            <button id="register-button">Sign UP</button>
+                            <a id="switch-to-login-button" href='index.html'>Already a user?<br>Log in Here</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script type="module" src="login.js"></script>
+        <script type="module" src="signup.js"></script>
     </body>
 </html>

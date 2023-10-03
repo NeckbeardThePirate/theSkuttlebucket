@@ -19,7 +19,7 @@ const firestore = getFirestore(app);
 const auth = getAuth(app); 
 
 if (localStorage.length === 0) {
-    window.location.href = 'login.html'
+    window.location.href = 'index.html'
 };
 
 const usersCollection = collection(firestore, 'users');
@@ -133,5 +133,5 @@ searchButton.addEventListener('click', function() {
 
 logoutButton.addEventListener('click', function() {
     localStorage.clear();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 });

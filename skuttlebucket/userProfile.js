@@ -20,7 +20,7 @@ const firestore = getFirestore(app);
 const auth = getAuth(app); 
 
 if (localStorage.length === 0) {
-    window.location.href = 'login.html'
+    window.location.href = 'index.html'
 };
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
 
@@ -83,6 +83,8 @@ const userJoinDate = new Date(userData.joinDate);
 const followerList = userData.followerList;
 
 const followingList = userData.followingList
+console.log(userData.followingList)
+console.log(followingList)
 
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 
@@ -262,7 +264,7 @@ const followersListBlock = document.getElementById('show-followers-window-conten
 
 const followingListWindow = document.getElementById('following-list-window');
 
-const showFollowingButton = document.getElementById('following-count')
+// const showFollowingButton = document.getElementById('following-count')
 
 const hideFollowingButton = document.getElementById('close-following-list-window-button');
 
@@ -353,21 +355,27 @@ function showFollowers() {
 let followingLoadInstance = 0;
 
 function showFollowing() {
+    console.log('hit showFollowing function')
+    console.log(followingList)
+    
     if (followingLoadInstance === 0) {
         followingLoadInstance++
         followingListWindow.style.display = 'block';
         for (const following in followingList) {
+            if (followingList.hasOwnProperty(following)) {
+            console.log('found a followee')
+
+            }
+            console.log('found a followee')
             const userFollowingBubble = document.createElement('div');
-
             const userFollowingUserName = document.createElement('p');
-
             userFollowingBubble.classList.add('following-div')
             userFollowingUserName.classList.add('following-list-username-text')
             userFollowingUserName.classList.add('all-text');
             userFollowingUserName.textContent = `@${following}`;
             followingListBlock.appendChild(userFollowingBubble);
             userFollowingBubble.appendChild(userFollowingUserName);
-        }
+         }
     } else {
         followingListWindow.style.display = 'block';
     }
@@ -387,7 +395,7 @@ hideFollowersButton.addEventListener('click', function() {
     hideFollowersWindow();
 });
 
-showFollowingButton.addEventListener('click', showFollowing);
+followingCount.addEventListener('click', showFollowing);
 
 hideFollowingButton.addEventListener('click', hideFollowingWindow);
 
@@ -405,7 +413,7 @@ window.addEventListener('click', (event) => {
 
 logoutButton.addEventListener('click', function() {
     localStorage.clear();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 });
 
 timelineButton.addEventListener('click', function() {

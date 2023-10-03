@@ -61,7 +61,7 @@ function delay(milliseconds) {
     });
   }
 if (localStorage.length === 0) {
-    window.location.href = 'login.html'
+    window.location.href = 'index.html'
 };
 
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
@@ -83,18 +83,29 @@ if (docSnap.exists()) {
 }
 
 function addFoundUserToFollowing(foundUserName) {
-    if (!loggedInUserData.following || !loggedInUserData.following[foundUserName]) {
-        if (!loggedInUserData.following) {
-            loggedInUserData.following = {};
+    if (!loggedInUserData.followingList || !loggedInUserData.followingList[foundUserName]) {
+        if (!loggedInUserData.followingList) {
+            loggedInUserData.followingList = {};
         }
-        loggedInUserData.following[foundUserName] = foundUserName;
+        loggedInUserData.followingList[foundUserName] = foundUserName;
         loggedInUserData.followingCount++;
         updateDoc(docRef, {
-            following: loggedInUserData.following,
+            followingList: loggedInUserData.followingList,
             followingCount: loggedInUserData.followingCount
         })
         .then(() => {
+            loadSearchResults()
             console.log('Successfully followed user:', foundUserName);
+            const followSuccessMessageDiv = document.createElement('div');
+            const followSuccessMessage = document.createElement('p');
+            followSuccessMessageDiv.id = 'follow-success-message-div';
+            followSuccessMessage.id = 'follow-success-message';
+            followSuccessMessage.textContent = `✅ Successfully followed @${foundUserName}`;
+            followSuccessMessage.classList.add('success-message');
+            followSuccessMessageDiv.classList.add('success-message-div');
+            resultsContainer.appendChild(followSuccessMessageDiv);
+            followSuccessMessageDiv.appendChild(followSuccessMessage);
+
         })
         .catch((error) => {
             console.error('Error following user:', foundUserName, error);
@@ -104,8 +115,42 @@ function addFoundUserToFollowing(foundUserName) {
     }
 }
 
+
+function removeFoundUserFromFollowing(foundUserName) {
+    if (loggedInUserData.followingList[foundUserName]) {
+        if (!loggedInUserData.followingList) {
+            loggedInUserData.followingList = {};
+        }
+        const followingList = loggedInUserData.followingList;
+        delete followingList[foundUserName];
+        loggedInUserData.followingCount--;
+        updateDoc(docRef, {
+            followingList: followingList,
+            followingCount: loggedInUserData.followingCount
+        })
+        .then(() => {
+            loadSearchResults()
+            console.log('Successfully UnFollowed user:', foundUserName);
+            const followSuccessMessageDiv = document.createElement('div');
+            const followSuccessMessage = document.createElement('p');
+            followSuccessMessageDiv.id = 'unfollow-success-message-div';
+            followSuccessMessage.id = 'unfollow-success-message';
+            followSuccessMessage.textContent = `✅ Successfully UnFollowed @${foundUserName}`;
+            followSuccessMessage.classList.add('success-message');
+            followSuccessMessageDiv.classList.add('success-message-div');
+            resultsContainer.appendChild(followSuccessMessageDiv);
+            followSuccessMessageDiv.appendChild(followSuccessMessage);
+
+        })
+        .catch((error) => {
+            console.error('Error UnFollowing user:', foundUserName, error);
+        });
+    } else {
+        console.log('Already not following user:', foundUserName);
+    }
+}
+
 function followUserFunction(goingToFollow) {
-    console.log('it at least tried')
     allUsersRef.forEach(async (doc) => {
         if(doc.exists()) {
             const checkUserData = doc.data();
@@ -133,6 +178,35 @@ function followUserFunction(goingToFollow) {
     })
 }
 
+function unFollowUserFunction(goingToUnFollow) {
+    console.log('it at least tried to Unfollow')
+    allUsersRef.forEach(async (doc) => {
+        if(doc.exists()) {
+            const checkUserData = doc.data();
+            const checkUserName = checkUserData.userName;
+            const followers = checkUserData.followerList || {};
+            if (goingToUnFollow === checkUserName) {
+                const updatedFollowerCount = checkUserData.followerCount - 1;
+                delete followers[goingToUnFollow];
+
+
+                const userDocRef = doc.ref;
+                try {
+                    await updateDoc(userDocRef, {
+                        followerList: followers,
+                        followerCount: updatedFollowerCount,
+                    }
+                        );
+                    console.log('successfully UnFollowed user')
+                } catch (error) {
+                    console.error(`Error UnFollowing ${goingToUnFollow}:`, error);
+                }
+
+            }
+        }
+    })
+}
+
 function displayMatchingSearchResults(filteredUsers) {
     if (filteredUsers.length === 0){
         const showNoResults = document.createElement('div');
@@ -144,33 +218,94 @@ function displayMatchingSearchResults(filteredUsers) {
         showNoResults.appendChild(showNoResultsMessage);
     } else {
         for (let i = 0; i < filteredUsers.length; i++) {
-            const matchingUserAndFollowContainer = document.createElement('div');
+            var matchingUserAndFollowContainer = document.createElement('div');
             const showMatchingUser = document.createElement('div');
             const matchingUserName = document.createElement('h3');
             const followUser = document.createElement('button');
             matchingUserAndFollowContainer.classList.add('matching-user-div')
-            followUser.textContent = `Follow`;
-            followUser.classList.add('follow-button')
-            matchingUserName.textContent = `@${filteredUsers[i]}`
-            showMatchingUser.classList.add('found-user')
-            matchingUserName.classList.add('found-username')
-            matchingUserAndFollowContainer.style.display = 'flex';
-            resultsContainer.appendChild(matchingUserAndFollowContainer);
-            matchingUserAndFollowContainer.appendChild(showMatchingUser);
-            matchingUserAndFollowContainer.appendChild(followUser);
-            showMatchingUser.appendChild(matchingUserName);
+            console.log(loggedInUserData.followingList)
+            if (!loggedInUserData.followingList[filteredUsers[i]]) {
+                followUser.textContent = `Follow`;
+                followUser.classList.add('follow-button')
+                matchingUserName.textContent = `@${filteredUsers[i]}`
+                showMatchingUser.classList.add('found-user')
+                if (filteredUsers[i].length >= 16) {
+                    matchingUserName.classList.add('sixteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 18) {
+                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                    matchingUserName.classList.add('eighteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 20) {
+                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-charachter-plus-username')
+                } if (filteredUsers[i].length >= 22) {
+                    matchingUserName.classList.remove('twenty-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
+                } if (filteredUsers[i].length >= 24) {
+                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
+                } if (filteredUsers[i].length >= 26) {
+                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
+                } if  (filteredUsers[i].length <= 26) {
+                    matchingUserName.classList.add('found-username')
+                }
+                matchingUserAndFollowContainer.style.display = 'flex';
+                resultsContainer.appendChild(matchingUserAndFollowContainer);
+                matchingUserAndFollowContainer.appendChild(showMatchingUser);
+                matchingUserAndFollowContainer.appendChild(followUser);
+                showMatchingUser.appendChild(matchingUserName);
 
-            followUser.addEventListener('click', function() {
-            let goingToFollow = filteredUsers[i];
-                console.log('Follow clicked for user:', goingToFollow);
-                followUserFunction(goingToFollow);
-                addFoundUserToFollowing(filteredUsers[i])
-            });
+                followUser.addEventListener('click', function() {
+                let goingToFollow = filteredUsers[i];
+                    console.log('Follow clicked for user:', goingToFollow);
+                    followUserFunction(goingToFollow);
+                    addFoundUserToFollowing(filteredUsers[i])
+                });
+            } else {
+                followUser.textContent = `UnFollow`;
+                followUser.classList.add('unfollow-button')
+                matchingUserName.textContent = `@${filteredUsers[i]}`
+                showMatchingUser.classList.add('found-user')
+                if (filteredUsers[i].length >= 16) {
+                    matchingUserName.classList.add('sixteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 18) {
+                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                    matchingUserName.classList.add('eighteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 20) {
+                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-charachter-plus-username')
+                } if (filteredUsers[i].length >= 22) {
+                    matchingUserName.classList.remove('twenty-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
+                } if (filteredUsers[i].length >= 24) {
+                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
+                } if (filteredUsers[i].length >= 26) {
+                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
+                } if  (filteredUsers[i].length <= 26) {
+                    matchingUserName.classList.add('found-username')
+                }
+                matchingUserAndFollowContainer.style.display = 'flex';
+                resultsContainer.appendChild(matchingUserAndFollowContainer);
+                matchingUserAndFollowContainer.appendChild(showMatchingUser);
+                matchingUserAndFollowContainer.appendChild(followUser);
+                showMatchingUser.appendChild(matchingUserName);
+
+                followUser.addEventListener('click', function() {
+                    let goingToUnFollow = filteredUsers[i];
+                        console.log('UnFollow clicked for user:', goingToUnFollow);
+                        unFollowUserFunction(goingToUnFollow); //this needs to be built as an unfollow function
+                        removeFoundUserFromFollowing(filteredUsers[i])  //this also needs to change
+                    });
+            }
+            
         };
     }
 };
 
-searchButton.addEventListener('click', function() {
+
+function loadSearchResults() {
     while (resultsContainer.firstChild) {
         resultsContainer.removeChild(resultsContainer.firstChild)
     }
@@ -179,7 +314,10 @@ searchButton.addEventListener('click', function() {
     checkForMatchingUserNames(allUserNames, searchTerm);
     console.log(filteredUsers);
     displayMatchingSearchResults(filteredUsers);
-})
+};
+
+
+searchButton.addEventListener('click', loadSearchResults);
 
 timelineButton.addEventListener('click', function() {
     window.location.href = 'timeline.html';
@@ -192,5 +330,5 @@ profileButton.addEventListener('click', function() {
 logoutButton.addEventListener('click', function() {
         console.log('Signed Out');
         localStorage.clear();
-        window.location.href = 'login.html' 
+        window.location.href = 'index.html' 
 });
