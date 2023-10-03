@@ -241,7 +241,7 @@ function dumpBucket() {
         closeBucketCreationWindow();
         setTimeout(() => {
             location.reload(true);
-            }, 1000);
+            }, 200);
 }
 
 const editProfileWindow = document.getElementById('edit-profile-description-window');

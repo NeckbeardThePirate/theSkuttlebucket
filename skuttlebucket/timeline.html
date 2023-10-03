@@ -22,9 +22,20 @@
             <button id="logout-button" class="nav-button all-text"><h4>Logout</h4></button>
         </div>
         <div id="timeline-header">
+            
         </div>
         <div id="buckets-timeline-column">
-            
+            <div id="bucket-button">
+                <button id='buckets-header' class='all-text'>Create New Bucket</button>
+            </div>
+            <div id="create-bucket-window" class="new-bucket-window">
+                <span class="close" id="close-bucket-window-button">&times;</span>
+                <div class="new-bucket-content">
+                    <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
+                    <textarea id="new-bucket-text" class="all-text"></textarea>
+                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
+                </div>
+            </div>
         </div>
     </div>
       <script type="module" src="timeline.js"></script>

@@ -22,7 +22,32 @@ if (localStorage.length === 0) {
     window.location.href = 'index.html'
 };
 
+const userFromLogin = JSON.parse(localStorage.getItem('user'));
+
+const userUID = userFromLogin.uid
+
 const usersCollection = collection(firestore, 'users');
+
+const findUserQuery = query(usersCollection, where('userID', '==', userUID));
+
+const userRef = await getDocs(findUserQuery);
+
+if (!userRef.empty) {
+    var DocID = userRef.docs[0].id;
+    
+}
+
+const docRef = doc(firestore, 'users', DocID);
+
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+    var currentUserData = docSnap.data();
+    
+} else {
+    console.log('no such doc')
+}
+
 
 const waterTroughRef = await getDocs(usersCollection);
 
@@ -134,4 +159,65 @@ searchButton.addEventListener('click', function() {
 logoutButton.addEventListener('click', function() {
     localStorage.clear();
     window.location.href = 'index.html';
+});
+
+const createNewBucketWindow = document.getElementById('create-bucket-window');
+
+const openNewBucketWindow = document.getElementById('buckets-header');
+
+const closeNewBucketWindow = document.getElementById('close-bucket-window-button')
+
+function createNewBucket() {
+    createNewBucketWindow.style.display = 'block';
+}
+
+function closeBucketCreationWindow() {
+    createNewBucketWindow.style.display = 'none';
+}
+
+openNewBucketWindow.addEventListener('click', createNewBucket);
+closeNewBucketWindow.addEventListener('click', closeBucketCreationWindow);
+
+window.addEventListener('click', (event) => {
+    if (event.target === createNewBucketWindow) {
+        closeBucketCreationWindow();
+    }
+})
+
+const dumpBucketButton = document.getElementById('dump-bucket-button');
+
+function dumpBucket() {
+    const newBucketText = document.getElementById('new-bucket-text').value
+
+    const newBucketTimestamp = Date.now();
+
+    const newBucketAuthor = currentUserData.userName;
+
+    const newBucket = {
+        bucketTimestamp: newBucketTimestamp,
+        bucketAuthor: newBucketAuthor,
+        bucketText: newBucketText,
+    };
+    currentUserData.buckets[`bucket${Date.now()}`] = newBucket;
+
+    updateDoc(docRef, {buckets: currentUserData.buckets})
+        .then(() => {
+            console.log('Firestore document updated successfully.');
+        })
+        .catch((error) => {
+            console.error('Error updating Firestore document:', error);
+            alert('there was an error dumping your bucket, please contact our tech support at (placeholder)')
+        });
+        closeBucketCreationWindow();
+        setTimeout(() => {
+            location.reload(true);
+            }, 200);
+}
+
+dumpBucketButton.addEventListener('click', dumpBucket);
+
+dumpBucketButton.addEventListener('keyup', function(event) {
+    if(event.keyCode === 13) {
+        dumpBucket();
+    }
 });

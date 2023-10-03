@@ -237,7 +237,10 @@ h1:hover{
     border: 2px solid black;
     border-radius: 12px;
     padding: 1rem;
-    width: 60%;
+    width: 50%;
+    min-width: fit-content;
+    height: 7rem;
+    /* height: auto; */
     margin: auto;
 }
 
@@ -575,4 +578,20 @@ a {
 
 #logout-button:hover {
     transform: scale(1.05);
+}
+
+#follow-user-button {
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+}
+
+
+#unfollow-user-button {
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    background-color: green;
 }

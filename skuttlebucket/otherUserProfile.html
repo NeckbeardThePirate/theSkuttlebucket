@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Farm Scuttlebucket</title>
+    <link rel="icon" href="Favicontractor.ico" type="image/x-icon">
+    
+
+</head>
+<body>
+    <div id="scuttle-content-block" class="content">
+        <div class='divider'></div>
+        <div class="header">
+            <a href="timeline.html">
+                <h1 class='all-text'>The Farm Scuttlebucket 🚜</h1>
+            </a>
+        </div>
+        <div class='divider'></div>
+        <div class="cover-photo">
+        </div>
+        <div id="profile-header">
+        </div>
+        <div id="logout-and-search-div">
+            <button id="timeline-button" class="all-text, nav-button, identifying-numbers" style="font-weight: 700; font-size: 20px;">Main timeline</button>
+            <button id='search-link'class="identifying-numbers">
+                <h2 class="all-text">🔎Find Other Users Here</h2>
+            </button>
+            <button id='logout-button'class="all-text, identifying-numbers" style="font-weight: 700; font-size: 20px;">Logout</button>
+        </div>
+        <div id="buckets-column">
+            <!-- Temporarily offline while i figure some stuff out <button id="create-bucket" class="create-bucket-button"></button> -->
+            <div id="follow-user-button">
+                <button id='buckets-header' class='all-text'>Follow user</button>
+            </div>
+            <div id="create-bucket-window" class="new-bucket-window">
+                <span class="close" id="close-bucket-window-button">&times;</span>
+                <div class="new-bucket-content">
+                    <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
+                    <textarea id="new-bucket-text" class="all-text"></textarea>
+                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="otherUserProfile.js"></script>
+</body>
+</html>

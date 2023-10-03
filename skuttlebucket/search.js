@@ -94,7 +94,7 @@ function addFoundUserToFollowing(foundUserName) {
             followingCount: loggedInUserData.followingCount
         })
         .then(() => {
-            loadSearchResults()
+            loadSearchResults();
             console.log('Successfully followed user:', foundUserName);
             const followSuccessMessageDiv = document.createElement('div');
             const followSuccessMessage = document.createElement('p');
@@ -261,6 +261,10 @@ function displayMatchingSearchResults(filteredUsers) {
                     followUserFunction(goingToFollow);
                     addFoundUserToFollowing(filteredUsers[i])
                 });
+                showMatchingUser.addEventListener('click', function() {
+                    localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                    window.location.href = 'otherUserProfile.html';
+                });
             } else {
                 followUser.textContent = `UnFollow`;
                 followUser.classList.add('unfollow-button')
@@ -298,6 +302,10 @@ function displayMatchingSearchResults(filteredUsers) {
                         unFollowUserFunction(goingToUnFollow); //this needs to be built as an unfollow function
                         removeFoundUserFromFollowing(filteredUsers[i])  //this also needs to change
                     });
+                showMatchingUser.addEventListener('click', function() {
+                    localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                    window.location.href = 'otherUserProfile.html';
+                });
             }
             
         };
