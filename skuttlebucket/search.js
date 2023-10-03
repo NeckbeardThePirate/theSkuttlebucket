@@ -144,47 +144,21 @@ function displayMatchingSearchResults(filteredUsers) {
         showNoResults.appendChild(showNoResultsMessage);
     } else {
         for (let i = 0; i < filteredUsers.length; i++) {
+            const matchingUserAndFollowContainer = document.createElement('div');
             const showMatchingUser = document.createElement('div');
             const matchingUserName = document.createElement('h3');
             const followUser = document.createElement('button');
+            matchingUserAndFollowContainer.classList.add('matching-user-div')
             followUser.textContent = `Follow`;
             followUser.classList.add('follow-button')
             matchingUserName.textContent = `@${filteredUsers[i]}`
             showMatchingUser.classList.add('found-user')
             matchingUserName.classList.add('found-username')
-            resultsContainer.appendChild(showMatchingUser);
-            resultsContainer.appendChild(followUser);
+            matchingUserAndFollowContainer.style.display = 'flex';
+            resultsContainer.appendChild(matchingUserAndFollowContainer);
+            matchingUserAndFollowContainer.appendChild(showMatchingUser);
+            matchingUserAndFollowContainer.appendChild(followUser);
             showMatchingUser.appendChild(matchingUserName);
-
-            let mouseIsOverUserBlock = false;
-            let isMouseOverFollowButton = false;
-
-            showMatchingUser.addEventListener('mouseover', function() {
-                followUser.style.display = 'block';
-                mouseIsOverUserBlock = true;
-            });
-
-            showMatchingUser.addEventListener('mouseleave', function() {
-                mouseIsOverUserBlock = false;
-                isMouseOverFollowButton = false;
-                setTimeout(() => {
-                    if (!mouseIsOverUserBlock && !isMouseOverFollowButton) {
-                        followUser.style.display = 'none';
-                        isMouseOverFollowButton = true;
-                    }
-                }, 220);
-            });
-
-            followUser.addEventListener('mouseenter', function() {
-                followUser.style.display = 'block';
-                isMouseOverFollowButton = true;
-            });
-
-            followUser.addEventListener('mouseleave', function() {
-                setTimeout(() => {
-                    followUser.style.display = 'none';                
-                }, 220);
-            });
 
             followUser.addEventListener('click', function() {
             let goingToFollow = filteredUsers[i];

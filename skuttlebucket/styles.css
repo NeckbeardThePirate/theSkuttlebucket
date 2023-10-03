@@ -538,12 +538,12 @@ a {
     border-radius: 15px;
     text-align: center;
     align-items: center;
-    margin: auto;
+    margin: 1.5rem;
     border: 0.15rem solid black;
-    margin: 0rem 0.3rem;
-    background-color: grey;
-    width: 30%;
-    height: 5rem;
+    background-color: #D1D1D1;
+    width: 16rem;
+    height: 6rem;
+    padding: 1rem;
 }
 
 .nav-button h4 {
@@ -557,8 +557,9 @@ a {
 
 #header-buttons {
     display: flex;
-    margin: 2rem;
     justify-content: center;
+    margin: 1rem 4rem;
+    min-width: 60vw;
 }
 
 #timeline-button:hover {
