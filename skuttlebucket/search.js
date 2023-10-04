@@ -102,6 +102,8 @@ function addFoundUserToFollowing(foundUserName) {
             followSuccessMessage.id = 'follow-success-message';
             followSuccessMessage.textContent = `✅ Successfully followed @${foundUserName}`;
             followSuccessMessage.classList.add('success-message');
+            followSuccessMessage.classList.add('all-text');
+
             followSuccessMessageDiv.classList.add('success-message-div');
             resultsContainer.appendChild(followSuccessMessageDiv);
             followSuccessMessageDiv.appendChild(followSuccessMessage);
@@ -137,6 +139,7 @@ function removeFoundUserFromFollowing(foundUserName) {
             followSuccessMessage.id = 'unfollow-success-message';
             followSuccessMessage.textContent = `✅ Successfully UnFollowed @${foundUserName}`;
             followSuccessMessage.classList.add('success-message');
+            followSuccessMessage.classList.add('all-text');
             followSuccessMessageDiv.classList.add('success-message-div');
             resultsContainer.appendChild(followSuccessMessageDiv);
             followSuccessMessageDiv.appendChild(followSuccessMessage);
@@ -214,6 +217,7 @@ function displayMatchingSearchResults(filteredUsers) {
         showNoResultsMessage.textContent = 'No results found';
         showNoResults.classList.add('found-user');
         showNoResultsMessage.classList.add('found-username');
+        showNoResultsMessage.classList.add('all-text');
         resultsContainer.appendChild(showNoResults);
         showNoResults.appendChild(showNoResultsMessage);
     } else {
@@ -223,6 +227,7 @@ function displayMatchingSearchResults(filteredUsers) {
             const matchingUserName = document.createElement('h3');
             const followUser = document.createElement('button');
             matchingUserAndFollowContainer.classList.add('matching-user-div')
+            matchingUserName.classList.add('all-text')
             console.log(loggedInUserData.followingList)
             if (!loggedInUserData.followingList[filteredUsers[i]]) {
                 followUser.textContent = `Follow`;

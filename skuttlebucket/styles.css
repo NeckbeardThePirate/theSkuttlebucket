@@ -624,11 +624,246 @@ a {
     transform: scale(1.05);
 }
 
-#active-timeline-button{
+.active-timeline-button{
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: 1rem;
+    border: 0.15rem solid black;
+    width: 48%;
+    height: 10rem;
+    padding: 1rem;
+    font-size: 42px;
     background-color: #D1D1D1;
-    background-color: green !important;
+    scale: 1.05;
 }
 
-#inactive-timeline-button{
+.inactive-timeline-button{
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: 1rem;
+    border: 0.15rem solid black;
+    width: 48%;
+    height: 10rem;
+    padding: 1rem;
+    font-size: 30px;
+    scale: 0.8;
     background-color: grey;
+}
+
+.inactive-timeline-button:hover {
+    transform: scale(1.05);
+}
+
+
+
+.search-container {
+    width: 80vw;
+    min-height: 80vh;
+    border-radius: 25px;
+    max-width: 500px;
+    text-align: center;
+    background-color: rgb(100, 20, 20);
+    border: 4px solid black;
+}
+
+.search-bar {
+    background-color: #f2f2f2;
+    border-radius: 25px;
+    padding: 10px 20px;
+    width: 80%;
+    color: black;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    border: 2px solid grey;
+    margin: 2rem;
+}
+
+.search-bar:hover {
+    transform: scale(1.02);
+}
+
+.search-button {
+    height: 4rem;
+    width: 12rem;
+    color: black;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1.7rem;
+    cursor: pointer;
+    background-color: #C1C1C1;
+}
+
+.search-button:hover {
+    background-color: #C1C1C1;
+    transform: scale(1.05);
+}
+
+
+.found-user {
+    border-radius: 25px;
+    background-color: #f2f2f2;
+    border: 2px solid black;
+    padding: 0.3rem;
+    width: 60%;
+    height: 4rem;
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.found-user:hover {
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+
+.found-username {
+    font-size: 2rem;
+    margin: 1rem;
+}
+
+.follow-button {
+    color: white;
+    border: none;
+    border-radius: 18px;
+    /* padding: 10px 20px; */
+    font-size: 1.5rem;
+    background-color: grey;
+    border: 2px solid black;
+    transition: ease all;
+    width: 30%;
+    margin: 0.5rem;
+}
+
+.unfollow-button {
+    color: white;
+    border: none;
+    border-radius: 18px;
+    /* padding: 10px 20px; */
+    font-size: 1.5rem;
+    background-color: grey;
+    border: 2px solid black;
+    transition: ease all;
+    width: 30%;
+    margin: 0.5rem;
+}
+
+.follow-button:hover {
+    cursor: pointer;
+    transform: scale(1.08);
+}
+
+#search-header-box {
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    border: 0.15rem solid black;
+    margin: 2rem;
+    background-color: #C1C1C1;
+    padding: 1rem;
+}
+
+.search-nav-button {
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    border: 0.15rem solid black;
+    margin: 0rem 0.3rem;
+    background-color: #C1C1C1;
+    width: 30%;
+    height: 4rem;
+}
+
+.search-nav-button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.matching-user-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.success-message {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.success-message-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 200, 0, 0.8);
+    border-radius: 12px;
+    height: 3rem;
+}
+
+.sixteen-charachter-plus-username {
+    font-size: 1.6rem;
+    margin: 1rem;
+}
+
+.eighteen-charachter-plus-username {
+    font-size: 1.5rem;
+    margin: 1rem;
+}
+
+
+.twenty-charachter-plus-username {
+    font-size: 1.3rem;
+    margin: 1rem;
+}
+
+
+.twenty-two-charachter-plus-username {
+    font-size: 1.1rem;
+    margin: 1rem;
+}
+
+
+.twenty-four-charachter-plus-username {
+    font-size: 1rem;
+    margin: 1rem;
+}
+
+
+.twenty-six-charachter-plus-username {
+    font-size: 0.8rem;
+    margin: 1rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 25px;
+
+    
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
 }

@@ -22,6 +22,9 @@ if (localStorage.length === 0) {
     window.location.href = 'index.html'
 };
 
+const closeSearchButton = document.getElementById('closeModal')
+
+
 const seeAllBucketsButton = document.getElementById('all-buckets-button');
 
 const seeBucketsForMeButton = document.getElementById('buckets-for-me-button');
@@ -152,12 +155,17 @@ const daysOfWeek = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
 function loadAllBuckets() {
-    seeBucketsForMeButton.classList.remove('active-timeline-button')
-    seeBucketsForMeButton.style.backgroundColor = 'grey';
-    seeBucketsForMeButton.style.scale = 0.8;
-    seeAllBucketsButton.style.scale = 1.05;
+    seeBucketsForMeButton.classList.add('inactive-timeline-button');
+    seeBucketsForMeButton.classList.add('view-button');
+    seeBucketsForMeButton.classList.remove('active-timeline-button');
+    // seeBucketsForMeButton.style.backgroundColor = 'grey';
+    // seeBucketsForMeButton.style.scale = 0.8;
+    // seeAllBucketsButton.style.scale = 1.05;
     seeAllBucketsButton.classList.add('active-timeline-button')
-    seeAllBucketsButton.style.backgroundColor = 'white';
+    seeAllBucketsButton.classList.remove('inactive-timeline-button')
+    seeAllBucketsButton.classList.remove('view-button')
+
+    // seeAllBucketsButton.style.backgroundColor = 'white';
     for (const key in filledBuckets) {
         if (filledBuckets.hasOwnProperty(key)) {
             const bucketData = filledBuckets[key];
@@ -203,11 +211,15 @@ function loadAllBuckets() {
 
 function loadBucketsForUser() {
     seeAllBucketsButton.classList.remove('active-timeline-button')
-    seeAllBucketsButton.style.backgroundColor = 'grey';
+    seeAllBucketsButton.classList.add('view-button')
+    seeAllBucketsButton.classList.add('inactive-timeline-button')
+
+    // seeAllBucketsButton.style.backgroundColor = 'grey';
     seeBucketsForMeButton.classList.add('active-timeline-button')
-    seeBucketsForMeButton.style.backgroundColor = 'white';
-    seeBucketsForMeButton.style.scale = 1.05;
-    seeAllBucketsButton.style.scale = 0.8;
+    seeBucketsForMeButton.classList.remove('inactive-timeline-button')
+    seeBucketsForMeButton.classList.remove('view-button')
+    // seeBucketsForMeButton.style.scale = 1.05;
+    // seeAllBucketsButton.style.scale = 0.8;
     for(const key in forUserFilledBuckets) {
         if (forUserFilledBuckets.hasOwnProperty(key)) {
             const bucketData = filledBuckets[key];
@@ -263,13 +275,23 @@ returnToUserProfileButton.addEventListener('click', function() {
 
 searchButton.addEventListener('click', function() {
     console.log('clicked search button')
-    window.location.href = 'search.html';
-
+    const searchModal = document.getElementById('searchModal') 
+    searchModal.style.display = 'block';
 });
+
+closeSearchButton.addEventListener('click', function() {
+    searchModal.style.display = 'none';
+})
 
 logoutButton.addEventListener('click', function() {
     localStorage.clear();
     window.location.href = 'index.html';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === searchModal) {
+        searchModal.style.display = 'none';
+    }
 });
 
 const createNewBucketWindow = document.getElementById('create-bucket-window');
@@ -324,6 +346,24 @@ function dumpBucket() {
             location.reload(true);
             }, 200);
 }
+
+
+function openPopup() {
+    // URL of the HTML page you want to load in the popup
+    const url = 'search.html'; // Replace with your desired URL
+  
+    // Options for the popup window (width, height, and other settings)
+    const options = 'width=800,height=600,scrollbars=yes';
+  
+    // Open the popup window with the specified URL and options
+    const popupWindow = window.open(url, '_blank', options);
+  
+    // Check if the popup window was blocked by the browser
+    if (popupWindow === null || typeof popupWindow === 'undefined') {
+      alert('Popup window was blocked by the browser. Please enable pop-ups for this site.');
+    }
+  }
+
 
 function clearTheRunway() {
     while (bucketsTimelineColumn.firstChild) {
