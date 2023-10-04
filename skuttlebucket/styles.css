@@ -857,6 +857,8 @@ a {
     transform: translate(-50%, -50%);
     background-color: white;
     border-radius: 25px;
+    max-height: 80%;
+    overflow-y: auto
 
     
 }
