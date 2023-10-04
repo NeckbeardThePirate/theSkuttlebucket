@@ -246,10 +246,29 @@ function addUserToFollowing() {
     .then(() => {
         console.log('Successfully followed user:', userName);
         followButton.textContent = 'UnFollowUser';
-        followButton.style.backgroundColor = 'grey';
+        followingUser = true;
     })
     .catch((error) => {
         console.error('Error following user:', foundUserName, error);
+    });
+}
+
+function removeUserFromFollowing() {
+    delete userFromLoginFollowingList[userName];
+    let updatedFollowingCount = userFromLoginData.followingCount;
+    updatedFollowingCount--
+    updateDoc(docRef, {
+        followingList: userFromLoginFollowingList,
+        followingCount: updatedFollowingCount
+    })
+    .then(() => {
+        console.log('Successfully unfollowed user:', userName);
+        followButton.textContent = 'Follow User';
+        followButton.style.backgroundColor = 'white';
+        followingUser = false;
+    })
+    .catch((error) => {
+        console.error('Error UnFollowing user:', userName, error);
     });
 }
 
@@ -272,10 +291,36 @@ function followUserFunction() {
     }
 }
 
+function unFollowUserFunction() {
+    const updatedFollowerCount = userData.followerCount - 1;
+    const userNameToRemove = userFromLoginData.userName;
+
+    delete followerList[userNameToRemove];
+
+    try {
+        updateDoc(userToLoadDocRef, {
+            followerList: followerList,
+            followerCount: updatedFollowerCount,
+        }
+            );
+        console.log('successfully unfollowed user in both functions')
+    } catch (error) {
+        console.error(`Error unfollowing this individual:`, error);
+    }
+}
+
+
+
+
 
 followButton.addEventListener('click', function() {
-    addUserToFollowing();
-    followUserFunction();
+    if (followingUser) {
+        removeUserFromFollowing()
+        unFollowUserFunction()
+    } else {
+        addUserToFollowing();
+        followUserFunction();
+    }
 })
 
 logoutButton.addEventListener('click', function() {

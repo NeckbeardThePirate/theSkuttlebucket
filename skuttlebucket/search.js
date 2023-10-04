@@ -299,8 +299,8 @@ function displayMatchingSearchResults(filteredUsers) {
                 followUser.addEventListener('click', function() {
                     let goingToUnFollow = filteredUsers[i];
                         console.log('UnFollow clicked for user:', goingToUnFollow);
-                        unFollowUserFunction(goingToUnFollow); //this needs to be built as an unfollow function
-                        removeFoundUserFromFollowing(filteredUsers[i])  //this also needs to change
+                        unFollowUserFunction(goingToUnFollow);
+                        removeFoundUserFromFollowing(filteredUsers[i])
                     });
                 showMatchingUser.addEventListener('click', function() {
                     localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));

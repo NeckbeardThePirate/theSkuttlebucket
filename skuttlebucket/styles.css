@@ -171,7 +171,8 @@ h1:hover{
     position: relative;
 }
 
-#buckets-timeline-column{
+
+#full-buckets-timeline-column{
     background-color: rgba(134, 16, 13, 0.85);
     padding: .75rem 1.4rem;
     border: 5px solid black;
@@ -233,7 +234,6 @@ h1:hover{
 #buckets-header {
     text-align: center;
     font-size: 2.7rem;
-    background-color: white;
     border: 2px solid black;
     border-radius: 12px;
     padding: 1rem;
@@ -594,4 +594,41 @@ a {
     margin-bottom: 2rem;
     display: flex;
     background-color: green;
+}
+
+#timeline-view-button-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+
+}
+
+.view-button {
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: 1rem;
+    border: 0.15rem solid black;
+    width: 48%;
+    height: 10rem;
+    padding: 1rem;
+}
+
+.view-button h4 {
+    font-size: 30px;
+}
+    
+.view-button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+#active-timeline-button{
+    background-color: #D1D1D1;
+    background-color: green !important;
+}
+
+#inactive-timeline-button{
+    background-color: grey;
 }
