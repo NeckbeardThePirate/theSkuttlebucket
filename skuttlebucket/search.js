@@ -318,6 +318,8 @@ function displayMatchingSearchResults(filteredUsers) {
 };
 
 
+
+
 function loadSearchResults() {
     while (resultsContainer.firstChild) {
         resultsContainer.removeChild(resultsContainer.firstChild)

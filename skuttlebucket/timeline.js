@@ -22,6 +22,10 @@ if (localStorage.length === 0) {
     window.location.href = 'index.html'
 };
 
+const resultsContainer = document.getElementById('results-container');
+
+let filteredUsers = [];
+
 const closeSearchButton = document.getElementById('closeModal')
 
 
@@ -274,7 +278,10 @@ returnToUserProfileButton.addEventListener('click', function() {
 });
 
 searchButton.addEventListener('click', function() {
-    console.log('clicked search button')
+    while (resultsContainer.firstChild) {
+        resultsContainer.removeChild(resultsContainer.firstChild)
+    }
+    filteredUsers = []
     const searchModal = document.getElementById('searchModal') 
     searchModal.style.display = 'block';
 });
@@ -346,23 +353,6 @@ function dumpBucket() {
             location.reload(true);
             }, 200);
 }
-
-
-function openPopup() {
-    // URL of the HTML page you want to load in the popup
-    const url = 'search.html'; // Replace with your desired URL
-  
-    // Options for the popup window (width, height, and other settings)
-    const options = 'width=800,height=600,scrollbars=yes';
-  
-    // Open the popup window with the specified URL and options
-    const popupWindow = window.open(url, '_blank', options);
-  
-    // Check if the popup window was blocked by the browser
-    if (popupWindow === null || typeof popupWindow === 'undefined') {
-      alert('Popup window was blocked by the browser. Please enable pop-ups for this site.');
-    }
-  }
 
 
 function clearTheRunway() {
