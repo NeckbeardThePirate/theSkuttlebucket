@@ -227,7 +227,7 @@ function displayMatchingSearchResults(filteredUsers) {
             const matchingUserName = document.createElement('h3');
             const followUser = document.createElement('button');
             matchingUserAndFollowContainer.classList.add('matching-user-div')
-            matchingUserName.classList.add('all-text')
+            matchingUserName.classList.add('all-text');
             console.log(loggedInUserData.followingList)
             if (!loggedInUserData.followingList[filteredUsers[i]]) {
                 followUser.textContent = `Follow`;
