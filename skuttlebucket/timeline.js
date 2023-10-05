@@ -176,6 +176,8 @@ function loadAllBuckets() {
             
             const bucketContent = bucketData['bucketText']
             
+            const bucketID = bucketContent['bucketID']
+
             const showBucket = document.createElement('div');
             
             const bucketText = document.createElement('h3');
@@ -198,6 +200,13 @@ function loadAllBuckets() {
             
             const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
+            showBucket.addEventListener('click', function() {
+                const bucketID = bucketContent['bucketID'];
+                const bucketAuthor = `${bucketContent['bucketAuthor']}`;
+                const bucketText = bucketContent['bucketText'];
+                loadBucket(bucketID, bucketAuthor, bucketText)
+            })
+            
             bucketDate.textContent = `${fullPostTime}`;
             showBucket.classList.add('tweet-block');
             bucketText.classList.add('all-text');
@@ -227,11 +236,10 @@ function loadBucketsForUser() {
     for(const key in forUserFilledBuckets) {
         if (forUserFilledBuckets.hasOwnProperty(key)) {
             const bucketData = forUserFilledBuckets[key];
-            console.log('bucket data: ', bucketData)
             
             const bucketContent = bucketData['bucketText']
             
-            const bucketID = bucketContent['bucketID']
+            
 
             const showBucket = document.createElement('div');
             
@@ -256,8 +264,10 @@ function loadBucketsForUser() {
             const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
             showBucket.addEventListener('click', function() {
-                console.log(`clicked on bucket ${bucketID}`)
+                const bucketID = bucketContent['bucketID']
+                loadBucket(bucketID)
             })
+
             bucketDate.textContent = `${fullPostTime}`;
             showBucket.classList.add('tweet-block');
             bucketText.classList.add('all-text');
@@ -343,8 +353,10 @@ function dumpBucket() {
         bucketTimestamp: newBucketTimestamp,
         bucketAuthor: newBucketAuthor,
         bucketText: newBucketText,
+        bucketID: newBucketAuthor+Date.now(),
+        bucketComments: {},
     };
-    currentUserData.buckets[`bucket${Date.now()}`] = newBucket;
+    currentUserData.buckets[`${newBucketAuthor}${Date.now()}`] = newBucket;
 
     updateDoc(docRef, {buckets: currentUserData.buckets})
         .then(() => {
@@ -357,7 +369,7 @@ function dumpBucket() {
         closeBucketCreationWindow();
         setTimeout(() => {
             location.reload(true);
-            }, 200);
+            }, 400);
 }
 
 
@@ -387,3 +399,210 @@ seeBucketsForMeButton.addEventListener('click', function() {
     loadBucketsForUser()
 
 });
+
+
+function loadBucket(bucketID, bucketAuthor, bucketText) {
+    console.log('author: ', bucketAuthor);
+
+    console.log(`clicked on bucket ${bucketID}`)
+    const bucketDisplayBackgroundWindow = document.createElement('div');
+    const bucketDisplayContent = document.createElement('div');
+    const bucketDisplayCloseButton = document.createElement('span');
+    const bucketDisplayHeaderContainer = document.createElement('div');
+    const bucketDisplayHeader = document.createElement('h3');
+    const bucketDisplayTextContentContainer = document.createElement('div');
+    const bucketDisplayTextContent = document.createElement('p');
+    const bucketDisplayActionButtonsContainer = document.createElement('div');
+    const bucketDisplayFollowButton = document.createElement('div');
+    const bucketDisplayFollowButtonTextContent = document.createElement('p');
+    const bucketDisplayCommentButton = document.createElement('div');
+    const bucketDisplayCommentButtonTextContent = document.createElement('p');
+    const bucketDisplayViewUserProfileButton = document.createElement('div');
+    const bucketDisplayViewUserProfileButtonTextContent = document.createElement('p');
+
+    bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
+    bucketDisplayContent.classList.add('bucket-display-modal-content');
+    bucketDisplayCloseButton.classList.add('close');
+    bucketDisplayBackgroundWindow.style.display = 'block';
+    bucketDisplayHeaderContainer.classList.add('bucket-display-header-container');
+    bucketDisplayHeader.classList.add('all-text');
+    bucketDisplayTextContentContainer.classList.add('bucket-display-text-content-container');
+    bucketDisplayTextContent.classList.add('all-text');
+    bucketDisplayActionButtonsContainer.classList.add('bucket-display-action-buttons-container');
+    bucketDisplayFollowButton.classList.add('action-button');
+    bucketDisplayCommentButton.classList.add('action-button');
+    bucketDisplayViewUserProfileButton.classList.add('action-button');
+    bucketDisplayFollowButtonTextContent.classList.add('all-text');
+    bucketDisplayCommentButtonTextContent.classList.add('all-text');
+    bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
+
+    bucketDisplayHeader.textContent = `${bucketAuthor} says:`;
+    bucketDisplayTextContent.textContent = `"${bucketText}"`;
+    bucketDisplayFollowButtonTextContent.textContent = `Follow @${bucketAuthor}`;
+    bucketDisplayViewUserProfileButtonTextContent.textContent = `See @${bucketAuthor}`
+    bucketDisplayCommentButtonTextContent.textContent = `Comment`;
+
+
+    document.body.appendChild(bucketDisplayBackgroundWindow);
+    bucketDisplayBackgroundWindow.appendChild(bucketDisplayContent);
+    bucketDisplayContent.appendChild(bucketDisplayCloseButton);
+    bucketDisplayContent.appendChild(bucketDisplayHeaderContainer);
+    bucketDisplayHeaderContainer.appendChild(bucketDisplayHeader);
+    bucketDisplayContent.appendChild(bucketDisplayActionButtonsContainer);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayFollowButton);
+    bucketDisplayFollowButton.appendChild(bucketDisplayFollowButtonTextContent);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayCommentButton);
+    bucketDisplayCommentButton.appendChild(bucketDisplayCommentButtonTextContent);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayViewUserProfileButton);
+    bucketDisplayViewUserProfileButton.appendChild(bucketDisplayViewUserProfileButtonTextContent);
+    bucketDisplayContent.appendChild(bucketDisplayTextContentContainer);
+    bucketDisplayTextContentContainer.appendChild(bucketDisplayTextContent);
+
+    bucketDisplayCloseButton.addEventListener('click', function() {
+        document.body.removeChild(bucketDisplayBackgroundWindow);
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target === bucketDisplayBackgroundWindow) {
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+        }
+    })
+
+
+    bucketDisplayFollowButton.addEventListener('click', function() {
+        alert(`we're sorry this functionality doesn't work right now, you can contact tech support at 'placeholder'`)
+    });
+    bucketDisplayCommentButton.addEventListener('click', function() {
+        alert(`LOL that one doesn't work either`);
+    });
+    bucketDisplayViewUserProfileButton.addEventListener('click', function() {
+        localStorage.setItem('userToLoad', JSON.stringify(bucketAuthor));
+        window.location.href = 'otherUserProfile.html';
+    });
+}
+
+// function addFoundUserToFollowing(foundUserName) {
+//     if (!loggedInUserData.followingList || !loggedInUserData.followingList[foundUserName]) {
+//         if (!loggedInUserData.followingList) {
+//             loggedInUserData.followingList = {};
+//         }
+//         loggedInUserData.followingList[foundUserName] = foundUserName;
+//         loggedInUserData.followingCount++;
+//         updateDoc(docRef, {
+//             followingList: loggedInUserData.followingList,
+//             followingCount: loggedInUserData.followingCount
+//         })
+//         .then(() => {
+//             loadSearchResults();
+//             console.log('Successfully followed user:', foundUserName);
+//             const followSuccessMessageDiv = document.createElement('div');
+//             const followSuccessMessage = document.createElement('p');
+//             followSuccessMessageDiv.id = 'follow-success-message-div';
+//             followSuccessMessage.id = 'follow-success-message';
+//             followSuccessMessage.textContent = `✅ Successfully followed @${foundUserName}`;
+//             followSuccessMessage.classList.add('success-message');
+//             followSuccessMessage.classList.add('all-text');
+
+//             followSuccessMessageDiv.classList.add('success-message-div');
+//             resultsContainer.appendChild(followSuccessMessageDiv);
+//             followSuccessMessageDiv.appendChild(followSuccessMessage);
+
+//         })
+//         .catch((error) => {
+//             console.error('Error following user:', foundUserName, error);
+//         });
+//     } else {
+//         console.log('Already following user:', foundUserName);
+//     }
+// }
+
+// function removeFoundUserFromFollowing(foundUserName) {
+//     if (loggedInUserData.followingList[foundUserName]) {
+//         if (!loggedInUserData.followingList) {
+//             loggedInUserData.followingList = {};
+//         }
+//         const followingList = loggedInUserData.followingList;
+//         delete followingList[foundUserName];
+//         loggedInUserData.followingCount--;
+//         updateDoc(docRef, {
+//             followingList: followingList,
+//             followingCount: loggedInUserData.followingCount
+//         })
+//         .then(() => {
+//             loadSearchResults()
+//             console.log('Successfully UnFollowed user:', foundUserName);
+//             const followSuccessMessageDiv = document.createElement('div');
+//             const followSuccessMessage = document.createElement('p');
+//             followSuccessMessageDiv.id = 'unfollow-success-message-div';
+//             followSuccessMessage.id = 'unfollow-success-message';
+//             followSuccessMessage.textContent = `✅ Successfully UnFollowed @${foundUserName}`;
+//             followSuccessMessage.classList.add('success-message');
+//             followSuccessMessage.classList.add('all-text');
+//             followSuccessMessageDiv.classList.add('success-message-div');
+//             resultsContainer.appendChild(followSuccessMessageDiv);
+//             followSuccessMessageDiv.appendChild(followSuccessMessage);
+
+//         })
+//         .catch((error) => {
+//             console.error('Error UnFollowing user:', foundUserName, error);
+//         });
+//     } else {
+//         console.log('Already not following user:', foundUserName);
+//     }
+// }
+
+// function followUserFunction(goingToFollow) {
+//     allUsersRef.forEach(async (doc) => {
+//         if(doc.exists()) {
+//             const checkUserData = doc.data();
+//             const checkUserName = checkUserData.userName;
+//             const followers = checkUserData.followerList || {};
+//             if (goingToFollow === checkUserName) {
+//                 const updatedFollowerCount = checkUserData.followerCount + 1;
+//                 followers[loggedInUserName] = loggedInUserName;
+
+
+//                 const userDocRef = doc.ref;
+//                 try {
+//                     await updateDoc(userDocRef, {
+//                         followerList: followers,
+//                         followerCount: updatedFollowerCount,
+//                     }
+//                         );
+//                     console.log('successfully followed user')
+//                 } catch (error) {
+//                     console.error(`Error following ${goingToFollow}:`, error);
+//                 }
+
+//             }
+//         }
+//     })
+// }
+
+// function unFollowUserFunction(goingToUnFollow) {
+//     console.log('it at least tried to Unfollow')
+//     allUsersRef.forEach(async (doc) => {
+//         if(doc.exists()) {
+//             const checkUserData = doc.data();
+//             const checkUserName = checkUserData.userName;
+//             const followers = checkUserData.followerList || {};
+//             if (goingToUnFollow === checkUserName) {
+//                 const updatedFollowerCount = checkUserData.followerCount - 1;
+//                 delete followers[goingToUnFollow];
+
+
+//                 const userDocRef = doc.ref;
+//                 try {
+//                     await updateDoc(userDocRef, {
+//                         followerList: followers,
+//                         followerCount: updatedFollowerCount,
+//                     }
+//                         );
+//                     console.log('successfully UnFollowed user')
+//                 } catch (error) {
+//                     console.error(`Error UnFollowing ${goingToUnFollow}:`, error);
+//                 }
+
+//             }
+//         }
+//     })
+// }

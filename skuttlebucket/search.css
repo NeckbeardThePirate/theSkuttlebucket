@@ -107,6 +107,11 @@ body {
     transform: scale(1.08);
 }
 
+.unfollow-button:hover {
+    cursor: pointer;
+    transform: scale(1.08);
+}
+
 #search-header-box {
     border-radius: 15px;
     text-align: center;

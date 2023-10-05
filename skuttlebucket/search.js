@@ -50,7 +50,9 @@ allUsersRef.forEach((doc) => {
 function checkForMatchingUserNames(allUserNames, searchTerm) {
     filteredUsers = [];
     for (let i = 0; i < allUserNames.length; i++) {
-        if(allUserNames[i].includes(searchTerm)) {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        const lowerAllUserNames = allUserNames[i].toLowerCase();
+        if(lowerAllUserNames.includes(lowerSearchTerm)) {
             filteredUsers.push(allUserNames[i]);
         }
     }

@@ -227,8 +227,10 @@ function dumpBucket() {
         bucketTimestamp: newBucketTimestamp,
         bucketAuthor: newBucketAuthor,
         bucketText: newBucketText,
+        bucketID: newBucketAuthor+Date.now(),
+        bucketComments: {},
     };
-    userData.buckets[`bucket${Date.now()}`] = newBucket;
+    userData.buckets[`${newBucketAuthor}${Date.now()}`] = newBucket;
 
     updateDoc(docRef, {buckets: userData.buckets})
         .then(() => {
@@ -241,7 +243,7 @@ function dumpBucket() {
         closeBucketCreationWindow();
         setTimeout(() => {
             location.reload(true);
-            }, 200);
+            }, 400);
 }
 
 const editProfileWindow = document.getElementById('edit-profile-description-window');

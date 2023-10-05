@@ -112,8 +112,7 @@ const userJoinDate = new Date(userData.joinDate);
 const followerList = userData.followerList;
 
 const followingList = userData.followingList
-console.log(userData.followingList)
-console.log(followingList)
+
 
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 

@@ -10,50 +10,51 @@
 <body>
     <div class="content">
         <div class='divider'></div>
-        <div class="header">
-            <a href="skuttlebukket_user.html">
-                <h1 class='all-text'>The Farm Scuttlebucket 🚜</h1>
-            </a>
-        </div>
-        <div class='divider'></div>
-        <div id="bucket-button">
-            <button id='buckets-header' class='all-text nav-button'>Create New Bucket</button>
-        </div>
-        <div id="header-buttons">
-            <button id="search-button" class="nav-button all-text"><h4>🔎Search</h4></button>
-            <button id="profile-button" class="nav-button all-text"><h4>My Profile</h4></button>
-            <button id="logout-button" class="nav-button all-text"><h4>Logout</h4></button>
-        </div>
-        
-        <div id="timeline-header">
-        </div>
-        <div id="full-buckets-timeline-column">
-            <div id="timeline-view-button-div">
-                <button id="all-buckets-button" class="view-button all-text"><h4>All Buckets</h4></button>
-                <button id="buckets-for-me-button" class="view-button all-text"><h4>Buckets For Me</h4></button>
+            <div class="header">
+                <a href="skuttlebukket_user.html">
+                    <h1 class='all-text'>The Farm Scuttlebucket 🚜</h1>
+                </a>
             </div>
-            <div id="buckets-timeline-column">
-                <div id="create-bucket-window" class="new-bucket-window">
-                    <span class="close" id="close-bucket-window-button">&times;</span>
-                    <div class="new-bucket-content">
-                        <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
-                        <textarea id="new-bucket-text" class="all-text"></textarea>
-                    <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
-                    </div>
+            <div class='divider'></div>
+            <div id="bucket-button">
+                <button id='buckets-header' class='all-text nav-button'>Create New Bucket</button>
+            </div>
+            <div id="header-buttons">
+                <button id="search-button" class="nav-button all-text"><h4>🔎Search</h4></button>
+                <button id="profile-button" class="nav-button all-text"><h4>My Profile</h4></button>
+                <button id="logout-button" class="nav-button all-text"><h4>Logout</h4></button>
+            </div>
+            
+            <div id="timeline-header">
+            </div>
+            <div id="full-buckets-timeline-column">
+                <div id="timeline-view-button-div">
+                    <button id="all-buckets-button" class="view-button all-text"><h4>All Buckets</h4></button>
+                    <button id="buckets-for-me-button" class="view-button all-text"><h4>Buckets For Me</h4></button>
                 </div>
-                <div id="searchModal" class="modal">
-                    <div class="modal-content">
-                        <div class="search-container">
-                            <div id="search-header-box">
-                                <h1 id="header-text" class="all-text">Find An Account</h1>
+                <div id="buckets-timeline-column">
+                    <div id="create-bucket-window" class="new-bucket-window">
+                        <span class="close" id="close-bucket-window-button">&times;</span>
+                        <div class="new-bucket-content">
+                            <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
+                            <textarea id="new-bucket-text" class="all-text"></textarea>
+                        <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
+                        </div>
+                    </div>
+                    <div id="searchModal" class="modal">
+                        <div class="modal-content">
+                            <div class="search-container">
+                                <div id="search-header-box">
+                                    <h1 id="header-text" class="all-text">Find An Account</h1>
+                                </div>
+                                <button id="search-timeline-button" class="search-nav-button all-text"><h4>Timeline</h4></button>
+                                <button id="search-profile-button" class="search-nav-button all-text"><h4>My Profile</h4></button>
+                                <button id="search-logout-button" class="search-nav-button all-text"><h4>Logout</h4></button>
+                                <input id='search-space' type="text" class="search-bar all-text" placeholder="dev">
+                                <button id='button-for-searching' class="search-button all-text">Search</button>
+                                <div id="results-container"></div>
+                                <span class="close" id="closeModal">&times;</span>
                             </div>
-                            <button id="search-timeline-button" class="search-nav-button all-text"><h4>Timeline</h4></button>
-                            <button id="search-profile-button" class="search-nav-button all-text"><h4>My Profile</h4></button>
-                            <button id="search-logout-button" class="search-nav-button all-text"><h4>Logout</h4></button>
-                            <input id='search-space' type="text" class="search-bar all-text" placeholder="dev">
-                            <button id='button-for-searching' class="search-button all-text">Search</button>
-                            <div id="results-container"></div>
-                            <span class="close" id="closeModal">&times;</span>
                         </div>
                     </div>
                 </div>
