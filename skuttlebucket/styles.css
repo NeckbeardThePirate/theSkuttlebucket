@@ -947,6 +947,10 @@ a {
     font-weight: 700;
 }
 
+.action-button p {
+    text-align: center;
+}
+
 .action-button:hover {
     cursor: pointer;
     transform: scale(1.05);

@@ -162,9 +162,6 @@ function loadAllBuckets() {
     seeBucketsForMeButton.classList.add('inactive-timeline-button');
     seeBucketsForMeButton.classList.add('view-button');
     seeBucketsForMeButton.classList.remove('active-timeline-button');
-    // seeBucketsForMeButton.style.backgroundColor = 'grey';
-    // seeBucketsForMeButton.style.scale = 0.8;
-    // seeAllBucketsButton.style.scale = 1.05;
     seeAllBucketsButton.classList.add('active-timeline-button')
     seeAllBucketsButton.classList.remove('inactive-timeline-button')
     seeAllBucketsButton.classList.remove('view-button')
@@ -204,7 +201,7 @@ function loadAllBuckets() {
                 const bucketID = bucketContent['bucketID'];
                 const bucketAuthor = `${bucketContent['bucketAuthor']}`;
                 const bucketText = bucketContent['bucketText'];
-                loadBucket(bucketID, bucketAuthor, bucketText)
+                loadBucket(bucketAuthor, bucketID, bucketText)
             })
             
             bucketDate.textContent = `${fullPostTime}`;
@@ -401,7 +398,7 @@ seeBucketsForMeButton.addEventListener('click', function() {
 });
 
 
-function loadBucket(bucketID, bucketAuthor, bucketText) {
+function loadBucket(bucketAuthor, bucketID, bucketText) {
     console.log('author: ', bucketAuthor);
 
     console.log(`clicked on bucket ${bucketID}`)
@@ -438,7 +435,23 @@ function loadBucket(bucketID, bucketAuthor, bucketText) {
 
     bucketDisplayHeader.textContent = `${bucketAuthor} says:`;
     bucketDisplayTextContent.textContent = `"${bucketText}"`;
-    bucketDisplayFollowButtonTextContent.textContent = `Follow @${bucketAuthor}`;
+    console.log(bucketAuthor)
+    if (bucketAuthor in userFollowingList) {
+        bucketDisplayFollowButtonTextContent.textContent = `UnFollow @${bucketAuthor}`;
+        bucketDisplayFollowButton.addEventListener('click', function() {
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            unFollowPostAuthorFunction(bucketAuthor)
+            removePostAuthorFromFollowing(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton);
+        });
+    } else {
+        bucketDisplayFollowButtonTextContent.textContent = `Follow @${bucketAuthor}`;
+        bucketDisplayFollowButton.addEventListener('click', function() {
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            addPostAuthorToFollowing(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton);
+            followPostAuthorFunction(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton);
+        });
+
+    }
     bucketDisplayViewUserProfileButtonTextContent.textContent = `See @${bucketAuthor}`
     bucketDisplayCommentButtonTextContent.textContent = `Comment`;
 
@@ -468,9 +481,7 @@ function loadBucket(bucketID, bucketAuthor, bucketText) {
     })
 
 
-    bucketDisplayFollowButton.addEventListener('click', function() {
-        alert(`we're sorry this functionality doesn't work right now, you can contact tech support at 'placeholder'`)
-    });
+    
     bucketDisplayCommentButton.addEventListener('click', function() {
         alert(`LOL that one doesn't work either`);
     });
@@ -480,129 +491,110 @@ function loadBucket(bucketID, bucketAuthor, bucketText) {
     });
 }
 
-// function addFoundUserToFollowing(foundUserName) {
-//     if (!loggedInUserData.followingList || !loggedInUserData.followingList[foundUserName]) {
-//         if (!loggedInUserData.followingList) {
-//             loggedInUserData.followingList = {};
-//         }
-//         loggedInUserData.followingList[foundUserName] = foundUserName;
-//         loggedInUserData.followingCount++;
-//         updateDoc(docRef, {
-//             followingList: loggedInUserData.followingList,
-//             followingCount: loggedInUserData.followingCount
-//         })
-//         .then(() => {
-//             loadSearchResults();
-//             console.log('Successfully followed user:', foundUserName);
-//             const followSuccessMessageDiv = document.createElement('div');
-//             const followSuccessMessage = document.createElement('p');
-//             followSuccessMessageDiv.id = 'follow-success-message-div';
-//             followSuccessMessage.id = 'follow-success-message';
-//             followSuccessMessage.textContent = `✅ Successfully followed @${foundUserName}`;
-//             followSuccessMessage.classList.add('success-message');
-//             followSuccessMessage.classList.add('all-text');
+function addPostAuthorToFollowing(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton) {
+    if (!currentUserData.followingList || !currentUserData.followingList[bucketAuthor]) {
+        if (!currentUserData.followingList) {
+            currentUserData.followingList = {};
+        }
+        currentUserData.followingList[bucketAuthor] = bucketAuthor;
+        currentUserData.followingCount++;
+        updateDoc(docRef, {
+            followingList: currentUserData.followingList,
+            followingCount: currentUserData.followingCount
 
-//             followSuccessMessageDiv.classList.add('success-message-div');
-//             resultsContainer.appendChild(followSuccessMessageDiv);
-//             followSuccessMessageDiv.appendChild(followSuccessMessage);
+        })
+        
+        .then(() => {
+            console.log('Successfully followed user:', bucketAuthor);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton)
+        })
+        .catch((error) => {
+            console.error('Error following user:', bucketAuthor, error);
+        });
+    } else {
+        console.log('Already following user:', bucketAuthor);
+    }
+}
 
-//         })
-//         .catch((error) => {
-//             console.error('Error following user:', foundUserName, error);
-//         });
-//     } else {
-//         console.log('Already following user:', foundUserName);
-//     }
-// }
+function removePostAuthorFromFollowing(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton) {
+    if (currentUserData.followingList[bucketAuthor]) {
+        if (!currentUserData.followingList) {
+            currentUserData.followingList = {};
+        }
+        const followingList = currentUserData.followingList;
+        delete followingList[bucketAuthor];
+        currentUserData.followingCount--;
+        updateDoc(docRef, {
+            followingList: followingList,
+            followingCount: currentUserData.followingCount
+        })
+        .then(() => {
+            console.log('Successfully UnFollowed user:', bucketAuthor);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketDisplayFollowButton)
+        })
+        .catch((error) => {
+            console.error('Error UnFollowing user:', bucketAuthor, error);
+        });
+    } else {
+        console.log('Already not following user:', bucketAuthor);
+    }
+}
 
-// function removeFoundUserFromFollowing(foundUserName) {
-//     if (loggedInUserData.followingList[foundUserName]) {
-//         if (!loggedInUserData.followingList) {
-//             loggedInUserData.followingList = {};
-//         }
-//         const followingList = loggedInUserData.followingList;
-//         delete followingList[foundUserName];
-//         loggedInUserData.followingCount--;
-//         updateDoc(docRef, {
-//             followingList: followingList,
-//             followingCount: loggedInUserData.followingCount
-//         })
-//         .then(() => {
-//             loadSearchResults()
-//             console.log('Successfully UnFollowed user:', foundUserName);
-//             const followSuccessMessageDiv = document.createElement('div');
-//             const followSuccessMessage = document.createElement('p');
-//             followSuccessMessageDiv.id = 'unfollow-success-message-div';
-//             followSuccessMessage.id = 'unfollow-success-message';
-//             followSuccessMessage.textContent = `✅ Successfully UnFollowed @${foundUserName}`;
-//             followSuccessMessage.classList.add('success-message');
-//             followSuccessMessage.classList.add('all-text');
-//             followSuccessMessageDiv.classList.add('success-message-div');
-//             resultsContainer.appendChild(followSuccessMessageDiv);
-//             followSuccessMessageDiv.appendChild(followSuccessMessage);
-
-//         })
-//         .catch((error) => {
-//             console.error('Error UnFollowing user:', foundUserName, error);
-//         });
-//     } else {
-//         console.log('Already not following user:', foundUserName);
-//     }
-// }
-
-// function followUserFunction(goingToFollow) {
-//     allUsersRef.forEach(async (doc) => {
-//         if(doc.exists()) {
-//             const checkUserData = doc.data();
-//             const checkUserName = checkUserData.userName;
-//             const followers = checkUserData.followerList || {};
-//             if (goingToFollow === checkUserName) {
-//                 const updatedFollowerCount = checkUserData.followerCount + 1;
-//                 followers[loggedInUserName] = loggedInUserName;
+function followPostAuthorFunction(bucketAuthor) {
+    waterTroughRef.forEach(async (doc) => {
+        if(doc.exists()) {
+            const checkUserData = doc.data();
+            const checkUserName = checkUserData.userName;
+            const currentUserName = currentUserData.userName;
+            const followers = checkUserData.followerList || {};
+            if (bucketAuthor === checkUserName) {
+                const updatedFollowerCount = checkUserData.followerCount + 1;
+                followers[currentUserName] = currentUserName;
 
 
-//                 const userDocRef = doc.ref;
-//                 try {
-//                     await updateDoc(userDocRef, {
-//                         followerList: followers,
-//                         followerCount: updatedFollowerCount,
-//                     }
-//                         );
-//                     console.log('successfully followed user')
-//                 } catch (error) {
-//                     console.error(`Error following ${goingToFollow}:`, error);
-//                 }
+                const userDocRef = doc.ref;
+                try {
+                    await updateDoc(userDocRef, {
+                        followerList: followers,
+                        followerCount: updatedFollowerCount,
+                    }
+                        );
+                    console.log('successfully followed userX2')
+                } catch (error) {
+                    console.error(`Error following ${bucketAuthor}:`, error);
+                }
 
-//             }
-//         }
-//     })
-// }
+            }
+        }
+    })
+}
 
-// function unFollowUserFunction(goingToUnFollow) {
-//     console.log('it at least tried to Unfollow')
-//     allUsersRef.forEach(async (doc) => {
-//         if(doc.exists()) {
-//             const checkUserData = doc.data();
-//             const checkUserName = checkUserData.userName;
-//             const followers = checkUserData.followerList || {};
-//             if (goingToUnFollow === checkUserName) {
-//                 const updatedFollowerCount = checkUserData.followerCount - 1;
-//                 delete followers[goingToUnFollow];
+function unFollowPostAuthorFunction(bucketAuthor) {
+    console.log('it at least tried to Unfollow')
+    waterTroughRef.forEach(async (doc) => {
+        if(doc.exists()) {
+            const checkUserData = doc.data();
+            const checkUserName = checkUserData.userName;
+            const currentUserName = currentUserData.userName;
+            const followers = checkUserData.followerList || {};
+            if (bucketAuthor === checkUserName) {
+                const updatedFollowerCount = checkUserData.followerCount - 1;
+                delete followers[currentUserName];
 
 
-//                 const userDocRef = doc.ref;
-//                 try {
-//                     await updateDoc(userDocRef, {
-//                         followerList: followers,
-//                         followerCount: updatedFollowerCount,
-//                     }
-//                         );
-//                     console.log('successfully UnFollowed user')
-//                 } catch (error) {
-//                     console.error(`Error UnFollowing ${goingToUnFollow}:`, error);
-//                 }
+                const userDocRef = doc.ref;
+                try {
+                    await updateDoc(userDocRef, {
+                        followerList: followers,
+                        followerCount: updatedFollowerCount,
+                    }
+                        );
+                    console.log('successfully UnFollowed userX2')
+                } catch (error) {
+                    console.error(`Error UnFollowing ${bucketAuthor}:`, error);
+                }
 
-//             }
-//         }
-//     })
-// }
+            }
+        }
+    })
+}
