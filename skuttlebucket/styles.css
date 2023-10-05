@@ -186,12 +186,17 @@ h1:hover{
     align-items: center;
 }
 
-.tweet-block {
+.bucket-block {
     background-color: white;
     border: 2px solid black;
     margin: 20px 0;
     padding: 0.8rem 2rem;
     border-radius: 12px;
+}
+
+.bucket-block:hover {
+    cursor: pointer;
+    transform: scale(1.02);
 }
 
 #user-identifiers {
@@ -914,7 +919,7 @@ a {
     display: flex;
     width: 90%;
     margin: 0;
-    height: 70%;
+    height: 50%;
     padding: 1rem;
     justify-content: center;
     align-items: center;

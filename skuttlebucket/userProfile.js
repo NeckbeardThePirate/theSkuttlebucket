@@ -178,7 +178,7 @@ for (let bucket in userBuckets) {
         const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
         bucketDate.textContent = `${fullPostTime}`;
-        showBucket.classList.add('tweet-block');
+        showBucket.classList.add('bucket-block');
         bucketText.classList.add('all-text'); 
         bucketAuthor.classList.add('all-text'); 
         bucketText.textContent = `${bucketContent}`;

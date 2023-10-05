@@ -205,7 +205,7 @@ function loadAllBuckets() {
             })
             
             bucketDate.textContent = `${fullPostTime}`;
-            showBucket.classList.add('tweet-block');
+            showBucket.classList.add('bucket-block');
             bucketText.classList.add('all-text');
             bucketAuthor.classList.add('all-text'); 
             bucketText.textContent = `${bucketContent['bucketText']}`;
@@ -236,8 +236,6 @@ function loadBucketsForUser() {
             
             const bucketContent = bucketData['bucketText']
             
-            
-
             const showBucket = document.createElement('div');
             
             const bucketText = document.createElement('h3');
@@ -266,7 +264,7 @@ function loadBucketsForUser() {
             })
 
             bucketDate.textContent = `${fullPostTime}`;
-            showBucket.classList.add('tweet-block');
+            showBucket.classList.add('bucket-block');
             bucketText.classList.add('all-text');
             bucketAuthor.classList.add('all-text'); 
             bucketText.textContent = `${bucketContent['bucketText']}`;
