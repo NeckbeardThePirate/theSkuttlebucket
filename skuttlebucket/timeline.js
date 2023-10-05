@@ -25,6 +25,8 @@ if (localStorage.length === 0) {
 const resultsContainer = document.getElementById('results-container');
 
 let filteredUsers = [];
+const searchModal = document.getElementById('searchModal') 
+
 
 const closeSearchButton = document.getElementById('closeModal')
 
@@ -102,10 +104,8 @@ for (const key in originalBuckets) {
     const bucketData = originalBuckets[key]
     const bucketContent = bucketData['bucketText']
     const bucketAuthor = bucketContent['bucketAuthor']
-    console.log(bucketAuthor)
-    console.log(bucketContent[bucketAuthor])
     if (bucketAuthor in userFollowingList || bucketAuthor === currentUserData.userName) {
-        console.log('found one')
+        console.log('bucket author is : ', bucketAuthor, '||' , currentUserData.userName)
         bucketsForUser[`individualBucket${counter}`] = originalBuckets[key]
         counter++
     }
@@ -226,10 +226,13 @@ function loadBucketsForUser() {
     // seeAllBucketsButton.style.scale = 0.8;
     for(const key in forUserFilledBuckets) {
         if (forUserFilledBuckets.hasOwnProperty(key)) {
-            const bucketData = filledBuckets[key];
+            const bucketData = forUserFilledBuckets[key];
+            console.log('bucket data: ', bucketData)
             
             const bucketContent = bucketData['bucketText']
             
+            const bucketID = bucketContent['bucketID']
+
             const showBucket = document.createElement('div');
             
             const bucketText = document.createElement('h3');
@@ -252,6 +255,9 @@ function loadBucketsForUser() {
             
             const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
+            showBucket.addEventListener('click', function() {
+                console.log(`clicked on bucket ${bucketID}`)
+            })
             bucketDate.textContent = `${fullPostTime}`;
             showBucket.classList.add('tweet-block');
             bucketText.classList.add('all-text');
@@ -260,6 +266,7 @@ function loadBucketsForUser() {
             bucketAuthor.textContent = `@${bucketContent['bucketAuthor']}`;
             bucketDate.style.fontSize = '10px';
             bucketsTimelineColumn.appendChild(showBucket);
+          
             showBucket.appendChild(bucketAuthor);
             showBucket.appendChild(bucketDate);
             showBucket.appendChild(bucketText);
@@ -282,7 +289,6 @@ searchButton.addEventListener('click', function() {
         resultsContainer.removeChild(resultsContainer.firstChild)
     }
     filteredUsers = []
-    const searchModal = document.getElementById('searchModal') 
     searchModal.style.display = 'block';
 });
 
@@ -358,6 +364,7 @@ function dumpBucket() {
 function clearTheRunway() {
     while (bucketsTimelineColumn.firstChild) {
         bucketsTimelineColumn.removeChild(bucketsTimelineColumn.firstChild)
+        
     }
 }
 
