@@ -259,8 +259,10 @@ function loadBucketsForUser() {
             const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
             showBucket.addEventListener('click', function() {
-                const bucketID = bucketContent['bucketID']
-                loadBucket(bucketID)
+                const bucketID = bucketContent['bucketID'];
+                const bucketAuthor = `${bucketContent['bucketAuthor']}`;
+                const bucketText = bucketContent['bucketText'];
+                loadBucket(bucketAuthor, bucketID, bucketText)
             })
 
             bucketDate.textContent = `${fullPostTime}`;
