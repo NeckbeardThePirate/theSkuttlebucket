@@ -201,7 +201,8 @@ function loadAllBuckets() {
                 const bucketID = bucketContent['bucketID'];
                 const bucketAuthor = `${bucketContent['bucketAuthor']}`;
                 const bucketText = bucketContent['bucketText'];
-                loadBucket(bucketAuthor, bucketID, bucketText)
+                const bucketComments = bucketContent['bucketComments']
+                loadBucket(bucketAuthor, bucketID, bucketText, bucketComments)
             })
             
             bucketDate.textContent = `${fullPostTime}`;
@@ -262,7 +263,10 @@ function loadBucketsForUser() {
                 const bucketID = bucketContent['bucketID'];
                 const bucketAuthor = `${bucketContent['bucketAuthor']}`;
                 const bucketText = bucketContent['bucketText'];
-                loadBucket(bucketAuthor, bucketID, bucketText)
+                const bucketComments = bucketContent['bucketComments']
+                console.log(bucketContent)
+                console.log(bucketContent['bucketComments'])
+                loadBucket(bucketAuthor, bucketID, bucketText, bucketComments)
             })
 
             bucketDate.textContent = `${fullPostTime}`;
@@ -352,6 +356,8 @@ function dumpBucket() {
         bucketText: newBucketText,
         bucketID: newBucketAuthor+Date.now(),
         bucketComments: {},
+        mooCount: 0,
+        goatCount: 0,
     };
     currentUserData.buckets[`${newBucketAuthor}${Date.now()}`] = newBucket;
 
@@ -398,10 +404,9 @@ seeBucketsForMeButton.addEventListener('click', function() {
 });
 
 
-function loadBucket(bucketAuthor, bucketID, bucketText) {
+function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments) {
     console.log('author: ', bucketAuthor);
-
-    console.log(`clicked on bucket ${bucketID}`)
+    console.log('comments', bucketComments);
     const bucketDisplayBackgroundWindow = document.createElement('div');
     const bucketDisplayContent = document.createElement('div');
     const bucketDisplayCloseButton = document.createElement('span');
@@ -433,7 +438,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText) {
     bucketDisplayCommentButtonTextContent.classList.add('all-text');
     bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
 
-    bucketDisplayHeader.textContent = `${bucketAuthor} says:`;
+    bucketDisplayHeader.textContent = `@${bucketAuthor} says:`;
     bucketDisplayTextContent.textContent = `"${bucketText}"`;
     console.log(bucketAuthor)
     if (bucketAuthor in userFollowingList) {
@@ -471,6 +476,40 @@ function loadBucket(bucketAuthor, bucketID, bucketText) {
     bucketDisplayContent.appendChild(bucketDisplayTextContentContainer);
     bucketDisplayTextContentContainer.appendChild(bucketDisplayTextContent);
 
+    for (const comment in bucketComments) {
+        if (bucketComments.hasOwnProperty(comment)) {
+            const bucketCommentID = bucketComments[comment];
+            const bucketCommentText = bucketCommentID['commentText'];
+            const bucketCommentAuthor = bucketCommentID['commentAuthor'];
+            const bucketCommentTime = bucketCommentID['commentTime'];
+            const bucketGoatCount = bucketCommentID['goatCount'];
+            const bucketMooCount = bucketCommentID['mooCount'];
+            const showComment = document.createElement('div');
+            const showCommentAuthor = document.createElement('h5');
+            const showCommentTime = document.createElement('p');
+            const showCommentText = document.createElement('p');
+            const showCommentAnimalCountContainer = document.createElement('div')
+
+            showComment.classList.add('show-comment-block');
+            showCommentAuthor.classList.add('comment-author');
+            showCommentTime.classList.add('comment-time');
+            showCommentText.classList.add('comment-text');
+            showCommentAuthor.classList.add('all-text');
+            showCommentTime.classList.add('all-text');
+            showCommentText.classList.add('all-text');
+            showCommentAnimalCountContainer.classList.add('animal-count-container');
+
+            showCommentAuthor.textContent = `@${bucketCommentAuthor} responded:`;
+            showCommentTime.textContent = `Posted at: (needs to be formatted${bucketCommentID})`
+            showCommentText.textContent = `${bucketCommentText}`;
+
+            bucketDisplayContent.appendChild(showComment);
+            showComment.appendChild(showCommentAuthor);
+            showComment.appendChild(showCommentTime);
+            showComment.appendChild(showCommentText);
+        }
+    }
+
     bucketDisplayCloseButton.addEventListener('click', function() {
         document.body.removeChild(bucketDisplayBackgroundWindow);
     });
@@ -483,7 +522,8 @@ function loadBucket(bucketAuthor, bucketID, bucketText) {
 
     
     bucketDisplayCommentButton.addEventListener('click', function() {
-        alert(`LOL that one doesn't work either`);
+        const currentUserName = currentUserData.userName;
+        writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
     });
     bucketDisplayViewUserProfileButton.addEventListener('click', function() {
         localStorage.setItem('userToLoad', JSON.stringify(bucketAuthor));
@@ -598,3 +638,98 @@ function unFollowPostAuthorFunction(bucketAuthor) {
         }
     })
 }
+
+function writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments) {
+    const displayCreateCommentHeaderContainer = document.createElement('div');
+    const displayCreateCommentHeader = document.createElement('h3');
+    const displayCreateCommentInput = document.createElement('textarea');
+    const displayCreateCommentPostButton = document.createElement('div');
+
+    displayCreateCommentHeader.textContent = `@${currentUserName}:`;
+    displayCreateCommentPostButton.classList.add('action-button');
+    displayCreateCommentPostButton.classList.add('all-text');
+    displayCreateCommentHeaderContainer.classList.add('display-create-comment-header');
+    displayCreateCommentPostButton.textContent = 'Post';
+    displayCreateCommentInput.classList.add('add-comment-text-content-container');
+    displayCreateCommentHeader.classList.add('all-text');
+
+    displayCreateCommentPostButton.addEventListener('click', function() {
+        const commentToPost = displayCreateCommentInput.value;
+        postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+    });
+    
+    bucketDisplayContent.appendChild(displayCreateCommentHeaderContainer);
+    displayCreateCommentHeaderContainer.appendChild(displayCreateCommentHeader);
+    bucketDisplayContent.appendChild(displayCreateCommentInput);
+    bucketDisplayContent.appendChild(displayCreateCommentPostButton);
+
+    displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments) {
+    console.log(commentToPost, currentUserName, bucketID)
+    const newCommentTimestamp = Date.now();
+    const newCommentAuthor = currentUserName;
+    const newComment = {
+        commentAuthor: newCommentAuthor,
+        commentTime: newCommentTimestamp,
+        commentText: commentToPost,
+        commentID: `comment${currentUserName}${newCommentTimestamp}`,
+        mooCount: 0,
+        goatCount: 0,
+    }
+    try {
+        const findPostAuthorQuery = query(usersCollection, where('userName', '==', bucketAuthor));
+        const bucketAuthorQuerySnapshot = await getDocs(findPostAuthorQuery);
+
+        if (!bucketAuthorQuerySnapshot.empty) {
+            const bucketAuthorDocID = bucketAuthorQuerySnapshot.docs[0].id;
+
+            const bucketAuthorDocRef = doc(firestore, 'users', bucketAuthorDocID);
+            const bucketAuthorDocSnap = await getDoc(bucketAuthorDocRef);
+
+            if (bucketAuthorDocSnap.exists()) {
+                const workingPostData = bucketAuthorDocSnap.data();
+                const workingPostDataBuckets = workingPostData.buckets;
+
+                if (bucketID in workingPostDataBuckets) {
+                    const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
+                    const workingPostDataActiveBucketPostComments = workingPostDataActiveBucket['bucketComments']
+                    console.log(newComment);
+                    console.log(workingPostDataActiveBucket);
+                    workingPostDataActiveBucketPostComments[`comment${currentUserName}${newCommentTimestamp}`] = newComment;
+                    await updateDoc(bucketAuthorDocRef, {buckets: workingPostDataBuckets })
+                    localStorage.setItem('bucketToLoad', bucketID)
+                    localStorage.setItem('bucketToLoadAuthor', bucketAuthor)
+                    localStorage.setItem('bucketToLoadText', bucketText)
+                    localStorage.setItem('bucketToLoadComments', bucketComments)
+                    // location.reload(true);
+                    alert('your comment was posted... still working out the kinks, just reload the page and open the bucket again to see it thanks! @Dev')
+                } else {
+                    console.log('Bucket ID not found in user data.');
+                }
+            } else {
+                console.log('No such document for the bucket author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// const bucketToLoadID = localStorage.getItem('bucketToLoad') !== null;
+
+
+// if (bucketToLoadID) {
+//     const bucketToLoadID = localStorage.getItem('bucketToLoad')
+//     const bucketToLoadAuthor = localStorage.getItem('bucketToLoadAuthor')
+//     const bucketToLoadText = localStorage.getItem('bucketToLoadText')
+//     const bucketToLoadComments = localStorage.getItem('bucketToLoadComments')
+//     console.log(bucketToLoadAuthor, bucketToLoadComments, bucketToLoadID, bucketToLoadText)
+//     loadBucket(bucketToLoadAuthor, bucketToLoadID, bucketToLoadText, bucketToLoadComments)
+
+//     localStorage.removeItem('bucketToLoad')
+
+// }

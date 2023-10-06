@@ -229,6 +229,8 @@ function dumpBucket() {
         bucketText: newBucketText,
         bucketID: newBucketAuthor+Date.now(),
         bucketComments: {},
+        mooCount: 0,
+        goatCount: 0,
     };
     userData.buckets[`${newBucketAuthor}${Date.now()}`] = newBucket;
 
