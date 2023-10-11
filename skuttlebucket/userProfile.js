@@ -443,7 +443,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayTextContent.textContent = `"${bucketText}"`;
     bucketDisplayMooCount.textContent = `🐮X${currentMooCount}`
     bucketDisplayGoatCount.textContent = `🐐X${currentGoatCount}`
-    bucketDisplayDeletePostButtonTextContent.textContent = 'Delete this post';
+    bucketDisplayDeletePostButtonTextContent.textContent = 'Delete post';
 
     // if (bucketAuthor in userFollowingList) {
     //     bucketDisplayFollowButtonTextContent.textContent = `UnFollow @${bucketAuthor}`;

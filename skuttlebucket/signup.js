@@ -17,6 +17,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const firestore = getFirestore(app);
 
+const switchToLoginButton = document.getElementById('switch-to-login-button');
 
 function register() {
   var email = document.getElementById('email').value
@@ -137,6 +138,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 });
+
+switchToLoginButton.addEventListener('click', function() {
+    window.location.href = 'index.html';
+})
 
 // Does not work...
 // function sendVerificationEmail() {

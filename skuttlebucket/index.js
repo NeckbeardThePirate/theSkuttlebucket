@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const firestore = getFirestore(app);
 
-
+const switchToSignUpButton = document.getElementById('switch-to-register-button');
 
 function login () {
   var email = document.getElementById('email').value
@@ -97,3 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+switchToSignUpButton.addEventListener('click', function() {
+    window.location.href = 'signup.html'
+})
