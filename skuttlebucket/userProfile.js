@@ -407,8 +407,8 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     const bucketDisplayTextContentContainer = document.createElement('div');
     const bucketDisplayTextContent = document.createElement('p');
     const bucketDisplayActionButtonsContainer = document.createElement('div');
-    // const bucketDisplayFollowButton = document.createElement('div'); this needs to become a delete button
-    // const bucketDisplayFollowButtonTextContent = document.createElement('p'); needs to say delete eventually
+    const bucketDisplayDeletePostButton = document.createElement('div');
+    const bucketDisplayDeletePostButtonTextContent = document.createElement('p');
     const bucketDisplayCommentButton = document.createElement('div');
     const bucketDisplayCommentButtonTextContent = document.createElement('p');
     // const bucketDisplayViewUserProfileButton = document.createElement('div'); idk what to do here
@@ -426,10 +426,10 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayTextContentContainer.classList.add('bucket-display-text-content-container');
     bucketDisplayTextContent.classList.add('all-text');
     bucketDisplayActionButtonsContainer.classList.add('bucket-display-action-buttons-container');
-    // bucketDisplayFollowButton.classList.add('action-button');
+    bucketDisplayDeletePostButton.classList.add('action-button');
     bucketDisplayCommentButton.classList.add('action-button');
     // bucketDisplayViewUserProfileButton.classList.add('action-button');
-    // bucketDisplayFollowButtonTextContent.classList.add('all-text');
+    bucketDisplayDeletePostButtonTextContent.classList.add('all-text');
     bucketDisplayCommentButtonTextContent.classList.add('all-text');
     // bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
     bucketDisplayCountersContainer.classList.add('counters-container')
@@ -443,7 +443,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayTextContent.textContent = `"${bucketText}"`;
     bucketDisplayMooCount.textContent = `🐮X${currentMooCount}`
     bucketDisplayGoatCount.textContent = `🐐X${currentGoatCount}`
-
+    bucketDisplayDeletePostButtonTextContent.textContent = 'Delete this post';
 
     // if (bucketAuthor in userFollowingList) {
     //     bucketDisplayFollowButtonTextContent.textContent = `UnFollow @${bucketAuthor}`;
@@ -471,8 +471,8 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayContent.appendChild(bucketDisplayHeaderContainer);
     bucketDisplayHeaderContainer.appendChild(bucketDisplayHeader);
     bucketDisplayContent.appendChild(bucketDisplayActionButtonsContainer);
-    // bucketDisplayActionButtonsContainer.appendChild(bucketDisplayFollowButton);
-    // bucketDisplayFollowButton.appendChild(bucketDisplayFollowButtonTextContent);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayDeletePostButton);
+    bucketDisplayDeletePostButton.appendChild(bucketDisplayDeletePostButtonTextContent);
     bucketDisplayActionButtonsContainer.appendChild(bucketDisplayCommentButton);
     bucketDisplayCommentButton.appendChild(bucketDisplayCommentButtonTextContent);
     // bucketDisplayActionButtonsContainer.appendChild(bucketDisplayViewUserProfileButton);
@@ -546,6 +546,29 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
         const currentUserName = bucketAuthor;
         writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
     });
+
+    bucketDisplayDeletePostButton.addEventListener('click', function() {
+        deletePost(bucketID, userBuckets)
+    })
+}
+
+async function deletePost(bucketID, userBuckets) {
+    const bucketCheckList = userData.buckets;
+    for (const bucket in bucketCheckList) {
+        const bucketToCheck = bucketCheckList[bucket];
+        if (bucketToCheck.bucketID === bucketID) {
+            delete bucketCheckList[bucket];
+            await updateDoc(docRef, { buckets: bucketCheckList})
+            .then(() => {
+                console.log('successfully deleted post');
+                window.location.reload(true);
+
+            })
+            .catch((error) => {
+                console.log('error deleting post: ', error);
+            })
+        }
+    }
 }
 
 function writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments) {
