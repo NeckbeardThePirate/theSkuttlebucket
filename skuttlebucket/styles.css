@@ -933,6 +933,25 @@ a {
     border-radius: 15px;
     font-size: 2rem;
 }
+
+.header-text {
+    font-weight: 900;
+}
+
+.modal-header-container {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    min-height: 4rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #D1D1D1;
+    border-radius: 15px;
+    font-size: 2rem;
+    padding: 1rem;
+}
+
 .bucket-display-text-content-container {
     display: flex;
     width: 90%;
@@ -1006,6 +1025,12 @@ a {
     border-radius: 15px;
     font-size: 2rem;
     padding: 0.5rem;
+}
+
+.delete-confirmation-buttons-container {
+    display: flex;
+    width: 100%;
+    background-color: rgb(100, 20, 20);
 }
 
 .show-comment-block {

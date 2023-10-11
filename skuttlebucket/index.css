@@ -113,13 +113,7 @@ input {
     outline: 2px solid slategray;
     transform: scale(1.05);
 }
-/* #switch-to-register-button:focus {
-    outline: 2px solid slategray;
-}
 
-#login-button:focus {
-    outline: 2px solid slategray;
-} */
 
 .all-text {
     font-family: 'monospace', 'Lucida Console', 'Courier New';

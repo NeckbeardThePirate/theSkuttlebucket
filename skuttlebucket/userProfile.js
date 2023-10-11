@@ -548,15 +548,17 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     });
 
     bucketDisplayDeletePostButton.addEventListener('click', function() {
-        deletePost(bucketID, userBuckets)
+        confirmDelete(bucketID)
     })
 }
 
-async function deletePost(bucketID, userBuckets) {
+async function deletePost(bucketID) {
     const bucketCheckList = userData.buckets;
     for (const bucket in bucketCheckList) {
+        console.log('we are checking')
         const bucketToCheck = bucketCheckList[bucket];
         if (bucketToCheck.bucketID === bucketID) {
+            console.log('found it')
             delete bucketCheckList[bucket];
             await updateDoc(docRef, { buckets: bucketCheckList})
             .then(() => {
@@ -684,3 +686,43 @@ logoutButton.addEventListener('click', function() {
 timelineButton.addEventListener('click', function() {
     window.location.href = 'timeline.html';
 })
+
+function confirmDelete(bucketID) {
+    const confirmDeleteModal = document.createElement('div');
+    const confirmDeleteModalContentContainer = document.createElement('div');
+    const confirmDeleteModalHeader = document.createElement('div');
+    const confirmDeleteModalButtonContainer = document.createElement('div');
+    const confirmDeleteModalYesButton = document.createElement('div');
+    const confirmDeleteModalNoButton = document.createElement('div');
+
+    confirmDeleteModal.classList.add('modal');
+    confirmDeleteModal.style.display = 'block';
+    confirmDeleteModalContentContainer.classList.add('modal-content');
+    confirmDeleteModalHeader.classList.add('modal-header-container');
+    confirmDeleteModalHeader.classList.add('all-text');
+    confirmDeleteModalHeader.classList.add('header-text');
+    confirmDeleteModalHeader.textContent = 'Are You Sure You Want To Delete This?';
+    confirmDeleteModalYesButton.classList.add('action-button');
+    confirmDeleteModalNoButton.classList.add('action-button');
+    confirmDeleteModalYesButton.textContent = 'Confirm';
+    confirmDeleteModalNoButton.textContent = 'Cancel';
+    confirmDeleteModalButtonContainer.classList.add('delete-confirmation-buttons-container')
+
+    document.body.appendChild(confirmDeleteModal);
+    confirmDeleteModal.appendChild(confirmDeleteModalContentContainer);
+    confirmDeleteModalContentContainer.appendChild(confirmDeleteModalHeader);
+    confirmDeleteModalContentContainer.appendChild(confirmDeleteModalButtonContainer);
+    confirmDeleteModalButtonContainer.appendChild(confirmDeleteModalYesButton);
+    confirmDeleteModalButtonContainer.appendChild(confirmDeleteModalNoButton);
+
+    confirmDeleteModalYesButton.addEventListener('click', function(){
+        console.log('trying to delete...')
+        console.log((bucketID))
+        deletePost(bucketID);
+
+    })
+
+    confirmDeleteModalNoButton.addEventListener('click', function(){
+        document.body.removeChild(confirmDeleteModal);
+    })
+}
