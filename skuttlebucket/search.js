@@ -269,9 +269,16 @@ function displayMatchingSearchResults(filteredUsers) {
                     addFoundUserToFollowing(filteredUsers[i])
                 });
                 showMatchingUser.addEventListener('click', function() {
-                    localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
-                    window.location.href = 'otherUserProfile.html';
+                    if (loggedInUserName === filteredUsers[i]) {
+                        window.location.href = 'skuttlebukket_user.html'
+                    } else {
+                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                        window.location.href = 'otherUserProfile.html';
+                    }
+                    console.log(loggedInUserName)
+                    console.log(filteredUsers[i])
                 });
+                
             } else {
                 followUser.textContent = `UnFollow`;
                 followUser.classList.add('unfollow-button')
@@ -310,8 +317,14 @@ function displayMatchingSearchResults(filteredUsers) {
                         removeFoundUserFromFollowing(filteredUsers[i])
                     });
                 showMatchingUser.addEventListener('click', function() {
-                    localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
-                    window.location.href = 'otherUserProfile.html';
+                    if (loggedInUserName === filteredUsers[i]) {
+                        window.location.href = 'skuttlebukket_user.html'
+                    } else {
+                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                        window.location.href = 'otherUserProfile.html';
+                    }
+                    console.log(loggedInUserName)
+                    console.log(filteredUsers[i])
                 });
             }
             

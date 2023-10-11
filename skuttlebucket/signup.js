@@ -90,8 +90,9 @@ function validateEmail(email) {
 
 function validateUsername(userName) {
   var expression = /[^a-zA-Z0-9.-_]/g;
-  if (expression.test(userName) == true) {
-    alert('[INVALID USERNAME] UserNames may only contain alphanumeric upper and lowercase letters and the special charachters "-", "_", and "."')  
+  const checkUserName = userName;
+  if (expression.test(userName) == true || checkUserName.length > 20) {
+    alert('[INVALID USERNAME] UserNames may only contain alphanumeric upper and lowercase letters and the special charachters "-", "_", and ".", and must be 20 charachters or less')  
     return false
   } else {
       return true;

@@ -1055,3 +1055,46 @@ a {
     font-size: 2rem;
     padding: 0.5rem;
 }
+
+.moo-count {
+    height: fit-content;
+    width: fit-content;
+    background-color: #D1D1D1;
+    font-size: 40px;
+    border-radius: 20px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.moo-count:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.goat-count {
+    border-radius: 20px;
+    height: fit-content;
+    font-size: 40px;
+    background-color: #D1D1D1;
+    border-radius: 20px;
+    width: fit-content;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.goat-count:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.counters-container {
+    width: 80%;
+    height: 4rem;
+    margin: 1rem;
+    display: flex;
+    justify-content: space-around;
+}

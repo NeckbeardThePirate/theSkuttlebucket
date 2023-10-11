@@ -61,7 +61,7 @@ function validateEmail(email) {
 
 function validateUsername(userName) {
   var expression = /^[^@]+@\w+(\.\w+)+\w$/
-  if (expression.test(email) == true) {
+  if (expression.test(userName) == true) {
       return false
   } else {
       return true;
