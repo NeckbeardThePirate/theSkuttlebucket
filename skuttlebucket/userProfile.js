@@ -72,7 +72,7 @@ const followerCount = document.createElement('button');
 
 const joinDate = document.createElement('p');
 
-const bucketsColumn = document.getElementById('buckets-column');
+const bucketsWall = document.getElementById('buckets-wall');
 
 const originalUserBuckets = userData.buckets
 
@@ -148,57 +148,61 @@ const months = [
   const daysOfWeek = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   ];
+window.addEventListener("load", displayBuckets());
 
-for (let bucket in userBuckets) {
-    if (userBuckets.hasOwnProperty(bucket)) {
-        const subBucket = userBuckets[bucket]
 
-        const bucketContent = subBucket['bucketText'];
+function displayBuckets() {
+    for (let bucket in userBuckets) {
+        if (userBuckets.hasOwnProperty(bucket)) {
+            const subBucket = userBuckets[bucket]
 
-        const showBucket = document.createElement('div');
+            const bucketContent = subBucket['bucketText'];
 
-        const bucketText = document.createElement('h3');
+            const showBucket = document.createElement('div');
 
-        const bucketAuthor = document.createElement('p');
+            const bucketText = document.createElement('h3');
 
-        const bucketDate = document.createElement('p');
+            const bucketAuthor = document.createElement('p');
 
-        bucketDate.classList.add('all-text');
+            const bucketDate = document.createElement('p');
 
-        const postedBucketDate = new Date(subBucket['bucketTimestamp']);
+            bucketDate.classList.add('all-text');
 
-        const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
+            const postedBucketDate = new Date(subBucket['bucketTimestamp']);
 
-        const postedBucketMonth = months[postedBucketDate.getMonth()];
+            const postedBucketWeekDay = daysOfWeek[postedBucketDate.getDay()];
 
-        const postedBucketMonthDay = postedBucketDate.getDate();
+            const postedBucketMonth = months[postedBucketDate.getMonth()];
 
-        const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
+            const postedBucketMonthDay = postedBucketDate.getDate();
 
-        const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
+            const postedBucketTime = `${postedBucketDate.getHours()}:${postedBucketDate.getMinutes()}`
 
-        showBucket.addEventListener('click', function() {
-            const bucketID = subBucket['bucketID'];
-            const bucketAuthor = `${subBucket['bucketAuthor']}`;
-            const bucketText = subBucket['bucketText'];
-            const bucketComments = subBucket['bucketComments']
-            const mooCount = subBucket['mooCount'];
-            const goatCount = subBucket['goatCount'];
-            console.log('this is right before we load the bucket', mooCount, goatCount)
-            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
-        })
+            const fullPostTime = `Posted: ${postedBucketWeekDay}, ${postedBucketMonth} ${postedBucketMonthDay} at ${postedBucketTime}`
 
-        bucketDate.textContent = `${fullPostTime}`;
-        showBucket.classList.add('bucket-block');
-        bucketText.classList.add('all-text'); 
-        bucketAuthor.classList.add('all-text'); 
-        bucketText.textContent = `${bucketContent}`;
-        bucketAuthor.textContent = `@${subBucket['bucketAuthor']}`;
-        bucketDate.style.fontSize = '10px';
-        bucketsColumn.appendChild(showBucket);
-        showBucket.appendChild(bucketAuthor);
-        showBucket.appendChild(bucketDate);
-        showBucket.appendChild(bucketText);
+            showBucket.addEventListener('click', function() {
+                const bucketID = subBucket['bucketID'];
+                const bucketAuthor = `${subBucket['bucketAuthor']}`;
+                const bucketText = subBucket['bucketText'];
+                const bucketComments = subBucket['bucketComments']
+                const mooCount = subBucket['mooCount'];
+                const goatCount = subBucket['goatCount'];
+                console.log('this is right before we load the bucket', mooCount, goatCount)
+                loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
+            })
+
+            bucketDate.textContent = `${fullPostTime}`;
+            showBucket.classList.add('bucket-block');
+            bucketText.classList.add('all-text'); 
+            bucketAuthor.classList.add('all-text'); 
+            bucketText.textContent = `${bucketContent}`;
+            bucketAuthor.textContent = `@${subBucket['bucketAuthor']}`;
+            bucketDate.style.fontSize = '10px';
+            bucketsWall.appendChild(showBucket);
+            showBucket.appendChild(bucketAuthor);
+            showBucket.appendChild(bucketDate);
+            showBucket.appendChild(bucketText);
+        }
     }
 }
 
@@ -419,6 +423,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     const bucketDisplayMooCount = document.createElement('div');
     const bucketDisplayGoatCount = document.createElement('div');
 
+    bucketDisplayBackgroundWindow.id = 'bucket-display-background-window'
     bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
     bucketDisplayContent.classList.add('bucket-display-modal-content');
     bucketDisplayCloseButton.classList.add('close');
@@ -513,7 +518,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     }
 
     bucketDisplayCloseButton.addEventListener('click', function() {
-        document.body.removeChild(bucketDisplayBackgroundWindow);
+        closeBucketDisplay()
     });
     window.addEventListener('click', (event) => {
         if (event.target === bucketDisplayBackgroundWindow) {
@@ -532,7 +537,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     })
 
     bucketDisplayEditPostButton.addEventListener('click', function() {
-        openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor)
+        openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
     })
 }
 
@@ -711,7 +716,7 @@ function confirmDelete(bucketID) {
     })
 }
 
-function openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor) {
+function openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount) {
     const editBucketWindowModal = document.createElement('div');
     const editBucketWindowModalContent = document.createElement('div');
     const editBucketWindowModalHeader = document.createElement('div');
@@ -744,7 +749,7 @@ function openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAutho
         }
     })
     editBucketWindowModalDumpBucketButton.addEventListener('click', function() {
-        updateBucket(currentUserName, bucketID, bucketAuthor)
+        updateBucket(currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount)
     })
     editBucketWindowModalDumpBucketButton.addEventListener('keyup', function(event) {
         if (event.keycode === 13) {
@@ -758,7 +763,7 @@ function closeEditBucketWindow() {
     editBucketWindowModal.style.display = 'none';
 }
 
-async function updateBucket(currentUserName, bucketID, bucketAuthor) {
+async function updateBucket(currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount) {
     const newBucketText = document.getElementById('edit-bucket-updated-textarea').value;
     console.log(newBucketText)
     try {
@@ -782,7 +787,21 @@ async function updateBucket(currentUserName, bucketID, bucketAuthor) {
                     await updateDoc(bucketAuthorDocRef, {buckets: workingPostDataBuckets })
                     .then(() => {
                         closeEditBucketWindow();
-                        window.location.reload(true)
+                        closeBucketDisplay();
+                        clearBucketsTimeline()
+                        for (let bucket in userBuckets) {
+                            if (userBuckets.hasOwnProperty(bucket)) {
+                              const checkBucketID = userBuckets[bucket];
+                              if (checkBucketID['bucketID'] === bucketID) {
+                                console.log('found it ', checkBucketID['bucketText']);
+                                checkBucketID['bucketText'] = newBucketText;
+                                console.log('updated: ', checkBucketID['bucketText']);
+                                userBuckets[bucket] = checkBucketID; // Update the original object
+                              }
+                            }
+                          }
+                        displayBuckets();
+                        loadBucket(bucketAuthor, bucketID, newBucketText, bucketComments, mooCount, goatCount);
                     })
                 } else {
                     console.log('Bucket ID not found in user data.');
@@ -795,5 +814,17 @@ async function updateBucket(currentUserName, bucketID, bucketAuthor) {
         }
     } catch (error) {
         console.error('Error:', error);
+    }
+}
+
+function closeBucketDisplay() {
+    const bucketDisplayBackgroundWindow = document.getElementById('bucket-display-background-window')
+    document.body.removeChild(bucketDisplayBackgroundWindow);
+}
+
+function clearBucketsTimeline() {
+    while (bucketsWall.firstChild) {
+        const firstChild = bucketsWall.firstChild;
+        bucketsWall.removeChild(firstChild);
     }
 }
