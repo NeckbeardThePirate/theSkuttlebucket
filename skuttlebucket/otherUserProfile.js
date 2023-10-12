@@ -358,12 +358,9 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     const bucketDisplayGoatCount = document.createElement('div');
 
     bucketDisplayContentComments.id = 'bucket-display-content'
-
-
     bucketDisplayBackgroundWindow.id = 'bucket-display-background-window'
     bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
     bucketDisplayContentComments.classList.add('comments-column');
-
     bucketDisplayContent.classList.add('bucket-display-modal-content');
     bucketDisplayCloseButton.classList.add('close');
     bucketDisplayBackgroundWindow.style.display = 'block';
@@ -375,11 +372,9 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayFollowButton.classList.add('action-button');
     bucketDisplayCommentButton.classList.add('action-button');
     bucketDisplayMessageButton.classList.add('action-button');
-    // bucketDisplayViewUserProfileButton.classList.add('action-button');
     bucketDisplayFollowButtonTextContent.classList.add('all-text');
     bucketDisplayCommentButtonTextContent.classList.add('all-text');
     bucketDisplayMessageButtonTextContent.classList.add('all-text');
-    // bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
     bucketDisplayCountersContainer.classList.add('counters-container')
     bucketDisplayMooCount.classList.add('moo-count');
     bucketDisplayMooCount.classList.add('all-text');
@@ -425,47 +420,6 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
 
 
     loadComments(bucketComments, bucketDisplayContentComments)
-    // for (const comment in bucketComments) {
-    //     if (bucketComments.hasOwnProperty(comment)) {
-    //         const bucketCommentID = bucketComments[comment];
-    //         const bucketCommentText = bucketCommentID['commentText'];
-    //         const bucketCommentAuthor = bucketCommentID['commentAuthor'];
-    //         const bucketCommentTime = new Date(bucketCommentID['commentTime']);
-    //         const bucketCommentTimeWeekday = daysOfWeek[bucketCommentTime.getDay()];
-    //         const bucketCommentTimeMonth = months[bucketCommentTime.getMonth()];
-    //         const bucketCommentTimeMonthDay = bucketCommentTime.getDate();
-    //         const bucketCommentTimeHours = bucketCommentTime.getHours()
-    //         const bucketCommentTimeMinutes = bucketCommentTime.getMinutes()
-    //         const bucketCommentTimeMinutesFormatted = bucketCommentTimeMinutes < 10 ? `0${bucketCommentTimeMinutes}` : bucketCommentTimeMinutes;
-    //         const bucketCommentTimeHoursMinutes = `${bucketCommentTimeHours}:${bucketCommentTimeMinutesFormatted}`
-    //         const completeBucketCommentTime = `at: ${bucketCommentTimeWeekday}, ${bucketCommentTimeMonth} ${bucketCommentTimeMonthDay} at  ${bucketCommentTimeHoursMinutes}`
-    //         const bucketGoatCount = bucketCommentID['goatCount'];
-    //         const bucketMooCount = bucketCommentID['mooCount'];
-    //         const showComment = document.createElement('div');
-    //         const showCommentAuthor = document.createElement('h5');
-    //         const showCommentTime = document.createElement('p');
-    //         const showCommentText = document.createElement('p');
-    //         const showCommentAnimalCountContainer = document.createElement('div')
-    //         // 🐮🐐
-    //         showComment.classList.add('show-comment-block');
-    //         showCommentAuthor.classList.add('comment-author');
-    //         showCommentTime.classList.add('comment-time');
-    //         showCommentText.classList.add('comment-text');
-    //         showCommentAuthor.classList.add('all-text');
-    //         showCommentTime.classList.add('all-text');
-    //         showCommentText.classList.add('all-text');
-    //         showCommentAnimalCountContainer.classList.add('animal-count-container');
-
-    //         showCommentAuthor.textContent = `@${bucketCommentAuthor} responded:`;
-    //         showCommentTime.textContent = `${completeBucketCommentTime}`
-    //         showCommentText.textContent = `${bucketCommentText}`;
-
-    //         bucketDisplayContent.appendChild(showComment);
-    //         showComment.appendChild(showCommentAuthor);
-    //         showComment.appendChild(showCommentTime);
-    //         showComment.appendChild(showCommentText);
-    //     }
-    // }
 
 
     bucketDisplayCloseButton.addEventListener('click', function() {
@@ -509,20 +463,6 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayGoatCount.addEventListener('click', function() {
         alert('This functionality is still in development thanks for your patience');
     })
-    // const currentUserName = bucketAuthor;
-
-    // bucketDisplayCommentButton.addEventListener('click', function() {
-        
-    //     writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
-    // });
-
-    // bucketDisplayDeletePostButton.addEventListener('click', function() {
-    //     confirmDelete(bucketID)
-    // })
-
-    // bucketDisplayEditPostButton.addEventListener('click', function() {
-    //     openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
-    // })
 }
 
 async function writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments) {
@@ -556,7 +496,6 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
 }
 
 async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount) {
-    console.log('bucket comments 5', bucketComments)
     const newCommentTimestamp = Date.now();
     const newCommentAuthor = currentUserName;
     const newComment = {
@@ -584,8 +523,6 @@ async function postComment(commentToPost, currentUserName, bucketID, bucketAutho
                 if (bucketID in workingPostDataBuckets) {
                     const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
                     const workingPostDataActiveBucketPostComments = workingPostDataActiveBucket['bucketComments']
-                    console.log(newComment);
-                    console.log(workingPostDataActiveBucket);
                     workingPostDataActiveBucketPostComments[`comment${currentUserName}${newCommentTimestamp}`] = newComment;
                     await updateDoc(bucketAuthorDocRef, {buckets: workingPostDataBuckets })
                     // alert('your comment was posted... still working out the kinks, just reload the page and open the bucket again to see it, thanks! @Dev')

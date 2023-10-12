@@ -520,47 +520,6 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayContent.appendChild(bucketDisplayContentComments);
 
     loadComments(bucketComments, bucketDisplayContentComments)
-    // for (const comment in bucketComments) {
-    //     if (bucketComments.hasOwnProperty(comment)) {
-    //         const bucketCommentID = bucketComments[comment];
-    //         const bucketCommentText = bucketCommentID['commentText'];
-    //         const bucketCommentAuthor = bucketCommentID['commentAuthor'];
-    //         const bucketCommentTime = new Date(bucketCommentID['commentTime']);
-    //         const bucketCommentTimeWeekday = daysOfWeek[bucketCommentTime.getDay()];
-    //         const bucketCommentTimeMonth = months[bucketCommentTime.getMonth()];
-    //         const bucketCommentTimeMonthDay = bucketCommentTime.getDate();
-    //         const bucketCommentTimeHours = bucketCommentTime.getHours()
-    //         const bucketCommentTimeMinutes = bucketCommentTime.getMinutes()
-    //         const bucketCommentTimeMinutesFormatted = bucketCommentTimeMinutes < 10 ? `0${bucketCommentTimeMinutes}` : bucketCommentTimeMinutes;
-    //         const bucketCommentTimeHoursMinutes = `${bucketCommentTimeHours}:${bucketCommentTimeMinutesFormatted}`
-    //         const completeBucketCommentTime = `at: ${bucketCommentTimeWeekday}, ${bucketCommentTimeMonth} ${bucketCommentTimeMonthDay} at  ${bucketCommentTimeHoursMinutes}`
-    //         const bucketGoatCount = bucketCommentID['goatCount'];
-    //         const bucketMooCount = bucketCommentID['mooCount'];
-    //         const showComment = document.createElement('div');
-    //         const showCommentAuthor = document.createElement('h5');
-    //         const showCommentTime = document.createElement('p');
-    //         const showCommentText = document.createElement('p');
-    //         const showCommentAnimalCountContainer = document.createElement('div')
-    //         // 🐮🐐
-    //         showComment.classList.add('show-comment-block');
-    //         showCommentAuthor.classList.add('comment-author');
-    //         showCommentTime.classList.add('comment-time');
-    //         showCommentText.classList.add('comment-text');
-    //         showCommentAuthor.classList.add('all-text');
-    //         showCommentTime.classList.add('all-text');
-    //         showCommentText.classList.add('all-text');
-    //         showCommentAnimalCountContainer.classList.add('animal-count-container');
-
-    //         showCommentAuthor.textContent = `@${bucketCommentAuthor} responded:`;
-    //         showCommentTime.textContent = `${completeBucketCommentTime}`
-    //         showCommentText.textContent = `${bucketCommentText}`;
-
-    //         bucketDisplayContent.appendChild(showComment);
-    //         showComment.appendChild(showCommentAuthor);
-    //         showComment.appendChild(showCommentTime);
-    //         showComment.appendChild(showCommentText);
-    //     }
-    // }
 
     bucketDisplayCloseButton.addEventListener('click', function() {
         document.body.removeChild(bucketDisplayBackgroundWindow);
