@@ -219,12 +219,21 @@ for (let bucket in userBuckets) {
         showBucket.appendChild(bucketAuthor);
         showBucket.appendChild(bucketDate);
         showBucket.appendChild(bucketText);
+
+        showBucket.addEventListener('click', function() {
+            const bucketAuthor = subBucket[`bucketAuthor`];
+            const bucketID = subBucket[`bucketID`];
+            const bucketText = subBucket[`bucketText`];
+            const bucketComments = subBucket[`bucketComments`];
+            const mooCount = subBucket[`mooCount`];
+            const goatCount = subBucket[`goatCount`];
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
+        })
     }
 }
 
 let followingUser = true;
 
-// Set button state
 const userFromLoginFollowingList = userFromLoginData.followingList;
 if (userName in userFromLoginFollowingList) {
     followButton.classList.add('unfollow-user-button');
@@ -275,8 +284,6 @@ function followUserFunction() {
     const updatedFollowerCount = userData.followerCount + 1;
     const userNameToAdd = userFromLoginData.userName;
     followerList[userNameToAdd] = userNameToAdd;
-    console.log(followerList)
-    console.log(userNameToAdd)
 
     try {
         updateDoc(userToLoadDocRef, {
@@ -308,10 +315,6 @@ function unFollowUserFunction() {
     }
 }
 
-
-
-
-
 followButton.addEventListener('click', function() {
     if (followingUser) {
         removeUserFromFollowing()
@@ -333,3 +336,178 @@ timelineButton.addEventListener('click', function() {
 searchRedirectButton.addEventListener('click', function() {
     window.location.href = 'search.html';
 });
+
+function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount) {
+    console.log('author: ', bucketAuthor);
+    console.log('comments', bucketComments);
+    const bucketDisplayBackgroundWindow = document.createElement('div');
+    const bucketDisplayContent = document.createElement('div');
+    const bucketDisplayCloseButton = document.createElement('span');
+    const bucketDisplayHeaderContainer = document.createElement('div');
+    const bucketDisplayHeader = document.createElement('h3');
+    const bucketDisplayTextContentContainer = document.createElement('div');
+    const bucketDisplayTextContent = document.createElement('p');
+    const bucketDisplayActionButtonsContainer = document.createElement('div');
+    const bucketDisplayFollowButton = document.createElement('div');
+    const bucketDisplayFollowButtonTextContent = document.createElement('p');
+    const bucketDisplayCommentButton = document.createElement('div');
+    const bucketDisplayCommentButtonTextContent = document.createElement('p');
+    const bucketDisplayMessageButton = document.createElement('div');
+    const bucketDisplayMessageButtonTextContent = document.createElement('p');
+    // const bucketDisplayViewUserProfileButton = document.createElement('div'); idk what to do here
+    // const bucketDisplayViewUserProfileButtonTextContent = document.createElement('p'); idk what to do here either
+    const bucketDisplayCountersContainer = document.createElement('div');
+    const bucketDisplayMooCount = document.createElement('div');
+    const bucketDisplayGoatCount = document.createElement('div');
+
+    bucketDisplayBackgroundWindow.id = 'bucket-display-background-window'
+    bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
+    bucketDisplayContent.classList.add('bucket-display-modal-content');
+    bucketDisplayCloseButton.classList.add('close');
+    bucketDisplayBackgroundWindow.style.display = 'block';
+    bucketDisplayHeaderContainer.classList.add('bucket-display-header-container');
+    bucketDisplayHeader.classList.add('all-text');
+    bucketDisplayTextContentContainer.classList.add('bucket-display-text-content-container');
+    bucketDisplayTextContent.classList.add('all-text');
+    bucketDisplayActionButtonsContainer.classList.add('bucket-display-action-buttons-container');
+    bucketDisplayFollowButton.classList.add('action-button');
+    bucketDisplayCommentButton.classList.add('action-button');
+    bucketDisplayMessageButton.classList.add('action-button');
+    // bucketDisplayViewUserProfileButton.classList.add('action-button');
+    bucketDisplayFollowButtonTextContent.classList.add('all-text');
+    bucketDisplayCommentButtonTextContent.classList.add('all-text');
+    bucketDisplayMessageButtonTextContent.classList.add('all-text');
+    // bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
+    bucketDisplayCountersContainer.classList.add('counters-container')
+    bucketDisplayMooCount.classList.add('moo-count');
+    bucketDisplayMooCount.classList.add('all-text');
+    bucketDisplayGoatCount.classList.add('goat-count');
+    bucketDisplayGoatCount.classList.add('all-text');
+    var currentGoatCount = goatCount;
+    var currentMooCount = mooCount;
+    bucketDisplayHeader.textContent = `@${bucketAuthor} says:`;
+    bucketDisplayTextContent.textContent = `"${bucketText}"`;
+    bucketDisplayMooCount.textContent = `🐮X${currentMooCount}`
+    bucketDisplayGoatCount.textContent = `🐐X${currentGoatCount}`
+    if (followingUser) {
+        console.log(followingList.length, followingList)
+        console.log('currently following');
+        bucketDisplayFollowButtonTextContent.textContent = `UnFollow @${bucketAuthor}`;
+    } else {
+        console.log(followingList.length, followingList)
+        console.log('currently not following');
+        bucketDisplayFollowButtonTextContent.textContent = `Follow @${bucketAuthor}`;
+    }
+    bucketDisplayCommentButtonTextContent.textContent = `Comment`;
+    bucketDisplayMessageButtonTextContent.textContent = `Message @${bucketAuthor}`;
+
+
+    document.body.appendChild(bucketDisplayBackgroundWindow);
+    bucketDisplayBackgroundWindow.appendChild(bucketDisplayContent);
+    bucketDisplayContent.appendChild(bucketDisplayCloseButton);
+    bucketDisplayContent.appendChild(bucketDisplayHeaderContainer);
+    bucketDisplayHeaderContainer.appendChild(bucketDisplayHeader);
+    bucketDisplayContent.appendChild(bucketDisplayActionButtonsContainer);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayFollowButton);
+    bucketDisplayFollowButton.appendChild(bucketDisplayFollowButtonTextContent);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayCommentButton);
+    bucketDisplayCommentButton.appendChild(bucketDisplayCommentButtonTextContent);
+    bucketDisplayActionButtonsContainer.appendChild(bucketDisplayMessageButton);
+    bucketDisplayMessageButton.appendChild(bucketDisplayMessageButtonTextContent);
+    bucketDisplayContent.appendChild(bucketDisplayTextContentContainer);
+    bucketDisplayTextContentContainer.appendChild(bucketDisplayTextContent);
+    bucketDisplayContent.appendChild(bucketDisplayCountersContainer);
+    bucketDisplayCountersContainer.appendChild(bucketDisplayMooCount);
+    bucketDisplayCountersContainer.appendChild(bucketDisplayGoatCount);
+
+    for (const comment in bucketComments) {
+        if (bucketComments.hasOwnProperty(comment)) {
+            const bucketCommentID = bucketComments[comment];
+            const bucketCommentText = bucketCommentID['commentText'];
+            const bucketCommentAuthor = bucketCommentID['commentAuthor'];
+            const bucketCommentTime = new Date(bucketCommentID['commentTime']);
+            const bucketCommentTimeWeekday = daysOfWeek[bucketCommentTime.getDay()];
+            const bucketCommentTimeMonth = months[bucketCommentTime.getMonth()];
+            const bucketCommentTimeMonthDay = bucketCommentTime.getDate();
+            const bucketCommentTimeHours = bucketCommentTime.getHours()
+            const bucketCommentTimeMinutes = bucketCommentTime.getMinutes()
+            const bucketCommentTimeMinutesFormatted = bucketCommentTimeMinutes < 10 ? `0${bucketCommentTimeMinutes}` : bucketCommentTimeMinutes;
+            const bucketCommentTimeHoursMinutes = `${bucketCommentTimeHours}:${bucketCommentTimeMinutesFormatted}`
+            const completeBucketCommentTime = `at: ${bucketCommentTimeWeekday}, ${bucketCommentTimeMonth} ${bucketCommentTimeMonthDay} at  ${bucketCommentTimeHoursMinutes}`
+            const bucketGoatCount = bucketCommentID['goatCount'];
+            const bucketMooCount = bucketCommentID['mooCount'];
+            const showComment = document.createElement('div');
+            const showCommentAuthor = document.createElement('h5');
+            const showCommentTime = document.createElement('p');
+            const showCommentText = document.createElement('p');
+            const showCommentAnimalCountContainer = document.createElement('div')
+            // 🐮🐐
+            showComment.classList.add('show-comment-block');
+            showCommentAuthor.classList.add('comment-author');
+            showCommentTime.classList.add('comment-time');
+            showCommentText.classList.add('comment-text');
+            showCommentAuthor.classList.add('all-text');
+            showCommentTime.classList.add('all-text');
+            showCommentText.classList.add('all-text');
+            showCommentAnimalCountContainer.classList.add('animal-count-container');
+
+            showCommentAuthor.textContent = `@${bucketCommentAuthor} responded:`;
+            showCommentTime.textContent = `${completeBucketCommentTime}`
+            showCommentText.textContent = `${bucketCommentText}`;
+
+            bucketDisplayContent.appendChild(showComment);
+            showComment.appendChild(showCommentAuthor);
+            showComment.appendChild(showCommentTime);
+            showComment.appendChild(showCommentText);
+        }
+    }
+
+    bucketDisplayCloseButton.addEventListener('click', function() {
+        closeBucketDisplay()
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target === bucketDisplayBackgroundWindow) {
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            
+        }
+    });
+
+    bucketDisplayFollowButton.addEventListener('click', function() {
+        if (followingUser) {
+            followingUser = false;
+            removeUserFromFollowing()
+            unFollowUserFunction()
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount);
+        } else {
+            followingUser = true;
+            addUserToFollowing();
+            followUserFunction();
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
+        }
+    });
+
+    bucketDisplayMessageButton.addEventListener('click', function() {
+        alert('This functionality is still in development thanks for your patience');
+    })
+
+    bucketDisplayCommentButton.addEventListener('click', function() {
+        alert('This functionality is still in development thanks for your patience');
+    })
+
+    // const currentUserName = bucketAuthor;
+
+    // bucketDisplayCommentButton.addEventListener('click', function() {
+        
+    //     writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
+    // });
+
+    // bucketDisplayDeletePostButton.addEventListener('click', function() {
+    //     confirmDelete(bucketID)
+    // })
+
+    // bucketDisplayEditPostButton.addEventListener('click', function() {
+    //     openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
+    // })
+}
