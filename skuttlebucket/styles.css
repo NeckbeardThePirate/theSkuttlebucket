@@ -955,15 +955,16 @@ a {
 .modal-header-container {
     display: flex;
     width: 100%;
-    margin: 0;
+    margin: auto;
     min-height: 4rem;
     justify-content: center;
     align-items: center;
     text-align: center;
     background-color: #D1D1D1;
-    border-radius: 15px;
+    /* border-radius: 15px; */
     font-size: 2rem;
-    padding: 1rem;
+    padding: 1rem 0;
+    border-radius: 12px;
 }
 
 .bucket-display-text-content-container {
@@ -1002,6 +1003,7 @@ a {
     padding: 1rem;
     font-size: 20px;
     font-weight: 700;
+    text-align: center;
 }
 
 .action-button p {
@@ -1011,6 +1013,11 @@ a {
 .action-button:hover {
     cursor: pointer;
     transform: scale(1.05);
+}
+
+.action-button:focus {
+    transform: scale(1.05);
+
 }
 
 .add-comment-text-content-container {
@@ -1045,6 +1052,8 @@ a {
     display: flex;
     width: 100%;
     background-color: rgb(100, 20, 20);
+    justify-content: center;
+    padding: 1.5rem 0 ;
 }
 
 .show-comment-block {

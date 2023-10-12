@@ -459,6 +459,14 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayCommentButtonTextContent.textContent = `Comment`;
     bucketDisplayEditPostButtonTextContent.textContent = `Edit Post`;
 
+    bucketDisplayDeletePostButton.setAttribute('tabindex', '0');
+    bucketDisplayCommentButton.setAttribute('tabindex', '0.1');
+    bucketDisplayEditPostButton.setAttribute('tabindex', '0.2');
+    bucketDisplayMooCount.setAttribute('tabindex', '0.3');
+    bucketDisplayGoatCount.setAttribute('tabindex', '0.4');
+
+    bucketDisplayDeletePostButton.focus();
+
 
     document.body.appendChild(bucketDisplayBackgroundWindow);
     bucketDisplayBackgroundWindow.appendChild(bucketDisplayContent);
@@ -514,6 +522,34 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayEditPostButton.addEventListener('click', function() {
         openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
     })
+
+    bucketDisplayDeletePostButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            confirmDelete(bucketID)
+        }
+    })
+    bucketDisplayCommentButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            if (activeComment === false) {
+                writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+                activeComment = true;
+            } else {
+                const displayCreateCommentPostButton = document.getElementById('display-create-comment-post-button');
+                displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+                const displayCreateCommentInput = document.getElementById('display-create-comment-input')
+                setTimeout(() => {
+                    displayCreateCommentInput.focus();
+                },550);
+            }
+        }
+    })
+    bucketDisplayEditPostButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
+        }
+    })
+    // bucketDisplayMooCount.setAttribute('tabindex', '0.6');
+    // bucketDisplayGoatCount.setAttribute('tabindex', '0.7');
 }
 
 async function deletePost(bucketID) {
@@ -543,6 +579,8 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
     const displayCreateCommentInput = document.createElement('textarea');
     const displayCreateCommentPostButton = document.createElement('div');
 
+    displayCreateCommentPostButton.setAttribute('tabindex', '0.5')
+
     displayCreateCommentPostButton.id = 'display-create-comment-post-button'
     displayCreateCommentInput.id = 'display-create-comment-input'
 
@@ -562,6 +600,17 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
             alert('The current comment length max at this time is 100 charachters')
         }
     });
+
+    displayCreateCommentPostButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            const commentToPost = displayCreateCommentInput.value;
+            if (commentToPost.length < 100) {
+                postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);            
+            } else {
+                alert('The current comment length max at this time is 100 charachters')
+            }
+        }
+      });
     
     bucketDisplayContentComments.appendChild(displayCreateCommentHeaderContainer);
     displayCreateCommentHeaderContainer.appendChild(displayCreateCommentHeader);
@@ -683,6 +732,8 @@ function confirmDelete(bucketID) {
     confirmDeleteModalYesButton.textContent = 'Confirm';
     confirmDeleteModalNoButton.textContent = 'Cancel';
     confirmDeleteModalButtonContainer.classList.add('delete-confirmation-buttons-container')
+    confirmDeleteModalYesButton.setAttribute('tabindex', '0');
+    confirmDeleteModalNoButton.setAttribute('tabindex', '0.5');
 
     document.body.appendChild(confirmDeleteModal);
     confirmDeleteModal.appendChild(confirmDeleteModalContentContainer);
@@ -691,15 +742,28 @@ function confirmDelete(bucketID) {
     confirmDeleteModalButtonContainer.appendChild(confirmDeleteModalYesButton);
     confirmDeleteModalButtonContainer.appendChild(confirmDeleteModalNoButton);
 
+    confirmDeleteModalYesButton.focus();
+
     confirmDeleteModalYesButton.addEventListener('click', function(){
         console.log('trying to delete...')
-        console.log((bucketID))
         deletePost(bucketID);
+    })
 
+    confirmDeleteModalYesButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            console.log('trying to delete...')
+            deletePost(bucketID);
+        }
     })
 
     confirmDeleteModalNoButton.addEventListener('click', function(){
         document.body.removeChild(confirmDeleteModal);
+    })
+
+    confirmDeleteModalNoButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            document.body.removeChild(confirmDeleteModal);
+        }
     })
 }
 
@@ -716,9 +780,11 @@ function openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAutho
     editBucketWindowModal.style.display = 'block';
     editBucketWindowModalContent.classList.add('bucket-display-modal-content');
     editBucketWindowModalHeader.classList.add('modal-header-container');
+    editBucketWindowModalHeader.classList.add('all-text');
     editBucketWindowModalText.classList.add('all-text');
     editBucketWindowModalText.classList.add('textarea')
     editBucketWindowModalDumpBucketButton.classList.add('action-button')
+    editBucketWindowModalDumpBucketButton.classList.add('all-text')
 
     editBucketWindowModalHeader.textContent = 'Edit Bucket Text';
     editBucketWindowModalText.textContent = bucketText;
@@ -729,6 +795,9 @@ function openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAutho
     editBucketWindowModalContent.appendChild(editBucketWindowModalHeader);
     editBucketWindowModalContent.appendChild(editBucketWindowModalText);
     editBucketWindowModalContent.appendChild(editBucketWindowModalDumpBucketButton);
+
+    editBucketWindowModalText.focus();
+    
 
     window.addEventListener('click', function() {
         if (event.target === editBucketWindowModal) {
