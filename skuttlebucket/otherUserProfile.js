@@ -496,7 +496,11 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
 
     displayCreateCommentPostButton.addEventListener('click', function() {
         const commentToPost = displayCreateCommentInput.value;
-        postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+        if (commentToPost.length < 100) {
+            postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+        } else {
+            alert('The current comment length max at this time is 100 charachters')
+        }
     });
     
     bucketDisplayContentComments.appendChild(displayCreateCommentHeaderContainer);

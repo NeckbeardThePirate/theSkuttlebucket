@@ -698,8 +698,11 @@ function writeComment(currentUserName, bucketDisplayContentComments, bucketID, b
 
     displayCreateCommentPostButton.addEventListener('click', function() {
         const commentToPost = displayCreateCommentInput.value;
-        console.log('bucket comments 4', bucketComments)
-        postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+        if (commentToPost.length < 100) {
+            postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+        } else {
+            alert('The current comment length max at this time is 100 charachters')
+        }
     });
     
     bucketDisplayContentComments.appendChild(displayCreateCommentHeaderContainer);
@@ -997,3 +1000,30 @@ async function displayGoatCount(usersCollection, bucketAuthor, bucketID) {
         console.error('Error:', error);
     }
 }
+
+// async function sortPostsAlgorithm() {
+//     //Huge sorting algorithm goes here
+
+// }
+
+// const fullTimeline = {}
+
+// for (const key in originalBuckets) {
+//     const bucketKey = originalBuckets[key];
+//     for (const secondaryKey in bucketKey) {
+        
+//         const subBucket = bucketKey[secondaryKey];
+        
+//         console.log(subBucket)
+//         if ('mooCount' in subBucket) {
+//             console.log(subBucket)
+//         }
+//         // for (const tertiaryKey in subBucket) {
+//         //     if (tertiaryKey === 'mooCount') {
+//         //         console.log(tertiaryKey)
+//         //     }
+//         // }
+        
+//     }
+    
+// }
