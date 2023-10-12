@@ -83,8 +83,8 @@ const userJoinDate = new Date(userData.joinDate);
 const followerList = userData.followerList;
 
 const followingList = userData.followingList
-console.log(userData.followingList)
-console.log(followingList)
+
+let activeComment = false;
 
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 
@@ -487,14 +487,24 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     });
     window.addEventListener('click', (event) => {
         if (event.target === bucketDisplayBackgroundWindow) {
+            activeComment = false;
             document.body.removeChild(bucketDisplayBackgroundWindow);
             
         }
     });
     const currentUserName = bucketAuthor;
     bucketDisplayCommentButton.addEventListener('click', function() {
-        
-        writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+        if (activeComment === false) {
+            writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+            activeComment = true;
+        } else {
+            const displayCreateCommentPostButton = document.getElementById('display-create-comment-post-button');
+            displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+            const displayCreateCommentInput = document.getElementById('display-create-comment-input')
+            setTimeout(() => {
+                displayCreateCommentInput.focus();
+            },550);
+        }
     });
 
     bucketDisplayDeletePostButton.addEventListener('click', function() {
@@ -533,6 +543,9 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
     const displayCreateCommentInput = document.createElement('textarea');
     const displayCreateCommentPostButton = document.createElement('div');
 
+    displayCreateCommentPostButton.id = 'display-create-comment-post-button'
+    displayCreateCommentInput.id = 'display-create-comment-input'
+
     displayCreateCommentHeader.textContent = `@${currentUserName}:`;
     displayCreateCommentPostButton.classList.add('action-button');
     displayCreateCommentPostButton.classList.add('all-text');
@@ -558,6 +571,7 @@ async function writeComment(currentUserName, bucketDisplayContentComments, bucke
 }
 
 async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments) {
+    activeComment = false;
     const newCommentTimestamp = Date.now();
     const newCommentAuthor = currentUserName;
     const newComment = {

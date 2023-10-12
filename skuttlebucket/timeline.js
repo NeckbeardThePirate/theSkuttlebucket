@@ -30,6 +30,7 @@ const searchModal = document.getElementById('searchModal')
 
 const closeSearchButton = document.getElementById('closeModal')
 
+let activeComment = false;
 
 const seeAllBucketsButton = document.getElementById('all-buckets-button');
 
@@ -522,9 +523,8 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     });
     window.addEventListener('click', (event) => {
         if (event.target === bucketDisplayBackgroundWindow) {
-            
+            activeComment = false;
             setTimeout(() => {
-                // location.reload(true);
                 if (timelineIsForMe) {
                     clearTheRunway();
                     loadBucketsForUser();
@@ -539,8 +539,17 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     
     bucketDisplayCommentButton.addEventListener('click', function() {
         const currentUserName = currentUserData.userName;
-        console.log('bucket comments 3', bucketComments)
-        writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+        if (activeComment === false) {
+            activeComment = true;
+            writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+        } else {
+            const displayCreateCommentPostButton = document.getElementById('display-create-comment-post-button');
+            displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+            const displayCreateCommentInput = document.getElementById('display-create-comment-input')
+            setTimeout(() => {
+                displayCreateCommentInput.focus();
+            },550);
+        }
     });
     bucketDisplayViewUserProfileButton.addEventListener('click', function() {
         if (currentUserData.userName === bucketAuthor) {
@@ -666,6 +675,9 @@ function writeComment(currentUserName, bucketDisplayContentComments, bucketID, b
     const displayCreateCommentInput = document.createElement('textarea');
     const displayCreateCommentPostButton = document.createElement('div');
 
+    displayCreateCommentPostButton.id = 'display-create-comment-post-button'
+    displayCreateCommentInput.id = 'display-create-comment-input'
+
     displayCreateCommentHeader.textContent = `@${currentUserName}:`;
     displayCreateCommentPostButton.classList.add('action-button');
     displayCreateCommentPostButton.classList.add('all-text');
@@ -693,6 +705,7 @@ function writeComment(currentUserName, bucketDisplayContentComments, bucketID, b
 }
 
 async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount) {
+    activeComment = false;
     const newCommentTimestamp = Date.now();
     const newCommentAuthor = currentUserName;
     const newComment = {
