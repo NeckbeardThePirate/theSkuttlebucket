@@ -601,14 +601,10 @@ async function postComment(commentToPost, currentUserName, bucketID, bucketAutho
                     const workingPostDataActiveBucketPostComments = workingPostDataActiveBucket['bucketComments']
                     workingPostDataActiveBucketPostComments[`comment${currentUserName}${newCommentTimestamp}`] = newComment;
                     await updateDoc(bucketAuthorDocRef, {buckets: workingPostDataBuckets })
-                    // alert('your comment was posted... still working out the kinks, just reload the page and open the bucket again to see it, thanks! @Dev')
                     .then(() => {
-                        // document.body.removeChild(bucketDisplayBackgroundWindow)
                         const bucketDisplayContentComments = document.getElementById('bucket-display-content')
                         clearComments(bucketDisplayContentComments)
-                        console.log(workingPostDataActiveBucketPostComments)
                         loadComments(workingPostDataActiveBucketPostComments, bucketDisplayContentComments, bucketAuthor, bucketID)   
-                        console.log('idk if it worked or not')
                     })
                 } else {
                     console.log('Bucket ID not found in user data.');

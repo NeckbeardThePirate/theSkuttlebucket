@@ -415,7 +415,7 @@ seeBucketsForMeButton.addEventListener('click', function() {
 });
 
 
-function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount) {
+async function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount) {
     const bucketDisplayBackgroundWindow = document.createElement('div');
     const bucketDisplayContent = document.createElement('div');
     const bucketDisplayContentComments = document.createElement('div');
@@ -436,7 +436,8 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     const bucketDisplayGoatCount = document.createElement('div');
 
     bucketDisplayContentComments.id = 'bucket-display-content'
-
+    bucketDisplayMooCount.id = 'bucket-display-moo-count'
+    bucketDisplayGoatCount.id = 'bucket-display-goat-count'
     bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
     bucketDisplayContent.classList.add('bucket-display-modal-content');
     bucketDisplayContentComments.classList.add('comments-column');
@@ -462,19 +463,28 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     var currentMooCount = mooCount;
     bucketDisplayHeader.textContent = `@${bucketAuthor} says:`;
     bucketDisplayTextContent.textContent = `"${bucketText}"`;
-    bucketDisplayMooCount.textContent = `🐮X${currentMooCount}`
-    bucketDisplayGoatCount.textContent = `🐐X${currentGoatCount}`
+    displayMooCount(usersCollection, bucketAuthor, bucketID)
+    displayGoatCount(usersCollection, bucketAuthor, bucketID)
 
     bucketDisplayMooCount.addEventListener('click', function() {
-        currentMooCount++
-        bucketDisplayMooCount.textContent = `🐮X${currentMooCount}`
-        updateMooCount(bucketID, bucketAuthor)
+        const userName = currentUserData.userName;
+        if (userName === bucketAuthor) {
+            alert('Naw bruh, you cannot give yourself cows and goats. selfish. - @Dev')
+        } else {
+            updateMooCount(bucketID, bucketAuthor, userName)
+            displayMooCount(usersCollection, bucketAuthor, bucketID)
+        }
     })
 
     bucketDisplayGoatCount.addEventListener('click', function() {
-        currentGoatCount++
-        bucketDisplayGoatCount.textContent = `🐐X${currentGoatCount}`
-        updateGoatCount(bucketID, bucketAuthor)
+        const userName = currentUserData.userName;
+        if (userName === bucketAuthor) {
+            alert('Naw bruh, you cannot give yourself cows and goats. selfish. - @Dev')
+        } else {
+            updateGoatCount(bucketID, bucketAuthor)
+            displayGoatCount(usersCollection, bucketAuthor, bucketID)
+            
+        }
     })
 
     if (bucketAuthor in userFollowingList) {
@@ -772,14 +782,14 @@ async function updateMooCount(bucketID, bucketAuthor) {
 
                 if (bucketID in workingPostDataBuckets) {
                     const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
-                    let workingPostDataActiveBucketMooCount = workingPostDataActiveBucket['mooCount'];
+                    var workingPostDataActiveBucketMooCount = workingPostDataActiveBucket['mooCount'];
                     workingPostDataActiveBucketMooCount++;
                 
                     workingPostDataBuckets[bucketID].mooCount = workingPostDataActiveBucketMooCount;
                 
                     await updateDoc(bucketAuthorDocRef, { buckets: workingPostDataBuckets });
-                    console.log('moocount', workingPostDataActiveBucketMooCount);
-                  } else {
+                    displayMooCount(usersCollection, bucketAuthor, bucketID)
+                } else {
                     console.log('Bucket ID not found in user data.');
                   }
             } else {
@@ -817,6 +827,7 @@ async function updateGoatCount(bucketID, bucketAuthor) {
                 
                     await updateDoc(bucketAuthorDocRef, { buckets: workingPostDataBuckets });
                     console.log('goatcount', workingPostDataActiveBucketGoatCount);
+                    displayGoatCount(usersCollection, bucketAuthor, bucketID)
                   } else {
                     console.log('Bucket ID not found in user data.');
                   }
@@ -916,5 +927,73 @@ function clearComments(bucketDisplayContentComments) {
     while (bucketDisplayContentComments.firstChild) {
         const firstChild = bucketDisplayContentComments.firstChild;
         bucketDisplayContentComments.removeChild(firstChild);
+    }
+}
+
+async function displayMooCount(usersCollection, bucketAuthor, bucketID) {
+    try {
+        const findPostAuthorQuery = query(usersCollection, where('userName', '==', bucketAuthor));
+        const bucketAuthorQuerySnapshot = await getDocs(findPostAuthorQuery);
+
+        if (!bucketAuthorQuerySnapshot.empty) {
+            const bucketAuthorDocID = bucketAuthorQuerySnapshot.docs[0].id;
+
+            const bucketAuthorDocRef = doc(firestore, 'users', bucketAuthorDocID);
+            const bucketAuthorDocSnap = await getDoc(bucketAuthorDocRef);
+
+            if (bucketAuthorDocSnap.exists()) {
+                const workingPostData = bucketAuthorDocSnap.data();
+                const workingPostDataBuckets = workingPostData.buckets;
+                if (bucketID in workingPostDataBuckets) {
+                    const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
+                    var workingPostDataActiveBucketMooCount = workingPostDataActiveBucket['mooCount'];
+                    const bucketDisplayMooCount = document.getElementById('bucket-display-moo-count')
+
+                    bucketDisplayMooCount.textContent = `🐮X${workingPostDataActiveBucketMooCount}`
+                  } else {
+                    console.log('Bucket ID not found in user data.');
+                  }
+            } else {
+                console.log('No such document for the bucket author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function displayGoatCount(usersCollection, bucketAuthor, bucketID) {
+    try {
+        const findPostAuthorQuery = query(usersCollection, where('userName', '==', bucketAuthor));
+        const bucketAuthorQuerySnapshot = await getDocs(findPostAuthorQuery);
+
+        if (!bucketAuthorQuerySnapshot.empty) {
+            const bucketAuthorDocID = bucketAuthorQuerySnapshot.docs[0].id;
+
+            const bucketAuthorDocRef = doc(firestore, 'users', bucketAuthorDocID);
+            const bucketAuthorDocSnap = await getDoc(bucketAuthorDocRef);
+
+            if (bucketAuthorDocSnap.exists()) {
+                const workingPostData = bucketAuthorDocSnap.data();
+                const workingPostDataBuckets = workingPostData.buckets;
+                if (bucketID in workingPostDataBuckets) {
+                    const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
+                    var workingPostDataActiveBucketGoatCount = workingPostDataActiveBucket['goatCount'];
+                    const bucketDisplayGoatCount = document.getElementById('bucket-display-goat-count')
+
+                    bucketDisplayGoatCount.textContent = `🐐X${workingPostDataActiveBucketGoatCount}`
+                  } else {
+                    console.log('Bucket ID not found in user data.');
+                  }
+            } else {
+                console.log('No such document for the bucket author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
