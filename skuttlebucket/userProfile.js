@@ -221,6 +221,7 @@ function closeBucketCreationWindow() {
 }
 
 openNewBucketWindow.addEventListener('click', createNewBucket);
+
 closeNewBucketWindow.addEventListener('click', closeBucketCreationWindow);
 
 window.addEventListener('click', (event) => {
@@ -587,6 +588,10 @@ function writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAut
     bucketDisplayContent.appendChild(displayCreateCommentPostButton);
 
     displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+
+    setTimeout(() => {
+        displayCreateCommentInput.focus();
+    },550);
 }
 
 async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments) {

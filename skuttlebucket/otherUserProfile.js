@@ -51,8 +51,6 @@ const userToLoadJSON = localStorage.getItem('userToLoad');
 
 const userToLoad = JSON.parse(userToLoadJSON);
 
-console.log(userToLoad);
-
 const findUserToLoadquery = query(usersCollection, where('userName', '==', userToLoad));
 
 const userToLoadRef = await getDocs(findUserToLoadquery);
@@ -342,6 +340,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     console.log('comments', bucketComments);
     const bucketDisplayBackgroundWindow = document.createElement('div');
     const bucketDisplayContent = document.createElement('div');
+    const bucketDisplayContentComments = document.createElement('div');
     const bucketDisplayCloseButton = document.createElement('span');
     const bucketDisplayHeaderContainer = document.createElement('div');
     const bucketDisplayHeader = document.createElement('h3');
@@ -354,14 +353,17 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     const bucketDisplayCommentButtonTextContent = document.createElement('p');
     const bucketDisplayMessageButton = document.createElement('div');
     const bucketDisplayMessageButtonTextContent = document.createElement('p');
-    // const bucketDisplayViewUserProfileButton = document.createElement('div'); idk what to do here
-    // const bucketDisplayViewUserProfileButtonTextContent = document.createElement('p'); idk what to do here either
     const bucketDisplayCountersContainer = document.createElement('div');
     const bucketDisplayMooCount = document.createElement('div');
     const bucketDisplayGoatCount = document.createElement('div');
 
+    bucketDisplayContentComments.id = 'bucket-display-content'
+
+
     bucketDisplayBackgroundWindow.id = 'bucket-display-background-window'
     bucketDisplayBackgroundWindow.classList.add('bucket-display-modal');
+    bucketDisplayContentComments.classList.add('comments-column');
+
     bucketDisplayContent.classList.add('bucket-display-modal-content');
     bucketDisplayCloseButton.classList.add('close');
     bucketDisplayBackgroundWindow.style.display = 'block';
@@ -419,7 +421,205 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayContent.appendChild(bucketDisplayCountersContainer);
     bucketDisplayCountersContainer.appendChild(bucketDisplayMooCount);
     bucketDisplayCountersContainer.appendChild(bucketDisplayGoatCount);
+    bucketDisplayContent.appendChild(bucketDisplayContentComments);
 
+
+    loadComments(bucketComments, bucketDisplayContentComments)
+    // for (const comment in bucketComments) {
+    //     if (bucketComments.hasOwnProperty(comment)) {
+    //         const bucketCommentID = bucketComments[comment];
+    //         const bucketCommentText = bucketCommentID['commentText'];
+    //         const bucketCommentAuthor = bucketCommentID['commentAuthor'];
+    //         const bucketCommentTime = new Date(bucketCommentID['commentTime']);
+    //         const bucketCommentTimeWeekday = daysOfWeek[bucketCommentTime.getDay()];
+    //         const bucketCommentTimeMonth = months[bucketCommentTime.getMonth()];
+    //         const bucketCommentTimeMonthDay = bucketCommentTime.getDate();
+    //         const bucketCommentTimeHours = bucketCommentTime.getHours()
+    //         const bucketCommentTimeMinutes = bucketCommentTime.getMinutes()
+    //         const bucketCommentTimeMinutesFormatted = bucketCommentTimeMinutes < 10 ? `0${bucketCommentTimeMinutes}` : bucketCommentTimeMinutes;
+    //         const bucketCommentTimeHoursMinutes = `${bucketCommentTimeHours}:${bucketCommentTimeMinutesFormatted}`
+    //         const completeBucketCommentTime = `at: ${bucketCommentTimeWeekday}, ${bucketCommentTimeMonth} ${bucketCommentTimeMonthDay} at  ${bucketCommentTimeHoursMinutes}`
+    //         const bucketGoatCount = bucketCommentID['goatCount'];
+    //         const bucketMooCount = bucketCommentID['mooCount'];
+    //         const showComment = document.createElement('div');
+    //         const showCommentAuthor = document.createElement('h5');
+    //         const showCommentTime = document.createElement('p');
+    //         const showCommentText = document.createElement('p');
+    //         const showCommentAnimalCountContainer = document.createElement('div')
+    //         // 🐮🐐
+    //         showComment.classList.add('show-comment-block');
+    //         showCommentAuthor.classList.add('comment-author');
+    //         showCommentTime.classList.add('comment-time');
+    //         showCommentText.classList.add('comment-text');
+    //         showCommentAuthor.classList.add('all-text');
+    //         showCommentTime.classList.add('all-text');
+    //         showCommentText.classList.add('all-text');
+    //         showCommentAnimalCountContainer.classList.add('animal-count-container');
+
+    //         showCommentAuthor.textContent = `@${bucketCommentAuthor} responded:`;
+    //         showCommentTime.textContent = `${completeBucketCommentTime}`
+    //         showCommentText.textContent = `${bucketCommentText}`;
+
+    //         bucketDisplayContent.appendChild(showComment);
+    //         showComment.appendChild(showCommentAuthor);
+    //         showComment.appendChild(showCommentTime);
+    //         showComment.appendChild(showCommentText);
+    //     }
+    // }
+
+
+    bucketDisplayCloseButton.addEventListener('click', function() {
+        closeBucketDisplay()
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target === bucketDisplayBackgroundWindow) {
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            
+        }
+    });
+
+    bucketDisplayFollowButton.addEventListener('click', function() {
+        if (followingUser) {
+            followingUser = false;
+            removeUserFromFollowing()
+            unFollowUserFunction()
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount);
+        } else {
+            followingUser = true;
+            addUserToFollowing();
+            followUserFunction();
+            document.body.removeChild(bucketDisplayBackgroundWindow);
+            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
+        }
+    });
+
+    bucketDisplayMessageButton.addEventListener('click', function() {
+        alert('This functionality is still in development thanks for your patience');
+    })
+
+    bucketDisplayCommentButton.addEventListener('click', function() {
+        writeComment(userName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+    })
+
+    bucketDisplayMooCount.addEventListener('click', function() {
+        alert('This functionality is still in development thanks for your patience');
+    })
+
+    bucketDisplayGoatCount.addEventListener('click', function() {
+        alert('This functionality is still in development thanks for your patience');
+    })
+    // const currentUserName = bucketAuthor;
+
+    // bucketDisplayCommentButton.addEventListener('click', function() {
+        
+    //     writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
+    // });
+
+    // bucketDisplayDeletePostButton.addEventListener('click', function() {
+    //     confirmDelete(bucketID)
+    // })
+
+    // bucketDisplayEditPostButton.addEventListener('click', function() {
+    //     openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
+    // })
+}
+
+async function writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments) {
+    const displayCreateCommentHeaderContainer = document.createElement('div');
+    const displayCreateCommentHeader = document.createElement('h3');
+    const displayCreateCommentInput = document.createElement('textarea');
+    const displayCreateCommentPostButton = document.createElement('div');
+
+    displayCreateCommentHeader.textContent = `@${currentUserName}:`;
+    displayCreateCommentPostButton.classList.add('action-button');
+    displayCreateCommentPostButton.classList.add('all-text');
+    displayCreateCommentHeaderContainer.classList.add('display-create-comment-header');
+    displayCreateCommentPostButton.textContent = 'Post';
+    displayCreateCommentInput.classList.add('add-comment-text-content-container');
+    displayCreateCommentHeader.classList.add('all-text');
+
+    displayCreateCommentPostButton.addEventListener('click', function() {
+        const commentToPost = displayCreateCommentInput.value;
+        postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments);
+    });
+    
+    bucketDisplayContentComments.appendChild(displayCreateCommentHeaderContainer);
+    displayCreateCommentHeaderContainer.appendChild(displayCreateCommentHeader);
+    bucketDisplayContentComments.appendChild(displayCreateCommentInput);
+    bucketDisplayContentComments.appendChild(displayCreateCommentPostButton);
+    displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+
+    setTimeout(() => {
+        displayCreateCommentInput.focus();
+    },550);
+}
+
+async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount) {
+    console.log('bucket comments 5', bucketComments)
+    const newCommentTimestamp = Date.now();
+    const newCommentAuthor = currentUserName;
+    const newComment = {
+        commentAuthor: newCommentAuthor,
+        commentTime: newCommentTimestamp,
+        commentText: commentToPost,
+        commentID: `comment${currentUserName}${newCommentTimestamp}`,
+        mooCount: 0,
+        goatCount: 0,
+    }
+    try {
+        const findPostAuthorQuery = query(usersCollection, where('userName', '==', bucketAuthor));
+        const bucketAuthorQuerySnapshot = await getDocs(findPostAuthorQuery);
+
+        if (!bucketAuthorQuerySnapshot.empty) {
+            const bucketAuthorDocID = bucketAuthorQuerySnapshot.docs[0].id;
+
+            const bucketAuthorDocRef = doc(firestore, 'users', bucketAuthorDocID);
+            const bucketAuthorDocSnap = await getDoc(bucketAuthorDocRef);
+
+            if (bucketAuthorDocSnap.exists()) {
+                const workingPostData = bucketAuthorDocSnap.data();
+                const workingPostDataBuckets = workingPostData.buckets;
+
+                if (bucketID in workingPostDataBuckets) {
+                    const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
+                    const workingPostDataActiveBucketPostComments = workingPostDataActiveBucket['bucketComments']
+                    console.log(newComment);
+                    console.log(workingPostDataActiveBucket);
+                    workingPostDataActiveBucketPostComments[`comment${currentUserName}${newCommentTimestamp}`] = newComment;
+                    await updateDoc(bucketAuthorDocRef, {buckets: workingPostDataBuckets })
+                    // alert('your comment was posted... still working out the kinks, just reload the page and open the bucket again to see it, thanks! @Dev')
+                    .then(() => {
+                        // document.body.removeChild(bucketDisplayBackgroundWindow)
+                        const bucketDisplayContentComments = document.getElementById('bucket-display-content')
+                        clearComments(bucketDisplayContentComments)
+                        console.log(workingPostDataActiveBucketPostComments)
+                        loadComments(workingPostDataActiveBucketPostComments, bucketDisplayContentComments)   
+                        console.log('idk if it worked or not')
+                    })
+                } else {
+                    console.log('Bucket ID not found in user data.');
+                    console.log(workingPostDataBuckets)
+                }
+            } else {
+                console.log('No such document for the bucket author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function clearComments(bucketDisplayContentComments) {
+    while (bucketDisplayContentComments.firstChild) {
+        const firstChild = bucketDisplayContentComments.firstChild;
+        bucketDisplayContentComments.removeChild(firstChild);
+    }
+}
+
+function loadComments(bucketComments, bucketDisplayContentComments) {
     for (const comment in bucketComments) {
         if (bucketComments.hasOwnProperty(comment)) {
             const bucketCommentID = bucketComments[comment];
@@ -455,59 +655,10 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
             showCommentTime.textContent = `${completeBucketCommentTime}`
             showCommentText.textContent = `${bucketCommentText}`;
 
-            bucketDisplayContent.appendChild(showComment);
+            bucketDisplayContentComments.appendChild(showComment);
             showComment.appendChild(showCommentAuthor);
             showComment.appendChild(showCommentTime);
             showComment.appendChild(showCommentText);
         }
     }
-
-    bucketDisplayCloseButton.addEventListener('click', function() {
-        closeBucketDisplay()
-    });
-    window.addEventListener('click', (event) => {
-        if (event.target === bucketDisplayBackgroundWindow) {
-            document.body.removeChild(bucketDisplayBackgroundWindow);
-            
-        }
-    });
-
-    bucketDisplayFollowButton.addEventListener('click', function() {
-        if (followingUser) {
-            followingUser = false;
-            removeUserFromFollowing()
-            unFollowUserFunction()
-            document.body.removeChild(bucketDisplayBackgroundWindow);
-            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount);
-        } else {
-            followingUser = true;
-            addUserToFollowing();
-            followUserFunction();
-            document.body.removeChild(bucketDisplayBackgroundWindow);
-            loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount)
-        }
-    });
-
-    bucketDisplayMessageButton.addEventListener('click', function() {
-        alert('This functionality is still in development thanks for your patience');
-    })
-
-    bucketDisplayCommentButton.addEventListener('click', function() {
-        alert('This functionality is still in development thanks for your patience');
-    })
-
-    // const currentUserName = bucketAuthor;
-
-    // bucketDisplayCommentButton.addEventListener('click', function() {
-        
-    //     writeComment(currentUserName, bucketDisplayContent, bucketID, bucketAuthor, bucketText, bucketComments)
-    // });
-
-    // bucketDisplayDeletePostButton.addEventListener('click', function() {
-    //     confirmDelete(bucketID)
-    // })
-
-    // bucketDisplayEditPostButton.addEventListener('click', function() {
-    //     openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
-    // })
 }

@@ -731,6 +731,10 @@ function writeComment(currentUserName, bucketDisplayContentComments, bucketID, b
     bucketDisplayContentComments.appendChild(displayCreateCommentPostButton);
 
     displayCreateCommentPostButton.scrollIntoView({ behavior: 'smooth' });
+    
+    setTimeout(() => {
+        displayCreateCommentInput.focus();
+    },550);
 }
 
 async function postComment(commentToPost, currentUserName, bucketID, bucketAuthor, bucketText, bucketComments, mooCount, goatCount) {
