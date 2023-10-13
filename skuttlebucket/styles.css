@@ -1285,9 +1285,10 @@ a {
 #window-display-messages {
     width: 90%;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     min-height: 14rem;
+    overflow-y: auto;
 }
 
 .send-message-block {

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 
@@ -96,7 +96,7 @@ const formattedJoinDate = `${joinMonth} ${joinYear}`;
 
 const bucketTimestampArray = Object.values(originalUserBuckets);
 
-const userChats = userData[`messages`];
+let userChats = userData[`messages`];
 
 const userName = userData.userName;
 
@@ -1032,6 +1032,7 @@ function openChatWindow() {
 }
 
 function loadChats() {
+    console.log(userChats)
     const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
     for (const message in userChats) {
         const chatButton = document.createElement('button');
@@ -1040,7 +1041,8 @@ function loadChats() {
         const conversationID = message
         chatButton.textContent = `Chat with @${conversationID}`
         chatMainDisplayContentChats.appendChild(chatButton);
-
+        console.log(conversationID);
+        console.log(message)
         chatButton.addEventListener('click', function() {
             loadChatBlock(conversationID);
         })
@@ -1090,43 +1092,54 @@ function loadChatBlock (conversationID) {
     messageMainDisplaySendMessageBlock.appendChild(messageMainDisplayTextArea);
     messageMainDisplaySendMessageBlock.appendChild(messageMainDisplaySendNewMessageButton);
 
-
+    
 
     messageMainDisplaySendNewMessageButton.addEventListener('click', function() {
-        // alert(`we're still working on this. Thanks for your patience. @Dev`)
         sendMessage(conversationID)
     })
-    window.addEventListener('click', (event) => {
-        if (event.target === messageMainDisplayBackgroundWindow) {
-            document.body.removeChild(messageMainDisplayBackgroundWindow);
+
+    messageMainDisplaySendNewMessageButton.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            sendMessage(conversationID)
         }
     })
 
-    // console.log('this should be it', userChats[conversationID]);
-    // if (userChats.hasOwnProperty(conversationID)) {
-    //     const messagesToLoad = userChats[conversationID];
-    //     const messagesToLoadArray = Object.entries(messagesToLoad);
-    //     messagesToLoadArray.sort((a,b) => a[0] - b[0]);
-    //     console.log(messagesToLoadArray)
-    //     const sortedMessagesToLoad = {};
-    //     messagesToLoadArray.forEach(entry => {
-    //         const [timestamp, value] = entry;
-    //         sortedMessagesToLoad[timestamp] = value
-    //     });
+    
 
-    //     console.log('this is sorted ', sortedMessagesToLoad);
+    pullChatData(conversationID)
 
-    // } else {
-    //     console.log('something went wrong')
-    // }
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+        if (doc.exists()) {
+            const userDataChangeData = doc.data();
+            pullChatData(conversationID)
+            console.log('a change was made')
+        }
+    })
 
-    loadConversation(conversationID);
+    window.addEventListener('click', (event) => {
+        if (event.target === messageMainDisplayBackgroundWindow) {
+            document.body.removeChild(messageMainDisplayBackgroundWindow);
+            unsubscribe()
+            console.log('unsubscribed i think?')
+        }
+    })
 }
 
-function loadConversation(conversationID) {
-    const conversation = userChats[conversationID] 
-    for (const message in conversation) {
-        const messageObject = conversation[message];
+function loadConversation(conversationID, currentConversation) {
+        console.log(conversationID, currentConversation)
+        const messagesToLoad = currentConversation
+        const messagesToLoadArray = Object.entries(messagesToLoad);
+        messagesToLoadArray.sort((a,b) => b[0] - a[0]);
+        var sortedMessagesToLoad = {};
+        messagesToLoadArray.forEach(entry => {
+            const [timestamp, value] = entry;
+            sortedMessagesToLoad[timestamp] = value
+        });
+
+        console.log('this is sorted ', sortedMessagesToLoad);
+
+    for (const message in sortedMessagesToLoad) {
+        const messageObject = sortedMessagesToLoad[message];
         const individualMessageBlock = document.createElement('div');
         const individualMessageTime = document.createElement('div');
         const individualMessageText = document.createElement('div');
@@ -1148,7 +1161,9 @@ function loadConversation(conversationID) {
 
 }
 
-async function sendMessage(conversationID) {
+async function sendMessage(conversationID, userChats) {
+    const newMessageText = document.getElementById('message-main-display-textarea').value
+    const inputArea = document.getElementById('message-main-display-textarea');
     try {
         const findMessageAuthorQuery = query(usersCollection, where('userName', '==', userName));
         const messageAuthorQuerySnapshot = await getDocs(findMessageAuthorQuery);
@@ -1165,7 +1180,6 @@ async function sendMessage(conversationID) {
 
                 if (conversationID in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[conversationID];
-                    const newMessageText = document.getElementById('message-main-display-textarea').value
                     let newMessageToAdd = {
                         messageText: newMessageText,
                         timestamp: Date.now(),
@@ -1192,11 +1206,11 @@ async function sendMessage(conversationID) {
         console.error('Error:', error);
     }
 
+    inputArea.value = '';
 
     try {
         const findMessageRecipientQuery = query(usersCollection, where('userName', '==', conversationID));
         const messageRecipientQuerySnapshot = await getDocs(findMessageRecipientQuery);
-        console.log(conversationID)
         if (!messageRecipientQuerySnapshot.empty) {
             const messageRecipientDocID = messageRecipientQuerySnapshot.docs[0].id;
 
@@ -1206,16 +1220,11 @@ async function sendMessage(conversationID) {
             if (messageRecipientDocSnap.exists()) {
                 const workingConversationData = messageRecipientDocSnap.data();
                 const workingConversationDataChats = workingConversationData.messages;
-                console.log(workingConversationDataChats)
-                console.log(userName)
                 if (workingConversationDataChats.hasOwnProperty(userName)) {
-                    console.log('this is the way')
                 }
                 if (userName in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[userName];
-                    const newMessageText = document.getElementById('message-main-display-textarea').value
-                    const inputArea = document.getElementById('message-main-display-textarea');
-                    inputArea.value = '';
+
                     
                     let newMessageToAdd = {
                         messageText: newMessageText,
@@ -1227,7 +1236,10 @@ async function sendMessage(conversationID) {
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
 
-                    await updateDoc(messageRecipientDocRef, { messages: workingConversationDataChats });
+                    await updateDoc(messageRecipientDocRef, { messages: workingConversationDataChats })
+                    .then(() => {
+                        pullChatData(conversationID)
+                    })
                   } else {
                     console.log('userName not found in user data.');
                   }
@@ -1241,3 +1253,28 @@ async function sendMessage(conversationID) {
         console.error('Error:', error);
     }
 }
+
+function clearMessages() {
+    const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
+    while (messageMainDisplayContentMessages.firstChild) {
+        const firstChild = messageMainDisplayContentMessages.firstChild;
+        messageMainDisplayContentMessages.removeChild(firstChild)
+    }
+}
+
+async function pullChatData(conversationID) {
+    try {
+        const refreshChatSnap = await getDoc(docRef);
+        if (refreshChatSnap.exists()) {
+            const userFullData = refreshChatSnap.data();
+            userChats = userFullData.messages;
+            console.log('current convo', userChats[conversationID])
+            const currentConversation = userChats[conversationID]
+            clearMessages()
+            loadConversation(conversationID, currentConversation);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
