@@ -86,6 +86,8 @@ const followingList = userData.followingList
 
 let activeComment = false;
 
+const openChatWindowButton = document.getElementById('chat-button')
+
 const joinMonth = userJoinDate.toLocaleString('default', { month: 'long' });
 
 const joinYear = userJoinDate.getFullYear();
@@ -93,6 +95,12 @@ const joinYear = userJoinDate.getFullYear();
 const formattedJoinDate = `${joinMonth} ${joinYear}`; 
 
 const bucketTimestampArray = Object.values(originalUserBuckets);
+
+const userChats = userData[`messages`];
+
+const userName = userData.userName;
+
+console.log(userName);
 
 bucketTimestampArray.sort((a, b) => b.bucketTimestamp - a.bucketTimestamp);
 
@@ -402,8 +410,6 @@ function showFollowing() {
 }
 
 function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount, goatCount) {
-    console.log('author: ', bucketAuthor);
-    console.log('comments', bucketComments);
     const bucketDisplayBackgroundWindow = document.createElement('div');
     const bucketDisplayContent = document.createElement('div');
     const bucketDisplayContentComments = document.createElement('div');
@@ -439,11 +445,9 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
     bucketDisplayDeletePostButton.classList.add('action-button');
     bucketDisplayCommentButton.classList.add('action-button');
     bucketDisplayEditPostButton.classList.add('action-button');
-    // bucketDisplayViewUserProfileButton.classList.add('action-button');
     bucketDisplayDeletePostButtonTextContent.classList.add('all-text');
     bucketDisplayCommentButtonTextContent.classList.add('all-text');
     bucketDisplayEditPostButtonTextContent.classList.add('all-text');
-    // bucketDisplayViewUserProfileButtonTextContent.classList.add('all-text');
     bucketDisplayCountersContainer.classList.add('counters-container')
     bucketDisplayMooCount.classList.add('moo-count');
     bucketDisplayMooCount.classList.add('all-text');
@@ -548,8 +552,7 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
             openEditBucketWindow(bucketText, currentUserName, bucketID, bucketAuthor, bucketComments, mooCount, goatCount)
         }
     })
-    // bucketDisplayMooCount.setAttribute('tabindex', '0.6');
-    // bucketDisplayGoatCount.setAttribute('tabindex', '0.7');
+
 }
 
 async function deletePost(bucketID) {
@@ -710,6 +713,10 @@ logoutButton.addEventListener('click', function() {
 
 timelineButton.addEventListener('click', function() {
     window.location.href = 'timeline.html';
+})
+
+openChatWindowButton.addEventListener('click', function() {
+    openChatWindow();
 })
 
 function confirmDelete(bucketID) {
@@ -968,5 +975,269 @@ function clearComments(bucketDisplayContentComments) {
     while (bucketDisplayContentComments.firstChild) {
         const firstChild = bucketDisplayContentComments.firstChild;
         bucketDisplayContentComments.removeChild(firstChild);
+    }
+}
+
+function openChatWindow() {
+    const chatMainDisplayBackgroundWindow = document.createElement('div');
+    const chatMainDisplayContent = document.createElement('div');
+    const chatMainDisplayContentChats = document.createElement('div');
+    const chatMainDisplayCloseButton = document.createElement('span');
+    const chatMainDisplayHeaderContainer = document.createElement('div');
+    const chatMainDisplayHeader = document.createElement('h3');
+    const chatMainDisplayUpperDiv = document.createElement('div');
+    const chatMainDisplayLowerDiv = document.createElement('div');
+    const chatMainDisplayNewChatButton = document.createElement('div');
+    const chatMainDisplayNewChatButtonTextContent = document.createElement('p');
+
+    chatMainDisplayContentChats.id = 'bucket-display-chats'
+    chatMainDisplayBackgroundWindow.id = 'chat-display-background-window'
+    chatMainDisplayBackgroundWindow.classList.add('chat-display-modal');
+    chatMainDisplayContentChats.classList.add('chats-column');
+    chatMainDisplayContent.classList.add('chat-display-modal-content');
+    chatMainDisplayCloseButton.classList.add('close');
+    chatMainDisplayBackgroundWindow.style.display = 'block';
+    chatMainDisplayHeaderContainer.classList.add('chat-display-header-container');
+    chatMainDisplayHeader.classList.add('all-text');
+    chatMainDisplayNewChatButton.classList.add('action-button');
+    chatMainDisplayNewChatButtonTextContent.classList.add('all-text');
+    chatMainDisplayHeader.textContent = `Your Messages`;
+    chatMainDisplayNewChatButtonTextContent.textContent = 'Message Someone New';
+    chatMainDisplayUpperDiv.classList.add('chat-divider')
+    chatMainDisplayLowerDiv.classList.add('chat-divider')
+
+    chatMainDisplayNewChatButton.focus();
+
+    document.body.appendChild(chatMainDisplayBackgroundWindow);
+    chatMainDisplayBackgroundWindow.appendChild(chatMainDisplayContent);
+    chatMainDisplayContent.appendChild(chatMainDisplayCloseButton);
+    chatMainDisplayContent.appendChild(chatMainDisplayHeaderContainer);
+    chatMainDisplayHeaderContainer.appendChild(chatMainDisplayHeader);
+    chatMainDisplayContent.appendChild(chatMainDisplayNewChatButton);
+    chatMainDisplayNewChatButton.appendChild(chatMainDisplayNewChatButtonTextContent);
+    chatMainDisplayContent.appendChild(chatMainDisplayUpperDiv);
+    chatMainDisplayContent.appendChild(chatMainDisplayContentChats);
+    chatMainDisplayContent.appendChild(chatMainDisplayLowerDiv);
+
+    chatMainDisplayNewChatButton.addEventListener('click', function() {
+        alert(`we're still working on this. Thanks for your patience. @Dev`)
+    })
+    window.addEventListener('click', (event) => {
+        if (event.target === chatMainDisplayBackgroundWindow) {
+            document.body.removeChild(chatMainDisplayBackgroundWindow);
+        }
+    })
+
+    loadChats();
+}
+
+function loadChats() {
+    const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
+    for (const message in userChats) {
+        const chatButton = document.createElement('button');
+        chatButton.classList.add('message-option');
+        chatButton.classList.add('all-text');
+        const conversationID = message
+        chatButton.textContent = `Chat with @${conversationID}`
+        chatMainDisplayContentChats.appendChild(chatButton);
+
+        chatButton.addEventListener('click', function() {
+            loadChatBlock(conversationID);
+        })
+    }
+}
+
+function loadChatBlock (conversationID) {
+    const messageMainDisplayBackgroundWindow = document.createElement('div');
+    const messageMainDisplayContent = document.createElement('div');
+    const messageMainDisplayContentMessages = document.createElement('div');
+    const messageMainDisplayCloseButton = document.createElement('span');
+    const messageMainDisplayHeaderContainer = document.createElement('div');
+    const messageMainDisplayHeader = document.createElement('h3');
+    const messageMainDisplaySendMessageBlock = document.createElement('div');
+    const messageMainDisplayTextArea = document.createElement('textarea');
+    const messageMainDisplaySendNewMessageButton = document.createElement('button');
+
+    messageMainDisplayContentMessages.id = 'window-display-messages'
+    messageMainDisplayTextArea.id = `message-main-display-textarea`
+    messageMainDisplayBackgroundWindow.id = 'message-display-background-window'
+    messageMainDisplayBackgroundWindow.classList.add('message-display-modal');
+    messageMainDisplayContentMessages.classList.add('messages-column');
+    messageMainDisplayContent.classList.add('message-display-modal-content');
+    messageMainDisplayCloseButton.classList.add('close');
+    messageMainDisplayBackgroundWindow.style.display = 'block';
+    messageMainDisplayHeaderContainer.classList.add('message-display-header-container');
+    messageMainDisplayHeader.classList.add('all-text');
+    messageMainDisplaySendNewMessageButton.classList.add('action-button');
+    messageMainDisplaySendNewMessageButton.classList.add('all-text');
+    messageMainDisplayHeader.textContent = `Messages With @${conversationID}`;
+    messageMainDisplaySendNewMessageButton.textContent = 'Send';
+    messageMainDisplaySendMessageBlock.classList.add('send-message-block')
+    messageMainDisplayTextArea.classList.add('message-input')
+    messageMainDisplayTextArea.classList.add('all-text');
+    messageMainDisplaySendNewMessageButton.classList.add('action-button')
+    messageMainDisplaySendNewMessageButton.classList.add('send-message-button')
+
+    messageMainDisplayTextArea.focus();
+
+    document.body.appendChild(messageMainDisplayBackgroundWindow);
+    messageMainDisplayBackgroundWindow.appendChild(messageMainDisplayContent);
+    messageMainDisplayContent.appendChild(messageMainDisplayCloseButton);
+    messageMainDisplayContent.appendChild(messageMainDisplayHeaderContainer);
+    messageMainDisplayHeaderContainer.appendChild(messageMainDisplayHeader);
+    messageMainDisplayContent.appendChild(messageMainDisplayContentMessages);
+    messageMainDisplayContent.appendChild(messageMainDisplaySendMessageBlock);
+    messageMainDisplaySendMessageBlock.appendChild(messageMainDisplayTextArea);
+    messageMainDisplaySendMessageBlock.appendChild(messageMainDisplaySendNewMessageButton);
+
+
+
+    messageMainDisplaySendNewMessageButton.addEventListener('click', function() {
+        // alert(`we're still working on this. Thanks for your patience. @Dev`)
+        sendMessage(conversationID)
+    })
+    window.addEventListener('click', (event) => {
+        if (event.target === messageMainDisplayBackgroundWindow) {
+            document.body.removeChild(messageMainDisplayBackgroundWindow);
+        }
+    })
+
+    // console.log('this should be it', userChats[conversationID]);
+    // if (userChats.hasOwnProperty(conversationID)) {
+    //     const messagesToLoad = userChats[conversationID];
+    //     const messagesToLoadArray = Object.entries(messagesToLoad);
+    //     messagesToLoadArray.sort((a,b) => a[0] - b[0]);
+    //     console.log(messagesToLoadArray)
+    //     const sortedMessagesToLoad = {};
+    //     messagesToLoadArray.forEach(entry => {
+    //         const [timestamp, value] = entry;
+    //         sortedMessagesToLoad[timestamp] = value
+    //     });
+
+    //     console.log('this is sorted ', sortedMessagesToLoad);
+
+    // } else {
+    //     console.log('something went wrong')
+    // }
+
+    loadConversation(conversationID);
+}
+
+function loadConversation(conversationID) {
+    const conversation = userChats[conversationID] 
+    for (const message in conversation) {
+        const messageObject = conversation[message];
+        const individualMessageBlock = document.createElement('div');
+        const individualMessageTime = document.createElement('div');
+        const individualMessageText = document.createElement('div');
+        const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
+        individualMessageText.textContent = messageObject['messageText'];
+        individualMessageTime.textContent = `${conversationID} at: ${messageObject[`timestamp`]}`
+
+        if (messageObject[`direction`] === 'sent') {
+            individualMessageBlock.classList.add('sent-message-block')
+        } else {
+            individualMessageBlock.classList.add('received-message-block')
+        }
+
+        messageMainDisplayContentMessages.appendChild(individualMessageBlock);
+        individualMessageBlock.appendChild(individualMessageTime);
+        individualMessageBlock.appendChild(individualMessageText);
+    }
+
+
+}
+
+async function sendMessage(conversationID) {
+    try {
+        const findMessageAuthorQuery = query(usersCollection, where('userName', '==', userName));
+        const messageAuthorQuerySnapshot = await getDocs(findMessageAuthorQuery);
+
+        if (!messageAuthorQuerySnapshot.empty) {
+            const messageAuthorDocID = messageAuthorQuerySnapshot.docs[0].id;
+
+            const messageAuthorDocRef = doc(firestore, 'users', messageAuthorDocID);
+            const messageAuthorDocSnap = await getDoc(messageAuthorDocRef);
+
+            if (messageAuthorDocSnap.exists()) {
+                const workingConversationData = messageAuthorDocSnap.data();
+                const workingConversationDataChats = workingConversationData.messages;
+
+                if (conversationID in workingConversationDataChats) {
+                    const workingConversationDataActiveChat = workingConversationDataChats[conversationID];
+                    const newMessageText = document.getElementById('message-main-display-textarea').value
+                    let newMessageToAdd = {
+                        messageText: newMessageText,
+                        timestamp: Date.now(),
+                        direction: 'sent',
+                    }
+                    const key = Date.now().toString();
+                    workingConversationDataActiveChat[key] = newMessageToAdd;
+
+                    workingConversationDataChats[conversationID] = workingConversationDataActiveChat
+
+                    await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats });
+                    console.log('newMessage object', workingConversationDataChats);
+                    // displayGoatCount(usersCollection, bucketAuthor, bucketID)
+                  } else {
+                    console.log('conversationID not found in user data.');
+                  }
+            } else {
+                console.log('No such document for the message author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+
+    try {
+        const findMessageRecipientQuery = query(usersCollection, where('userName', '==', conversationID));
+        const messageRecipientQuerySnapshot = await getDocs(findMessageRecipientQuery);
+        console.log(conversationID)
+        if (!messageRecipientQuerySnapshot.empty) {
+            const messageRecipientDocID = messageRecipientQuerySnapshot.docs[0].id;
+
+            const messageRecipientDocRef = doc(firestore, 'users', messageRecipientDocID);
+            const messageRecipientDocSnap = await getDoc(messageRecipientDocRef);
+
+            if (messageRecipientDocSnap.exists()) {
+                const workingConversationData = messageRecipientDocSnap.data();
+                const workingConversationDataChats = workingConversationData.messages;
+                console.log(workingConversationDataChats)
+                console.log(userName)
+                if (workingConversationDataChats.hasOwnProperty(userName)) {
+                    console.log('this is the way')
+                }
+                if (userName in workingConversationDataChats) {
+                    const workingConversationDataActiveChat = workingConversationDataChats[userName];
+                    const newMessageText = document.getElementById('message-main-display-textarea').value
+                    const inputArea = document.getElementById('message-main-display-textarea');
+                    inputArea.value = '';
+                    
+                    let newMessageToAdd = {
+                        messageText: newMessageText,
+                        timestamp: Date.now(),
+                        direction: 'received',
+                    }
+                    const key = Date.now().toString();
+                    workingConversationDataActiveChat[key] = newMessageToAdd;
+
+                    workingConversationDataChats[userName] = workingConversationDataActiveChat
+
+                    await updateDoc(messageRecipientDocRef, { messages: workingConversationDataChats });
+                  } else {
+                    console.log('userName not found in user data.');
+                  }
+            } else {
+                console.log('No such document for the message author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
