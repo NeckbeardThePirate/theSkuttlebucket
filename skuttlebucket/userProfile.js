@@ -1126,7 +1126,6 @@ function loadChatBlock (conversationID) {
 }
 
 function loadConversation(conversationID, currentConversation) {
-        console.log(conversationID, currentConversation)
         const messagesToLoad = currentConversation
         const messagesToLoadArray = Object.entries(messagesToLoad);
         messagesToLoadArray.sort((a,b) => b[0] - a[0]);
@@ -1136,7 +1135,6 @@ function loadConversation(conversationID, currentConversation) {
             sortedMessagesToLoad[timestamp] = value
         });
 
-        console.log('this is sorted ', sortedMessagesToLoad);
 
     for (const message in sortedMessagesToLoad) {
         const messageObject = sortedMessagesToLoad[message];
@@ -1158,12 +1156,13 @@ function loadConversation(conversationID, currentConversation) {
         individualMessageBlock.appendChild(individualMessageText);
     }
 
-
+    messageMainDisplayContentMessages.scrollTop = messageMainDisplayContentMessages.scrollHeight;
 }
 
 async function sendMessage(conversationID, userChats) {
     const newMessageText = document.getElementById('message-main-display-textarea').value
     const inputArea = document.getElementById('message-main-display-textarea');
+    inputArea.value = '';
     try {
         const findMessageAuthorQuery = query(usersCollection, where('userName', '==', userName));
         const messageAuthorQuerySnapshot = await getDocs(findMessageAuthorQuery);
@@ -1190,9 +1189,9 @@ async function sendMessage(conversationID, userChats) {
 
                     workingConversationDataChats[conversationID] = workingConversationDataActiveChat
 
-                    await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats });
+                    await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats })
+
                     console.log('newMessage object', workingConversationDataChats);
-                    // displayGoatCount(usersCollection, bucketAuthor, bucketID)
                   } else {
                     console.log('conversationID not found in user data.');
                   }
@@ -1206,7 +1205,6 @@ async function sendMessage(conversationID, userChats) {
         console.error('Error:', error);
     }
 
-    inputArea.value = '';
 
     try {
         const findMessageRecipientQuery = query(usersCollection, where('userName', '==', conversationID));
