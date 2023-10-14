@@ -1162,7 +1162,6 @@ function loadConversation(conversationID, currentConversation) {
 async function sendMessage(conversationID, userChats) {
     const newMessageText = document.getElementById('message-main-display-textarea').value
     const inputArea = document.getElementById('message-main-display-textarea');
-    inputArea.value = '';
     try {
         const findMessageAuthorQuery = query(usersCollection, where('userName', '==', userName));
         const messageAuthorQuerySnapshot = await getDocs(findMessageAuthorQuery);
@@ -1190,7 +1189,9 @@ async function sendMessage(conversationID, userChats) {
                     workingConversationDataChats[conversationID] = workingConversationDataActiveChat
 
                     await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats })
-
+                    .then(() => {
+                        inputArea.value = '';
+                    })
                     console.log('newMessage object', workingConversationDataChats);
                   } else {
                     console.log('conversationID not found in user data.');
