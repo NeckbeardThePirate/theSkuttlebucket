@@ -1156,7 +1156,12 @@ function loadConversation(conversationID, currentConversation) {
         individualMessageBlock.appendChild(individualMessageText);
     }
 
+    const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
+
+
     messageMainDisplayContentMessages.scrollTop = messageMainDisplayContentMessages.scrollHeight;
+    
+
 }
 
 async function sendMessage(conversationID, userChats) {
@@ -1191,6 +1196,8 @@ async function sendMessage(conversationID, userChats) {
                     await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats })
                     .then(() => {
                         inputArea.value = '';
+                        // const inputArea = document.getElementById('message-main-display-textarea');
+                        inputArea.focus();
                     })
                     console.log('newMessage object', workingConversationDataChats);
                   } else {
