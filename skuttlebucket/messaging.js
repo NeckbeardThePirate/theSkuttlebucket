@@ -1,8 +1,23 @@
 import { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc } from './userProfile.js';
-
+// import { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer } from './search.js';
 let userMessageChats = userChats
 
 const openChatWindowButton = document.getElementById('chat-button')
+
+
+const allUsersRef = await getDocs(usersCollection);
+
+const allUserNames = [];
+
+let filteredUsers = [];
+
+allUsersRef.forEach((doc) => {
+    if(doc.exists()) {
+        const userData = doc.data();
+        const userName = userData.userName;
+        allUserNames.push(userName);
+    }
+})
 
 openChatWindowButton.addEventListener('click', function() {
     openChatWindow();
@@ -50,7 +65,8 @@ function openChatWindow() {
     chatMainDisplayContent.appendChild(chatMainDisplayLowerDiv);
 
     chatMainDisplayNewChatButton.addEventListener('click', function() {
-        alert(`we're still working on this. Thanks for your patience. @Dev`)
+        // alert(`we're still working on this. Thanks for your patience. @Dev`)
+        displayNewChatUserSearch();
     })
     window.addEventListener('click', (event) => {
         if (event.target === chatMainDisplayBackgroundWindow) {
@@ -62,7 +78,6 @@ function openChatWindow() {
 }
 
 function loadChats() {
-    console.log(userMessageChats)
     const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
     for (const message in userMessageChats) {
         const chatButton = document.createElement('button');
@@ -146,7 +161,6 @@ function loadChatBlock (conversationID) {
         if (doc.exists()) {
             const userDataChangeData = doc.data();
             pullChatData(conversationID)
-            console.log('a change was made')
         }
     })
 
@@ -154,7 +168,6 @@ function loadChatBlock (conversationID) {
         if (event.target === messageMainDisplayBackgroundWindow) {
             document.body.removeChild(messageMainDisplayBackgroundWindow);
             unsubscribe()
-            console.log('unsubscribed i think?')
         }
     })
 }
@@ -230,10 +243,8 @@ async function sendMessage(conversationID, userMessageChats) {
                     await updateDoc(messageAuthorDocRef, { messages: workingConversationDataChats })
                     .then(() => {
                         inputArea.value = '';
-                        // const inputArea = document.getElementById('message-main-display-textarea');
                         inputArea.focus();
                     })
-                    console.log('newMessage object', workingConversationDataChats);
                   } else {
                     console.log('conversationID not found in user data.');
                   }
@@ -308,7 +319,6 @@ async function pullChatData(conversationID) {
         if (refreshChatSnap.exists()) {
             const userFullData = refreshChatSnap.data();
             userMessageChats = userFullData.messages;
-            console.log('current convo', userMessageChats[conversationID])
             const currentConversation = userMessageChats[conversationID]
             clearMessages()
             loadConversation(conversationID, currentConversation);
@@ -318,3 +328,197 @@ async function pullChatData(conversationID) {
     }
 }
 
+async function displayNewChatUserSearch() {
+    const chatUserSearchModal = document.createElement('div')
+    const chatUserSearchModalContent = document.createElement('div')
+    const chatUserSearchModalHeaderContainer = document.createElement('div')
+    const chatUserSearchModalHeaderContent = document.createElement('h2')
+    const chatUserSearchModalInputBar = document.createElement('input')
+    const chatUserSearchModalSearchButton = document.createElement('button')
+    const chatUserSearchModalResultsContainer = document.createElement('div')
+
+    chatUserSearchModal.classList.add('modal');
+    chatUserSearchModalContent.classList.add('modal-content');
+    chatUserSearchModalHeaderContainer.classList.add('modal-header-container');
+    chatUserSearchModalHeaderContent.classList.add('all-text');
+    chatUserSearchModalInputBar.classList.add('search-bar')
+    chatUserSearchModalInputBar.placeholder = '@dev';
+    chatUserSearchModalSearchButton.classList.add('action-button');
+
+    chatUserSearchModalHeaderContent.textContent = 'Find a User';
+    chatUserSearchModalSearchButton.textContent = 'Search'
+    chatUserSearchModalResultsContainer.id = 'results-container'
+
+    chatUserSearchModalSearchButton.id = 'button-for-searching'
+
+    chatUserSearchModal.style.display = 'block';
+
+    window.addEventListener('click', function() {
+        if (event.target === chatUserSearchModal) {
+            document.removeChild(chatUserSearchModal)
+        }
+    })
+
+    document.body.appendChild(chatUserSearchModal);
+    chatUserSearchModal.appendChild(chatUserSearchModalContent);
+    chatUserSearchModalContent.appendChild(chatUserSearchModalHeaderContainer)
+    chatUserSearchModalHeaderContainer.appendChild(chatUserSearchModalHeaderContent);
+    chatUserSearchModalContent.appendChild(chatUserSearchModalInputBar);
+    chatUserSearchModalContent.appendChild(chatUserSearchModalSearchButton);
+    chatUserSearchModalContent.appendChild(chatUserSearchModalResultsContainer);
+
+    chatUserSearchModalSearchButton.addEventListener('click', function() {
+        chatLoadSearchResults()
+        // alert('still working on it sorry')
+    })
+
+}
+
+// export { chatUserSearchModalResultsContainer }
+
+function chatLoadSearchResults() {
+    console.log(chatUserSearchModalResultsContainer)
+    while (chatUserSearchModalResultsContainer.firstChild) {
+        chatUserSearchModalResultsContainer.removeChild(chatUserSearchModalResultsContainer.firstChild)
+    }
+    filteredUsers = []
+    var searchTerm = searchBarField.value;
+    chatCheckForMatchingUserNames(allUserNames, searchTerm);
+    chatDisplayMatchingSearchResults(filteredUsers);
+};
+
+function checkForMatchingUserNames(allUserNames, searchTerm) {
+    filteredUsers = [];
+    for (let i = 0; i < allUserNames.length; i++) {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        const lowerAllUserNames = allUserNames[i].toLowerCase();
+        if(lowerAllUserNames.includes(lowerSearchTerm)) {
+            filteredUsers.push(allUserNames[i]);
+        }
+    }
+}
+function delay(milliseconds) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, milliseconds);
+    });
+  }
+
+  function displayMatchingSearchResults(filteredUsers) {
+    if (filteredUsers.length === 0){
+        const showNoResults = document.createElement('div');
+        const showNoResultsMessage = document.createElement('h3');
+        showNoResultsMessage.textContent = 'No results found';
+        showNoResults.classList.add('found-user');
+        showNoResultsMessage.classList.add('found-username');
+        showNoResultsMessage.classList.add('all-text');
+        resultsContainer.appendChild(showNoResults);
+        showNoResults.appendChild(showNoResultsMessage);
+    } else {
+        for (let i = 0; i < filteredUsers.length; i++) {
+            var matchingUserAndFollowContainer = document.createElement('div');
+            const showMatchingUser = document.createElement('div');
+            const matchingUserName = document.createElement('h3');
+            const followUser = document.createElement('button');
+            matchingUserAndFollowContainer.classList.add('matching-user-div')
+            matchingUserName.classList.add('all-text');
+            console.log(loggedInUserData.followingList)
+            if (!loggedInUserData.followingList[filteredUsers[i]]) {
+                followUser.textContent = `Follow`;
+                followUser.classList.add('follow-button')
+                matchingUserName.textContent = `@${filteredUsers[i]}`
+                showMatchingUser.classList.add('found-user')
+                if (filteredUsers[i].length >= 16) {
+                    matchingUserName.classList.add('sixteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 18) {
+                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                    matchingUserName.classList.add('eighteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 20) {
+                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-charachter-plus-username')
+                } if (filteredUsers[i].length >= 22) {
+                    matchingUserName.classList.remove('twenty-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
+                } if (filteredUsers[i].length >= 24) {
+                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
+                } if (filteredUsers[i].length >= 26) {
+                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
+                } if  (filteredUsers[i].length <= 26) {
+                    matchingUserName.classList.add('found-username')
+                }
+                matchingUserAndFollowContainer.style.display = 'flex';
+                resultsContainer.appendChild(matchingUserAndFollowContainer);
+                matchingUserAndFollowContainer.appendChild(showMatchingUser);
+                matchingUserAndFollowContainer.appendChild(followUser);
+                showMatchingUser.appendChild(matchingUserName);
+
+                followUser.addEventListener('click', function() {
+                let goingToFollow = filteredUsers[i];
+                    console.log('Follow clicked for user:', goingToFollow);
+                    followUserFunction(goingToFollow);
+                    addFoundUserToFollowing(filteredUsers[i])
+                });
+                showMatchingUser.addEventListener('click', function() {
+                    if (loggedInUserName === filteredUsers[i]) {
+                        window.location.href = 'skuttlebukket_user.html'
+                    } else {
+                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                        window.location.href = 'otherUserProfile.html';
+                    }
+                    console.log(loggedInUserName)
+                    console.log(filteredUsers[i])
+                });
+                
+            } else {
+                followUser.textContent = `UnFollow`;
+                followUser.classList.add('unfollow-button')
+                matchingUserName.textContent = `@${filteredUsers[i]}`
+                showMatchingUser.classList.add('found-user')
+                if (filteredUsers[i].length >= 16) {
+                    matchingUserName.classList.add('sixteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 18) {
+                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                    matchingUserName.classList.add('eighteen-charachter-plus-username')
+                } if (filteredUsers[i].length >= 20) {
+                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-charachter-plus-username')
+                } if (filteredUsers[i].length >= 22) {
+                    matchingUserName.classList.remove('twenty-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
+                } if (filteredUsers[i].length >= 24) {
+                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
+                } if (filteredUsers[i].length >= 26) {
+                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
+                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
+                } if  (filteredUsers[i].length <= 26) {
+                    matchingUserName.classList.add('found-username')
+                }
+                matchingUserAndFollowContainer.style.display = 'flex';
+                resultsContainer.appendChild(matchingUserAndFollowContainer);
+                matchingUserAndFollowContainer.appendChild(showMatchingUser);
+                matchingUserAndFollowContainer.appendChild(followUser);
+                showMatchingUser.appendChild(matchingUserName);
+
+                followUser.addEventListener('click', function() {
+                    let goingToUnFollow = filteredUsers[i];
+                        console.log('UnFollow clicked for user:', goingToUnFollow);
+                        unFollowUserFunction(goingToUnFollow);
+                        removeFoundUserFromFollowing(filteredUsers[i])
+                    });
+                showMatchingUser.addEventListener('click', function() {
+                    if (loggedInUserName === filteredUsers[i]) {
+                        window.location.href = 'skuttlebukket_user.html'
+                    } else {
+                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                        window.location.href = 'otherUserProfile.html';
+                    }
+                    console.log(loggedInUserName)
+                    console.log(filteredUsers[i])
+                });
+            }
+            
+        };
+    }
+};

@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebas
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
+// import { chatUserSearchModalResultsContainer } from './messaging.js'
 
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
@@ -336,15 +337,26 @@ function displayMatchingSearchResults(filteredUsers) {
 
 
 function loadSearchResults() {
+    console.log(resultsContainer)
     while (resultsContainer.firstChild) {
         resultsContainer.removeChild(resultsContainer.firstChild)
     }
     filteredUsers = []
     var searchTerm = searchBarField.value;
     checkForMatchingUserNames(allUserNames, searchTerm);
-    console.log(filteredUsers);
     displayMatchingSearchResults(filteredUsers);
 };
+
+// function chatLoadSearchResults() {
+//     console.log(chatUserSearchModalResultsContainer)
+//     while (chatUserSearchModalResultsContainer.firstChild) {
+//         chatUserSearchModalResultsContainer.removeChild(chatUserSearchModalResultsContainer.firstChild)
+//     }
+//     filteredUsers = []
+//     var searchTerm = searchBarField.value;
+//     checkForMatchingUserNames(allUserNames, searchTerm);
+//     displayMatchingSearchResults(filteredUsers);
+// };
 
 
 searchButton.addEventListener('click', loadSearchResults);
@@ -362,3 +374,5 @@ logoutButton.addEventListener('click', function() {
         localStorage.clear();
         window.location.href = 'index.html' 
 });
+
+// export { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer }
