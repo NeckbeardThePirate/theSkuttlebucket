@@ -70,6 +70,21 @@ function openChatWindow() {
     window.addEventListener('click', (event) => {
         if (event.target === chatMainDisplayBackgroundWindow) {
             document.body.removeChild(chatMainDisplayBackgroundWindow);
+            let messageAlert = false;
+            for (const conversation in userChats) {
+                const inspectConversation = userChats[conversation]
+                for (const message in inspectConversation) {
+                    const currentMessage = inspectConversation[message]
+                    if (currentMessage.seen === false) {
+                        console.log('There is an unseen message', message)
+                        messageAlert = true;
+                    }
+                }
+            } if (messageAlert === false) {
+                const messagesButton = document.getElementById('chat-button');
+                messagesButton.classList.remove('red-border')
+            }
+            
         }
     })
 
@@ -82,6 +97,16 @@ function loadChats() {
         const chatButton = document.createElement('button');
         chatButton.classList.add('message-option');
         chatButton.classList.add('all-text');
+        const convo = userMessageChats[message];
+        for (const chat in convo) {
+            const chatObject = convo[chat];
+            if (chatObject.seen === false) {
+                chatButton.classList.add('red-border');
+                chatButton.addEventListener('click', function() {
+                    chatButton.classList.remove('red-border')
+                })
+            }
+        }
         const conversationID = message
         chatButton.textContent = `Chat with @${conversationID}`
         chatMainDisplayContentChats.appendChild(chatButton);
@@ -186,8 +211,6 @@ function loadConversation(conversationID, currentConversation) {
         const messageObject = sortedMessagesToLoad[message];
         if (messageObject.seen === false) {
             messageObject.seen = true;
-            const messagesButton = document.getElementById('chat-button');
-            messagesButton.classList.remove('red-border')
         }
         const individualMessageBlock = document.createElement('div');
         const individualMessageTime = document.createElement('div');
@@ -385,6 +408,9 @@ async function displayNewChatUserSearch() {
     window.addEventListener('click', function() {
         if (event.target === chatUserSearchModal) {
             document.body.removeChild(chatUserSearchModal)
+            const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
+            chatMainDisplayContentChats.style.display = 'none';
+            loadChats();
         }
     })
 
@@ -398,7 +424,6 @@ async function displayNewChatUserSearch() {
 
 function chatLoadSearchResults() {
     const chatUserSearchModalResultsContainer = document.getElementById('results-container')
-    console.log(chatUserSearchModalResultsContainer)
     while (chatUserSearchModalResultsContainer.firstChild) {
         chatUserSearchModalResultsContainer.removeChild(chatUserSearchModalResultsContainer.firstChild)
     }
