@@ -1,4 +1,4 @@
-import { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc } from './userProfile.js';
+import { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData } from './userProfile.js';
 // import { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer } from './search.js';
 let userMessageChats = userChats
 
@@ -65,7 +65,6 @@ function openChatWindow() {
     chatMainDisplayContent.appendChild(chatMainDisplayLowerDiv);
 
     chatMainDisplayNewChatButton.addEventListener('click', function() {
-        // alert(`we're still working on this. Thanks for your patience. @Dev`)
         displayNewChatUserSearch();
     })
     window.addEventListener('click', (event) => {
@@ -92,7 +91,7 @@ function loadChats() {
     }
 }
 
-function loadChatBlock (conversationID) {
+function loadChatBlock(conversationID) {
     const messageMainDisplayBackgroundWindow = document.createElement('div');
     const messageMainDisplayContent = document.createElement('div');
     const messageMainDisplayContentMessages = document.createElement('div');
@@ -182,9 +181,14 @@ function loadConversation(conversationID, currentConversation) {
             sortedMessagesToLoad[timestamp] = value
         });
 
-
+        console.log('we hit load conversation')
     for (const message in sortedMessagesToLoad) {
         const messageObject = sortedMessagesToLoad[message];
+        if (messageObject.seen === false) {
+            messageObject.seen = true;
+            const messagesButton = document.getElementById('chat-button');
+            messagesButton.classList.remove('red-border')
+        }
         const individualMessageBlock = document.createElement('div');
         const individualMessageTime = document.createElement('div');
         const individualMessageText = document.createElement('div');
@@ -205,10 +209,7 @@ function loadConversation(conversationID, currentConversation) {
 
     const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
 
-
     messageMainDisplayContentMessages.scrollTop = messageMainDisplayContentMessages.scrollHeight;
-    
-
 }
 
 async function sendMessage(conversationID, userMessageChats) {
@@ -230,10 +231,12 @@ async function sendMessage(conversationID, userMessageChats) {
 
                 if (conversationID in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[conversationID];
+                    const viewed = true;
                     let newMessageToAdd = {
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'sent',
+                        seen: viewed,
                     }
                     const key = Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
@@ -275,12 +278,13 @@ async function sendMessage(conversationID, userMessageChats) {
                 }
                 if (userName in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[userName];
-
+                    const viewed = false;
                     
                     let newMessageToAdd = {
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'received',
+                        seen: viewed,
                     }
                     const key = Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
@@ -307,9 +311,11 @@ async function sendMessage(conversationID, userMessageChats) {
 
 function clearMessages() {
     const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
-    while (messageMainDisplayContentMessages.firstChild) {
-        const firstChild = messageMainDisplayContentMessages.firstChild;
-        messageMainDisplayContentMessages.removeChild(firstChild)
+    if (messageMainDisplayContentMessages.firstChild) {
+        while (messageMainDisplayContentMessages.firstChild) {
+            const firstChild = messageMainDisplayContentMessages.firstChild;
+            messageMainDisplayContentMessages.removeChild(firstChild)
+        }
     }
 }
 
@@ -322,6 +328,19 @@ async function pullChatData(conversationID) {
             const currentConversation = userMessageChats[conversationID]
             clearMessages()
             loadConversation(conversationID, currentConversation);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function pullNewChatData(conversationID) {
+    try {
+        const refreshChatSnap = await getDoc(docRef);
+        if (refreshChatSnap.exists()) {
+            const userFullData = refreshChatSnap.data();
+            userMessageChats = userFullData.messages;
+            const currentConversation = userMessageChats[conversationID]
         }
     } catch (error) {
         console.error('Error:', error);
@@ -348,28 +367,29 @@ async function displayNewChatUserSearch() {
     chatUserSearchModalHeaderContent.textContent = 'Find a User';
     chatUserSearchModalSearchButton.textContent = 'Search'
     chatUserSearchModalResultsContainer.id = 'results-container'
+    chatUserSearchModalInputBar.id = 'search-bar'
 
     chatUserSearchModalSearchButton.id = 'button-for-searching'
 
     chatUserSearchModal.style.display = 'block';
 
-    window.addEventListener('click', function() {
-        if (event.target === chatUserSearchModal) {
-            document.removeChild(chatUserSearchModal)
-        }
-    })
-
-    document.body.appendChild(chatUserSearchModal);
+    document.body.appendChild(chatUserSearchModal)
     chatUserSearchModal.appendChild(chatUserSearchModalContent);
-    chatUserSearchModalContent.appendChild(chatUserSearchModalHeaderContainer)
+    chatUserSearchModalContent.appendChild(chatUserSearchModalHeaderContainer);
     chatUserSearchModalHeaderContainer.appendChild(chatUserSearchModalHeaderContent);
     chatUserSearchModalContent.appendChild(chatUserSearchModalInputBar);
     chatUserSearchModalContent.appendChild(chatUserSearchModalSearchButton);
     chatUserSearchModalContent.appendChild(chatUserSearchModalResultsContainer);
 
+
+    window.addEventListener('click', function() {
+        if (event.target === chatUserSearchModal) {
+            document.body.removeChild(chatUserSearchModal)
+        }
+    })
+
     chatUserSearchModalSearchButton.addEventListener('click', function() {
         chatLoadSearchResults()
-        // alert('still working on it sorry')
     })
 
 }
@@ -377,17 +397,18 @@ async function displayNewChatUserSearch() {
 // export { chatUserSearchModalResultsContainer }
 
 function chatLoadSearchResults() {
+    const chatUserSearchModalResultsContainer = document.getElementById('results-container')
     console.log(chatUserSearchModalResultsContainer)
     while (chatUserSearchModalResultsContainer.firstChild) {
         chatUserSearchModalResultsContainer.removeChild(chatUserSearchModalResultsContainer.firstChild)
     }
-    filteredUsers = []
-    var searchTerm = searchBarField.value;
+    filteredUsers = [];
+    var searchTerm = document.getElementById('search-bar').value;
     chatCheckForMatchingUserNames(allUserNames, searchTerm);
     chatDisplayMatchingSearchResults(filteredUsers);
 };
 
-function checkForMatchingUserNames(allUserNames, searchTerm) {
+function chatCheckForMatchingUserNames(allUserNames, searchTerm) {
     filteredUsers = [];
     for (let i = 0; i < allUserNames.length; i++) {
         const lowerSearchTerm = searchTerm.toLowerCase();
@@ -403,7 +424,7 @@ function delay(milliseconds) {
     });
   }
 
-  function displayMatchingSearchResults(filteredUsers) {
+  function chatDisplayMatchingSearchResults(filteredUsers) {
     if (filteredUsers.length === 0){
         const showNoResults = document.createElement('div');
         const showNoResultsMessage = document.createElement('h3');
@@ -418,107 +439,91 @@ function delay(milliseconds) {
             var matchingUserAndFollowContainer = document.createElement('div');
             const showMatchingUser = document.createElement('div');
             const matchingUserName = document.createElement('h3');
-            const followUser = document.createElement('button');
+            const messageUser = document.createElement('button');
             matchingUserAndFollowContainer.classList.add('matching-user-div')
             matchingUserName.classList.add('all-text');
-            console.log(loggedInUserData.followingList)
-            if (!loggedInUserData.followingList[filteredUsers[i]]) {
-                followUser.textContent = `Follow`;
-                followUser.classList.add('follow-button')
-                matchingUserName.textContent = `@${filteredUsers[i]}`
-                showMatchingUser.classList.add('found-user')
-                if (filteredUsers[i].length >= 16) {
-                    matchingUserName.classList.add('sixteen-charachter-plus-username')
-                } if (filteredUsers[i].length >= 18) {
-                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
-                    matchingUserName.classList.add('eighteen-charachter-plus-username')
-                } if (filteredUsers[i].length >= 20) {
-                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-charachter-plus-username')
-                } if (filteredUsers[i].length >= 22) {
-                    matchingUserName.classList.remove('twenty-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
-                } if (filteredUsers[i].length >= 24) {
-                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
-                } if (filteredUsers[i].length >= 26) {
-                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
-                } if  (filteredUsers[i].length <= 26) {
-                    matchingUserName.classList.add('found-username')
-                }
-                matchingUserAndFollowContainer.style.display = 'flex';
-                resultsContainer.appendChild(matchingUserAndFollowContainer);
-                matchingUserAndFollowContainer.appendChild(showMatchingUser);
-                matchingUserAndFollowContainer.appendChild(followUser);
-                showMatchingUser.appendChild(matchingUserName);
-
-                followUser.addEventListener('click', function() {
-                let goingToFollow = filteredUsers[i];
-                    console.log('Follow clicked for user:', goingToFollow);
-                    followUserFunction(goingToFollow);
-                    addFoundUserToFollowing(filteredUsers[i])
-                });
-                showMatchingUser.addEventListener('click', function() {
-                    if (loggedInUserName === filteredUsers[i]) {
-                        window.location.href = 'skuttlebukket_user.html'
-                    } else {
-                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
-                        window.location.href = 'otherUserProfile.html';
-                    }
-                    console.log(loggedInUserName)
-                    console.log(filteredUsers[i])
-                });
-                
-            } else {
-                followUser.textContent = `UnFollow`;
-                followUser.classList.add('unfollow-button')
-                matchingUserName.textContent = `@${filteredUsers[i]}`
-                showMatchingUser.classList.add('found-user')
-                if (filteredUsers[i].length >= 16) {
-                    matchingUserName.classList.add('sixteen-charachter-plus-username')
-                } if (filteredUsers[i].length >= 18) {
-                    matchingUserName.classList.remove('sixteen-charachter-plus-username')
-                    matchingUserName.classList.add('eighteen-charachter-plus-username')
-                } if (filteredUsers[i].length >= 20) {
-                    matchingUserName.classList.remove('eighteen-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-charachter-plus-username')
-                } if (filteredUsers[i].length >= 22) {
-                    matchingUserName.classList.remove('twenty-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-two-charachter-plus-username')
-                } if (filteredUsers[i].length >= 24) {
-                    matchingUserName.classList.remove('twenty-two-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-four-charachter-plus-username')
-                } if (filteredUsers[i].length >= 26) {
-                    matchingUserName.classList.remove('twenty-four-charachter-plus-username')
-                    matchingUserName.classList.add('twenty-six-charachter-plus-username')
-                } if  (filteredUsers[i].length <= 26) {
-                    matchingUserName.classList.add('found-username')
-                }
-                matchingUserAndFollowContainer.style.display = 'flex';
-                resultsContainer.appendChild(matchingUserAndFollowContainer);
-                matchingUserAndFollowContainer.appendChild(showMatchingUser);
-                matchingUserAndFollowContainer.appendChild(followUser);
-                showMatchingUser.appendChild(matchingUserName);
-
-                followUser.addEventListener('click', function() {
-                    let goingToUnFollow = filteredUsers[i];
-                        console.log('UnFollow clicked for user:', goingToUnFollow);
-                        unFollowUserFunction(goingToUnFollow);
-                        removeFoundUserFromFollowing(filteredUsers[i])
-                    });
-                showMatchingUser.addEventListener('click', function() {
-                    if (loggedInUserName === filteredUsers[i]) {
-                        window.location.href = 'skuttlebukket_user.html'
-                    } else {
-                        localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
-                        window.location.href = 'otherUserProfile.html';
-                    }
-                    console.log(loggedInUserName)
-                    console.log(filteredUsers[i])
-                });
+            messageUser.textContent = `message`;
+            messageUser.classList.add('follow-button')
+            matchingUserName.textContent = `@${filteredUsers[i]}`
+            showMatchingUser.classList.add('found-user')
+            if (filteredUsers[i].length >= 16) {
+                matchingUserName.classList.add('sixteen-charachter-plus-username')
+            } if (filteredUsers[i].length >= 18) {
+                matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                matchingUserName.classList.add('eighteen-charachter-plus-username')
             }
-            
+
+            const chatUserSearchModalResultsContainer = document.getElementById('results-container')
+
+            matchingUserAndFollowContainer.style.display = 'flex';
+            chatUserSearchModalResultsContainer.appendChild(matchingUserAndFollowContainer);
+            matchingUserAndFollowContainer.appendChild(showMatchingUser);
+            matchingUserAndFollowContainer.appendChild(messageUser);
+            showMatchingUser.appendChild(matchingUserName);
+
+            messageUser.addEventListener('click', function() {
+            let goingToMessage = filteredUsers[i];
+                console.log('Message clicked for user:', goingToMessage);
+                startNewMessage(goingToMessage);
+            });
+            showMatchingUser.addEventListener('click', function() {
+                if (userName === filteredUsers[i]) {
+                    window.location.href = 'skuttlebukket_user.html'
+                } else {
+                    localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
+                    window.location.href = 'otherUserProfile.html';
+                }
+            });
+
         };
     }
 };
+
+async function startNewMessage(goingToMessage) {
+    try {
+        const currentChatsSnap = await getDoc(docRef);
+        if (currentChatsSnap.exists()) {
+            const userFullData = currentChatsSnap.data();
+            const currentConversations = userFullData.messages;
+            currentConversations[goingToMessage] = {}
+            await updateDoc(docRef, { messages: currentConversations })
+            .then(() => {
+                console.log(currentConversations[goingToMessage])
+            }) 
+        } else {
+            console.log('currentChatsSnapDoc not found')
+        }
+    } catch (error) {
+        console.log('an error occured: ', error)
+    }
+
+    try {
+        const newMessageUserNameQuery = query(usersCollection, where('userName', '==', goingToMessage))
+        const newMessageUserNameQuerySnapshot = await getDocs(newMessageUserNameQuery);
+
+        if (!newMessageUserNameQuerySnapshot.empty) {
+            const newMessageUserNameDocID = newMessageUserNameQuerySnapshot.docs[0].id;
+
+            const newMessageUserNameDocRef = doc(firestore, 'users', newMessageUserNameDocID);
+            const newMessageUserNameDocSnap = await getDoc(newMessageUserNameDocRef);
+            if (newMessageUserNameDocSnap.exists()) {
+                const userToMessageFullData = newMessageUserNameDocSnap.data();
+                const userToMessageCurrentConversations = userToMessageFullData.messages;
+                userToMessageCurrentConversations[userName] = {}
+                console.log(userToMessageCurrentConversations);
+                console.log(userName)
+                await updateDoc(newMessageUserNameDocRef, { messages: userToMessageCurrentConversations })
+                .then(() => {
+                    pullNewChatData(goingToMessage);
+                    loadChatBlock(goingToMessage);
+                })
+            } else {
+                console.log('an unknown error occured')
+            }
+        } else {
+            console.log('currentChatsSnapDoc not found')
+        }
+    } catch (error) {
+            console.log('an error occured: ', error)
+    }
+}

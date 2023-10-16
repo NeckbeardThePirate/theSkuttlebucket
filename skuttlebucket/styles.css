@@ -1338,3 +1338,8 @@ a {
     border: 2px solid grey;
     padding: 0.5rem;
 }
+
+.red-border {
+    border: 3px solid red;
+    background-color: rgb(190, 20, 20);
+}

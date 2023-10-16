@@ -97,12 +97,23 @@ const bucketTimestampArray = Object.values(originalUserBuckets);
 
 let userChats = userData[`messages`];
 
-export { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc };
+for (const conversation in userChats) {
+    const inspectConversation = userChats[conversation]
+    for (const message in inspectConversation) {
+        const currentMessage = inspectConversation[message]
+        console.log(currentMessage)
+        if (currentMessage.seen === false) {
+            console.log('There is an unseen message', message)
+            const messagesButton = document.getElementById('chat-button');
+            messagesButton.classList.add('red-border')
+        }
+    }
+}
+
+export { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData };
 
 
 const userName = userData.userName;
-
-console.log(userName);
 
 bucketTimestampArray.sort((a, b) => b.bucketTimestamp - a.bucketTimestamp);
 
@@ -293,8 +304,6 @@ const hideFollowersButton = document.getElementById('close-follower-list-window-
 const followersListBlock = document.getElementById('show-followers-window-content');
 
 const followingListWindow = document.getElementById('following-list-window');
-
-// const showFollowingButton = document.getElementById('following-count')
 
 const hideFollowingButton = document.getElementById('close-following-list-window-button');
 
