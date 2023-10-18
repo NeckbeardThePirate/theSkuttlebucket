@@ -36,7 +36,7 @@ function openChatWindow() {
     const chatMainDisplayHeader = document.createElement('h3');
     const chatMainDisplayUpperDiv = document.createElement('div');
     const chatMainDisplayLowerDiv = document.createElement('div');
-    const chatMainDisplayNewChatButton = document.createElement('div');
+    const chatMainDisplayNewChatButton = document.createElement('button');
     const chatMainDisplayNewChatButtonTextContent = document.createElement('p');
 
     chatMainDisplayContentChats.id = 'bucket-display-chats'
@@ -614,6 +614,8 @@ function formatTimestampForChats(timestamp) {
     const timeMinutesFormatted = timeMinutes < 10 ? `0${timeMinutes}` : timeMinutes;
     if (timestamp + 604800000 < Date.now()) {
         return `on ${timeMonth} ${timeMonthDay} at ${timeHours}:${timeMinutesFormatted}`
+    } else if (timestamp + 86400000 < Date.now()) {
+        return ` at ${timeHours}:${timeMinutesFormatted}`
     } else {
         return `on ${timeWeekDay} at ${timeHours}:${timeMinutesFormatted}`
     }

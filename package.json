@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/NeckbeardThePirate/theSkuttlebucket/issues"
   },
-  "homepage": "https://github.com/NeckbeardThePirate/theSkuttlebucket#readme"
+  "homepage": "https://github.com/NeckbeardThePirate/theSkuttlebucket#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
 }
