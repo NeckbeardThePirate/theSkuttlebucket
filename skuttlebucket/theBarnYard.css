@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.barnyard-header-div {
+    background-color: grey;
+    text-align: center;
+    padding: 1rem;
+
+}
+
+.all-text {
+    font-family: 'Lucida Console', 'Courier New', 'monospace';
+}
+
+.bold-text {
+    font-weight: 900;
+}
+
+#content-body  {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+#left-sidebar {
+    background-color: rgb(101, 67, 33);
+    width: 20%;
+    height: 100%;
+}
+
+#main-display {
+    width: 60%;
+    height: 100%;
+    background-color: rgb(100, 20, 20);
+}
+
+#right-sidebar {
+    width: 20%;
+    height: 100%;
+    background-color: rgb(101, 67, 33);
+}
+.message-box {
+    width: 80%;
+    background-color: #D1D1D1;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 25px;
+}
