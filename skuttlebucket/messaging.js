@@ -198,6 +198,7 @@ function loadChatBlock(conversationID) {
 
 function loadConversation(conversationID, currentConversation) {
         const messagesToLoad = currentConversation
+        console.log('current Conversation', currentConversation)
         const messagesToLoadArray = Object.entries(messagesToLoad);
         messagesToLoadArray.sort((a,b) => b[0] - a[0]);
         var sortedMessagesToLoad = {};
@@ -206,8 +207,8 @@ function loadConversation(conversationID, currentConversation) {
             sortedMessagesToLoad[timestamp] = value
         });
 
-        console.log('we hit load conversation')
-    for (const message in sortedMessagesToLoad) {
+        console.log(sortedMessagesToLoad)
+    for (const message in currentConversation) {
         const messageObject = sortedMessagesToLoad[message];
         if (messageObject.seen === false) {
             messageObject.seen = true;
@@ -261,8 +262,7 @@ async function sendMessage(conversationID, userMessageChats) {
                         direction: 'sent',
                         seen: true,
                     }
-                    const key = userName+Date.now().toString();
-                    workingConversationDataActiveChat[key] = newMessageToAdd;
+                    workingConversationDataActiveChat.unshift(newMessageToAdd);
 
                     workingConversationDataChats[conversationID] = workingConversationDataActiveChat
 
@@ -307,8 +307,7 @@ async function sendMessage(conversationID, userMessageChats) {
                         direction: 'received',
                         seen: false,
                     }
-                    const key = conversationID+Date.now().toString();
-                    workingConversationDataActiveChat[key] = newMessageToAdd;
+                    workingConversationDataActiveChat.unshift(newMessageToAdd);
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
 
@@ -508,7 +507,7 @@ async function startNewMessage(goingToMessage) {
         if (currentChatsSnap.exists()) {
             const userFullData = currentChatsSnap.data();
             const currentConversations = userFullData.messages;
-            currentConversations[goingToMessage] = {}
+            currentConversations[goingToMessage] = []
             await updateDoc(docRef, { messages: currentConversations })
             .then(() => {
                 console.log(currentConversations[goingToMessage])
@@ -532,7 +531,7 @@ async function startNewMessage(goingToMessage) {
             if (newMessageUserNameDocSnap.exists()) {
                 const userToMessageFullData = newMessageUserNameDocSnap.data();
                 const userToMessageCurrentConversations = userToMessageFullData.messages;
-                userToMessageCurrentConversations[userName] = {}
+                userToMessageCurrentConversations[userName] = []
                 console.log(userToMessageCurrentConversations);
                 console.log(userName)
                 await updateDoc(newMessageUserNameDocRef, { messages: userToMessageCurrentConversations })
