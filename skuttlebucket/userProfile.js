@@ -97,13 +97,13 @@ const bucketTimestampArray = Object.values(originalUserBuckets);
 
 let userChats = userData[`messages`];
 
+//need to fix this
+
 for (const conversation in userChats) {
     const inspectConversation = userChats[conversation]
     for (const message in inspectConversation) {
         const currentMessage = inspectConversation[message]
-        console.log(currentMessage)
         if (currentMessage.seen === false) {
-            console.log('There is an unseen message', message)
             const messagesButton = document.getElementById('chat-button');
             messagesButton.classList.add('red-border')
         }
@@ -917,6 +917,7 @@ async function loadComments(bucketComments, bucketDisplayContentComments, bucket
             if (bucketAuthorDocSnap.exists()) {
                 const workingPostData = bucketAuthorDocSnap.data();
                 const workingPostDataBuckets = workingPostData.buckets;
+                console.log(bucketID)
                 if (bucketID in workingPostDataBuckets) {
                     const workingPostDataActiveBucket = workingPostDataBuckets[bucketID];
                     const workingPostDataActiveBucketPostComments = workingPostDataActiveBucket['bucketComments']

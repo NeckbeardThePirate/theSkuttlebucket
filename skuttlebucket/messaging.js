@@ -217,12 +217,13 @@ function loadConversation(conversationID, currentConversation) {
         const individualMessageText = document.createElement('div');
         const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
         individualMessageText.textContent = messageObject['messageText'];
-        individualMessageTime.textContent = `${conversationID} at: ${messageObject[`timestamp`]}`
 
         if (messageObject[`direction`] === 'sent') {
-            individualMessageBlock.classList.add('sent-message-block')
+        individualMessageTime.textContent = `${userName} at: ${messageObject[`timestamp`]}`
+        individualMessageBlock.classList.add('sent-message-block')
         } else {
-            individualMessageBlock.classList.add('received-message-block')
+        individualMessageTime.textContent = `${conversationID} at: ${messageObject[`timestamp`]}`
+        individualMessageBlock.classList.add('received-message-block')
         }
 
         messageMainDisplayContentMessages.appendChild(individualMessageBlock);
@@ -254,12 +255,11 @@ async function sendMessage(conversationID, userMessageChats) {
 
                 if (conversationID in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[conversationID];
-                    const viewed = true;
                     let newMessageToAdd = {
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'sent',
-                        seen: viewed,
+                        seen: true,
                     }
                     const key = userName+Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
@@ -300,14 +300,12 @@ async function sendMessage(conversationID, userMessageChats) {
                 if (workingConversationDataChats.hasOwnProperty(userName)) {
                 }
                 if (userName in workingConversationDataChats) {
-                    const workingConversationDataActiveChat = workingConversationDataChats[userName];
-                    const viewed = false;
-                    
+                    const workingConversationDataActiveChat = workingConversationDataChats[userName];                    
                     let newMessageToAdd = {
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'received',
-                        seen: viewed,
+                        seen: false,
                     }
                     const key = conversationID+Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
