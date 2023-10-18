@@ -97,20 +97,13 @@ const bucketTimestampArray = Object.values(originalUserBuckets);
 
 let userChats = userData[`messages`];
 
-//need to fix this
 
-for (const conversation in userChats) {
-    const inspectConversation = userChats[conversation]
-    for (const message in inspectConversation) {
-        const currentMessage = inspectConversation[message]
-        if (currentMessage.seen === false) {
-            const messagesButton = document.getElementById('chat-button');
-            messagesButton.classList.add('red-border')
-        }
-    }
+const unreadMessages = userData.unreadMessages;
+if (unreadMessages.length > 0) {
+    const messagesButton = document.getElementById('chat-button');
+    messagesButton.classList.add('red-border')
 }
-
-export { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData };
+export { DocID, months, daysOfWeek, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData };
 
 
 const userName = userData.userName;
@@ -401,11 +394,6 @@ function showFollowing() {
         followingLoadInstance++
         followingListWindow.style.display = 'block';
         for (const following in followingList) {
-            if (followingList.hasOwnProperty(following)) {
-            console.log('found a followee')
-
-            }
-            console.log('found a followee')
             const userFollowingBubble = document.createElement('div');
             const userFollowingUserName = document.createElement('p');
             userFollowingBubble.classList.add('following-div')

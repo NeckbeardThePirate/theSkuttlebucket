@@ -1,8 +1,9 @@
-import { userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData } from './userProfile.js';
+import { DocID, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData, months, daysOfWeek } from './userProfile.js';
 // import { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer } from './search.js';
 let userMessageChats = userChats
 
 const openChatWindowButton = document.getElementById('chat-button')
+
 
 
 const allUsersRef = await getDocs(usersCollection);
@@ -10,6 +11,9 @@ const allUsersRef = await getDocs(usersCollection);
 const allUserNames = [];
 
 let filteredUsers = [];
+
+var unreadMessagesArray = userData.unreadMessages;
+
 
 allUsersRef.forEach((doc) => {
     if(doc.exists()) {
@@ -69,18 +73,13 @@ function openChatWindow() {
     })
     window.addEventListener('click', (event) => {
         if (event.target === chatMainDisplayBackgroundWindow) {
+            // unsubscribeLoadChats();
             document.body.removeChild(chatMainDisplayBackgroundWindow);
-            let messageAlert = false;
-            for (const conversation in userChats) {
-                const inspectConversation = userChats[conversation]
-                for (const message in inspectConversation) {
-                    const currentMessage = inspectConversation[message]
-                    if (currentMessage.seen === false) {
-                        console.log('There is an unseen message', message)
-                        messageAlert = true;
-                    }
-                }
-            } if (messageAlert === false) {
+            const unreadMessages = userData.unreadMessages;
+            if (unreadMessagesArray.length > 0) {
+                const messagesButton = document.getElementById('chat-button');
+                messagesButton.classList.add('red-border')
+            } else {
                 const messagesButton = document.getElementById('chat-button');
                 messagesButton.classList.remove('red-border')
             }
@@ -100,21 +99,40 @@ function loadChats() {
         const convo = userMessageChats[message];
         for (const chat in convo) {
             const chatObject = convo[chat];
-            if (chatObject.seen === false) {
-                chatButton.classList.add('red-border');
-                chatButton.addEventListener('click', function() {
-                    chatButton.classList.remove('red-border')
-                })
+            const messageID = chatObject.messageID;
+            const messageIndex = unreadMessagesArray.indexOf(messageID)
+            if (messageIndex !== -1) {
+                chatButton.classList.add('red-border')
             }
         }
-        const conversationID = message
-        chatButton.textContent = `Chat with @${conversationID}`
+        const conversationID = message;
+        chatButton.textContent = `Chat with @${conversationID}`;
         chatMainDisplayContentChats.appendChild(chatButton);
         chatButton.addEventListener('click', function() {
             loadChatBlock(conversationID);
-        })
+        });
+
+            //cannot for the life of me figure out what is going on with the snapshot listener
+
+        // const refVariable = onSnapshot(doc(firestore, 'users', DocID), (doc) => {
+        //         clearChats(); // Call your clearChats function here
+        //         loadChats(); // Call your loadChats function here
+        // });
+    }
+}    
+    
+function clearChats() {
+    const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
+    if (chatMainDisplayContentChats.firstChild) {
+        while (chatMainDisplayContentChats.firstChild) {
+            const firstChild = chatMainDisplayContentChats.firstChild
+            chatMainDisplayContentChats.removeChild(firstChild)
+        }
     }
 }
+    
+    
+    
 
 function loadChatBlock(conversationID) {
     const messageMainDisplayBackgroundWindow = document.createElement('div');
@@ -191,39 +209,39 @@ function loadChatBlock(conversationID) {
     window.addEventListener('click', (event) => {
         if (event.target === messageMainDisplayBackgroundWindow) {
             document.body.removeChild(messageMainDisplayBackgroundWindow);
+            const chatMainDisplayBackgroundWindow = document.getElementById('chat-display-background-window')
+            document.body.removeChild(chatMainDisplayBackgroundWindow)
             unsubscribe()
+            openChatWindow()
         }
     })
 }
 
-function loadConversation(conversationID, currentConversation) {
+async function loadConversation(conversationID, currentConversation) {
         const messagesToLoad = currentConversation
-        console.log('current Conversation', currentConversation)
-        const messagesToLoadArray = Object.entries(messagesToLoad);
-        messagesToLoadArray.sort((a,b) => b[0] - a[0]);
-        var sortedMessagesToLoad = {};
-        messagesToLoadArray.forEach(entry => {
-            const [timestamp, value] = entry;
-            sortedMessagesToLoad[timestamp] = value
-        });
 
-        console.log(sortedMessagesToLoad)
-    for (const message in currentConversation) {
-        const messageObject = sortedMessagesToLoad[message];
-        if (messageObject.seen === false) {
-            messageObject.seen = true;
-        }
+
+        for (const message in currentConversation) {
+            const messageObject = currentConversation[message];
+            const messageID = messageObject.messageID;
+            const messageIndex = unreadMessagesArray.indexOf(messageID);
+
+            if (messageIndex !== -1) {
+                unreadMessagesArray.splice(messageIndex, 1);
+            }
+        
+
         const individualMessageBlock = document.createElement('div');
         const individualMessageTime = document.createElement('div');
         const individualMessageText = document.createElement('div');
         const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
         individualMessageText.textContent = messageObject['messageText'];
-
+        const formattedTime = formatTimestampForChats(messageObject[`timestamp`])
         if (messageObject[`direction`] === 'sent') {
-        individualMessageTime.textContent = `${userName} at: ${messageObject[`timestamp`]}`
+        individualMessageTime.textContent = `${userName} ${formattedTime}`
         individualMessageBlock.classList.add('sent-message-block')
         } else {
-        individualMessageTime.textContent = `${conversationID} at: ${messageObject[`timestamp`]}`
+        individualMessageTime.textContent = `${userName} ${formattedTime}`
         individualMessageBlock.classList.add('received-message-block')
         }
 
@@ -235,6 +253,34 @@ function loadConversation(conversationID, currentConversation) {
     const messageMainDisplayContentMessages = document.getElementById('window-display-messages')
 
     messageMainDisplayContentMessages.scrollTop = messageMainDisplayContentMessages.scrollHeight;
+    try {
+        const findMessageAuthorQuery = query(usersCollection, where('userName', '==', userName));
+        const messageAuthorQuerySnapshot = await getDocs(findMessageAuthorQuery);
+
+        if (!messageAuthorQuerySnapshot.empty) {
+            const messageAuthorDocID = messageAuthorQuerySnapshot.docs[0].id;
+
+            const messageAuthorDocRef = doc(firestore, 'users', messageAuthorDocID);
+            const messageAuthorDocSnap = await getDoc(messageAuthorDocRef);
+
+            if (messageAuthorDocSnap.exists()) {
+                const workingConversationData = messageAuthorDocSnap.data();
+                const workingConversationDataChats = workingConversationData.messages;
+                if (conversationID in workingConversationDataChats) {
+                    await updateDoc(messageAuthorDocRef, { unreadMessages: unreadMessagesArray })
+                    
+                  } else {
+                    console.log('conversationID not found in user data.');
+                  }
+            } else {
+                console.log('No such document for the message author.');
+            }
+        } else {
+            console.log('No user found with the specified username.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 async function sendMessage(conversationID, userMessageChats) {
@@ -257,10 +303,10 @@ async function sendMessage(conversationID, userMessageChats) {
                 if (conversationID in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[conversationID];
                     let newMessageToAdd = {
+                        messageID: userName+Date.now().toString(),
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'sent',
-                        seen: true,
                     }
                     workingConversationDataActiveChat.unshift(newMessageToAdd);
 
@@ -301,17 +347,27 @@ async function sendMessage(conversationID, userMessageChats) {
                 }
                 if (userName in workingConversationDataChats) {
                     const workingConversationDataActiveChat = workingConversationDataChats[userName];                    
+                    const messageID = userName+Date.now().toString();
                     let newMessageToAdd = {
+                        messageID: messageID,
                         messageText: newMessageText,
                         timestamp: Date.now(),
                         direction: 'received',
-                        seen: false,
                     }
                     workingConversationDataActiveChat.unshift(newMessageToAdd);
+                    const recipientUnreadMessagesArray = workingConversationData.unreadMessages
+                    console.log(recipientUnreadMessagesArray)
+                    recipientUnreadMessagesArray.push(messageID);
+                    console.log('pushed successfully?')
+                    console.log(recipientUnreadMessagesArray)
+                    
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
 
-                    await updateDoc(messageRecipientDocRef, { messages: workingConversationDataChats })
+                    await updateDoc(messageRecipientDocRef, { 
+                        messages: workingConversationDataChats,
+                        unreadMessages: recipientUnreadMessagesArray,
+                     })
                     .then(() => {
                         pullChatData(conversationID)
                     })
@@ -532,8 +588,6 @@ async function startNewMessage(goingToMessage) {
                 const userToMessageFullData = newMessageUserNameDocSnap.data();
                 const userToMessageCurrentConversations = userToMessageFullData.messages;
                 userToMessageCurrentConversations[userName] = []
-                console.log(userToMessageCurrentConversations);
-                console.log(userName)
                 await updateDoc(newMessageUserNameDocRef, { messages: userToMessageCurrentConversations })
                 .then(() => {
                     pullNewChatData(goingToMessage);
@@ -547,5 +601,20 @@ async function startNewMessage(goingToMessage) {
         }
     } catch (error) {
             console.log('an error occured: ', error)
+    }
+}
+
+function formatTimestampForChats(timestamp) {
+    const time = new Date(timestamp);
+    const timeWeekDay = daysOfWeek[time.getDay()]
+    const timeMonth = months[time.getMonth()]
+    const timeMonthDay = time.getDate()
+    const timeHours = time.getHours()
+    const timeMinutes = time.getMinutes()
+    const timeMinutesFormatted = timeMinutes < 10 ? `0${timeMinutes}` : timeMinutes;
+    if (timestamp + 604800000 < Date.now()) {
+        return `on ${timeMonth} ${timeMonthDay} at ${timeHours}:${timeMinutesFormatted}`
+    } else {
+        return `on ${timeWeekDay} at ${timeHours}:${timeMinutesFormatted}`
     }
 }

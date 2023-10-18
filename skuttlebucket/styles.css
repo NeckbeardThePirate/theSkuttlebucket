@@ -986,6 +986,7 @@ a {
     width: 50%;
     padding: 1.5rem;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
