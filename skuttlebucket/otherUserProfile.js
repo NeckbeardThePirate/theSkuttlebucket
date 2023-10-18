@@ -456,7 +456,9 @@ function loadBucket(bucketAuthor, bucketID, bucketText, bucketComments, mooCount
 
     bucketDisplayCommentButton.addEventListener('click', function() {
         if (activeComment === false) {
-            writeComment(userName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
+            const  currentUserName = userFromLoginData.userName;
+            console.log(currentUserName)
+            writeComment(currentUserName, bucketDisplayContentComments, bucketID, bucketAuthor, bucketText, bucketComments)
             activeComment = true;
         } else {
             const displayCreateCommentPostButton = document.getElementById('display-create-comment-post-button');

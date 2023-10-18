@@ -261,7 +261,7 @@ async function sendMessage(conversationID, userMessageChats) {
                         direction: 'sent',
                         seen: viewed,
                     }
-                    const key = Date.now().toString();
+                    const key = userName+Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
 
                     workingConversationDataChats[conversationID] = workingConversationDataActiveChat
@@ -309,7 +309,7 @@ async function sendMessage(conversationID, userMessageChats) {
                         direction: 'received',
                         seen: viewed,
                     }
-                    const key = Date.now().toString();
+                    const key = conversationID+Date.now().toString();
                     workingConversationDataActiveChat[key] = newMessageToAdd;
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
