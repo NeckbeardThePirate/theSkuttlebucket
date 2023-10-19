@@ -99,6 +99,9 @@ async function loadRecentPosts() {
         messageBox.classList.add('all-text');
         messageInfoContainer.classList.add('message-info-container');
         messageContent.classList.add('message-content');
+        messageContent.classList.add('post-data-block');
+        messageAuthorContainer.classList.add('post-data-block');
+        messageTimestampContainer.classList.add('post-data-block');
 
         messageContent.textContent = `${recentMessagesArray[message].messageText}`
         messageAuthorContainer.textContent = `@${recentMessagesArray[message].messageAuthor}`
