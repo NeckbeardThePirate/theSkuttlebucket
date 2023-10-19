@@ -34,6 +34,11 @@
     width: 60%;
     height: 100%;
     background-color: rgb(100, 20, 20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    padding: 1rem;
 }
 
 #right-sidebar {
@@ -47,4 +52,19 @@
     padding: 1rem;
     margin: 1rem;
     border-radius: 25px;
+}
+
+#message-send-container {
+    padding: 1rem;
+
+}
+
+#posted-messages-container {
+    height: 80%;
+    width: 95%;
+    border-radius: 25px;
+    border: 2px solid grey;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
 }

@@ -103,7 +103,7 @@ if (unreadMessages.length > 0) {
     const messagesButton = document.getElementById('chat-button');
     messagesButton.classList.add('red-border')
 }
-export { DocID, months, daysOfWeek, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData };
+export { DocID, months, daysOfWeek, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData, docSnap };
 
 
 const userName = userData.userName;

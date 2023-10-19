@@ -1,10 +1,15 @@
-import { DocID, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData, months, daysOfWeek } from './userProfile.js';
+import { DocID, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData, months, daysOfWeek, docSnap } from './userProfile.js';
 // import { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer } from './search.js';
-let userMessageChats = userChats
+// let userMessageChats = userChats
+
 
 const openChatWindowButton = document.getElementById('chat-button')
 
+let userDocSnap = await getDoc(docRef);
 
+let allUserData = docSnap.data();
+
+let userMessageChats = allUserData.messages
 
 const allUsersRef = await getDocs(usersCollection);
 
@@ -12,7 +17,7 @@ const allUserNames = [];
 
 let filteredUsers = [];
 
-var unreadMessagesArray = userData.unreadMessages;
+let unreadMessagesArray = allUserData.unreadMessages;
 
 
 allUsersRef.forEach((doc) => {
@@ -28,6 +33,7 @@ openChatWindowButton.addEventListener('click', function() {
 })
 
 function openChatWindow() {
+    updateChatData()
     const chatMainDisplayBackgroundWindow = document.createElement('div');
     const chatMainDisplayContent = document.createElement('div');
     const chatMainDisplayContentChats = document.createElement('div');
@@ -91,6 +97,7 @@ function openChatWindow() {
 }
 
 function loadChats() {
+    console.log('load chats was triggered')
     const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
     for (const message in userMessageChats) {
         const chatButton = document.createElement('button');
@@ -111,13 +118,6 @@ function loadChats() {
         chatButton.addEventListener('click', function() {
             loadChatBlock(conversationID);
         });
-
-            //cannot for the life of me figure out what is going on with the snapshot listener
-
-        // const refVariable = onSnapshot(doc(firestore, 'users', DocID), (doc) => {
-        //         clearChats(); // Call your clearChats function here
-        //         loadChats(); // Call your loadChats function here
-        // });
     }
 }    
     
@@ -216,6 +216,15 @@ function loadChatBlock(conversationID) {
         }
     })
 }
+
+onSnapshot(docRef, (doc) => {
+            if (doc.exists()) {
+                updateChatData()
+                console.log('refreshed')
+            } else {
+                console.log('no such document')
+            }
+        });
 
 async function loadConversation(conversationID, currentConversation) {
         const messagesToLoad = currentConversation
@@ -619,4 +628,26 @@ function formatTimestampForChats(timestamp) {
     } else {
         return `on ${timeWeekDay} at ${timeHours}:${timeMinutesFormatted}`
     }
+}
+
+
+async function updateChatData() {
+    return getDoc(docRef)
+        .then((docSnap) => {
+            allUserData = docSnap.data();
+            userMessageChats = allUserData.messages;
+            unreadMessagesArray = allUserData.unreadMessages;
+            console.log('update called');
+            console.log(unreadMessagesArray.length)
+            if (unreadMessagesArray.length > 0) {
+                openChatWindowButton.classList.add('red-border');
+            } else {
+                openChatWindowButton.classList.remove('red-border');
+            }
+            clearChats();
+            loadChats();
+        })
+        .catch((error) => {
+            console.error('Error getting document:', error);
+        });
 }
