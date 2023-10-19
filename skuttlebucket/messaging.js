@@ -250,7 +250,7 @@ async function loadConversation(conversationID, currentConversation) {
         individualMessageTime.textContent = `${userName} ${formattedTime}`
         individualMessageBlock.classList.add('sent-message-block')
         } else {
-        individualMessageTime.textContent = `${userName} ${formattedTime}`
+        individualMessageTime.textContent = `${conversationID} ${formattedTime}`
         individualMessageBlock.classList.add('received-message-block')
         }
 
