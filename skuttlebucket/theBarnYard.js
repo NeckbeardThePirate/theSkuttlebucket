@@ -42,6 +42,8 @@ const userData = userDocSnap.data();
 
 const userName = userData.userName;
 
+const usersBarnyards = userData.barnyards;
+
 const barnYardToLoad = 'barnyard1'
 
 const barnyardCollection = collection(firestore, 'barnyards');
@@ -207,3 +209,26 @@ timelineButton.addEventListener('keyup', function(event) {
         window.location.href = 'timeline.html'
     }
 })
+
+function loadAvailableBarnYards() {
+    const leftPanel = document.getElementById('left-sidebar')
+    for (const barnyard in usersBarnyards) {
+        const barnyardContainer = document.createElement('div')
+        const barnyardTitle = document.createElement('h3');
+        const barnyardDescription = document.createElement('p');
+        const barnyardMembers = document.createElement('p');
+        const stringBarnYardMemebers = usersBarnyards[barnyard].barnyardMembers 
+        barnyardTitle.textContent = usersBarnyards[barnyard].barnyardTitle;
+        barnyardDescription.textContent = usersBarnyards[barnyard].barnyardDescription;
+        barnyardMembers.textContent = stringBarnYardMemebers.toString();
+
+        leftPanel.appendChild(barnyardContainer);
+        barnyardContainer.appendChild(barnyardTitle);
+        barnyardContainer.appendChild(barnyardDescription);
+        barnyardContainer.appendChild(barnyardMembers);
+
+    }
+}
+
+
+loadAvailableBarnYards()
