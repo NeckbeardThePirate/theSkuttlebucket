@@ -40,7 +40,7 @@ const userDocSnap = await getDoc(userDocRef);
 
 const userData = userDocSnap.data();
 
-console.log(userData)
+const userName = userData.userName;
 
 const barnYardToLoad = 'barnyard1'
 
@@ -55,6 +55,10 @@ const barnyardSnap = await getDoc(barnyardRef)
 var barnyardData = barnyardSnap.data();
 
 const postButton = document.getElementById('message-send-button')
+
+const timelineButton = document.getElementById('timeline-button');
+
+const userProfileButton = document.getElementById('user-profile-button');
 
 let recentMessagesArray = barnyardData.recentMessages
 
@@ -79,23 +83,28 @@ async function loadRecentPosts() {
     let recentMessagesArray = barnyardData.recentMessages
 
     for (const message in recentMessagesArray)  {
+        const messageBoxContainer = document.createElement('div')
         const messageBox = document.createElement('div')
         const messageInfoContainer = document.createElement('div')
         const messageContent = document.createElement('div')
         const messageAuthorContainer = document.createElement('div')
         const messageTimestampContainer = document.createElement('div')
-
-        messageBox.classList.add('message-box');
+        if (recentMessagesArray[message].messageAuthor === userName) {
+            messageBox.classList.add('sent-message-box');
+            messageBoxContainer.classList.add('sent-message-box-container');
+        } else {
+            messageBox.classList.add('message-box');
+            messageBoxContainer.classList.add('message-box-container');
+        }
         messageBox.classList.add('all-text');
-        messageInfoContainer.classList.add('message-info-container');
-        messageContent.classList.add('message-content');messageBox.classList.add('message-box');
         messageInfoContainer.classList.add('message-info-container');
         messageContent.classList.add('message-content');
 
         messageContent.textContent = `${recentMessagesArray[message].messageText}`
         messageAuthorContainer.textContent = `@${recentMessagesArray[message].messageAuthor}`
         messageTimestampContainer.textContent = `${recentMessagesArray[message].messageTimestamp}`
-        feedBin.appendChild(messageBox);
+        feedBin.appendChild(messageBoxContainer);
+        messageBoxContainer.appendChild(messageBox);
         messageBox.appendChild(messageInfoContainer);
         messageInfoContainer.appendChild(messageAuthorContainer);
         messageInfoContainer.appendChild(messageTimestampContainer);
@@ -106,16 +115,16 @@ async function loadRecentPosts() {
 
 
 async function createNewPost() {
-    const postText = document.getElementById('message-input').value
+    const postText = document.getElementById('message-input')
     const messageTimestamp = Date.now()
     const newPost = {
         messageAuthor: userData['userName'],
         messageTimestamp: messageTimestamp,
-        messageText: postText,
+        messageText: postText.value,
     }
 
-    console.log(newPost);
-
+    postText.value = ''
+    postText.focus()
     recentMessagesArray.unshift(newPost);
     console.log(recentMessagesArray);
     updateRecentArray();
@@ -161,3 +170,37 @@ onSnapshot(barnyardRef, (doc) => {
         console.log("No such document exists!");
     }
 });
+
+function loadBarnYardAnimals() {
+    const animalsArray = barnyardData.authorizedUsers;
+    console.log(animalsArray)
+    const membershipWindow = document.getElementById('membership-window');
+    for (const animal of animalsArray) {
+        const barnyardAnimalContainer = document.createElement('div');
+        barnyardAnimalContainer.textContent = `@${animal}`
+        barnyardAnimalContainer.classList.add('barnyard-animal-container')
+        barnyardAnimalContainer.classList.add('all-text')
+        membershipWindow.appendChild(barnyardAnimalContainer)
+    }
+}
+
+loadBarnYardAnimals()
+userProfileButton.addEventListener('keyup', function(event) {
+    if (event.keycode === 13) {
+        window.location.href = 'skuttlebukket_user.html'
+    }
+})
+
+userProfileButton.addEventListener('click', function() {
+    window.location.href = 'skuttlebukket_user.html'
+})
+
+timelineButton.addEventListener('click', function() {
+    window.location.href = 'timeline.html'
+})
+
+timelineButton.addEventListener('keyup', function(event) {
+    if (event.keycode === 13) {
+        window.location.href = 'timeline.html'
+    }
+})

@@ -119,6 +119,8 @@ const logoutButton = document.getElementById('logout-button');
 
 const timelineButton = document.getElementById('timeline-button');
 
+const barnyardButton = document.getElementById('barnyard-button')
+
 subProfileInfo.id = 'subprofile-info';
 followingCount.textContent = `Following: ${userData.followingCount}`;
 followerCount.textContent = `Followers: ${userData.followerCount}`;
@@ -978,4 +980,12 @@ function clearComments(bucketDisplayContentComments) {
     }
 }
 
+barnyardButton.addEventListener('click', function() {
+    window.location.href = 'theBarnYard.html'
+})
 
+barnyardButton.addEventListener('keyup', function(event) {
+    if (event.keycode === 13) {
+        window.location.href = 'theBarnYard.html'
+    }
+})

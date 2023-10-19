@@ -97,7 +97,6 @@ function openChatWindow() {
 }
 
 function loadChats() {
-    console.log('load chats was triggered')
     const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
     for (const message in userMessageChats) {
         const chatButton = document.createElement('button');
@@ -220,7 +219,6 @@ function loadChatBlock(conversationID) {
 onSnapshot(docRef, (doc) => {
             if (doc.exists()) {
                 updateChatData()
-                console.log('refreshed')
             } else {
                 console.log('no such document')
             }
@@ -365,10 +363,7 @@ async function sendMessage(conversationID, userMessageChats) {
                     }
                     workingConversationDataActiveChat.unshift(newMessageToAdd);
                     const recipientUnreadMessagesArray = workingConversationData.unreadMessages
-                    console.log(recipientUnreadMessagesArray)
                     recipientUnreadMessagesArray.push(messageID);
-                    console.log('pushed successfully?')
-                    console.log(recipientUnreadMessagesArray)
                     
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
@@ -550,7 +545,6 @@ function delay(milliseconds) {
 
             messageUser.addEventListener('click', function() {
             let goingToMessage = filteredUsers[i];
-                console.log('Message clicked for user:', goingToMessage);
                 startNewMessage(goingToMessage);
             });
             showMatchingUser.addEventListener('click', function() {
@@ -575,7 +569,6 @@ async function startNewMessage(goingToMessage) {
             currentConversations[goingToMessage] = []
             await updateDoc(docRef, { messages: currentConversations })
             .then(() => {
-                console.log(currentConversations[goingToMessage])
             }) 
         } else {
             console.log('currentChatsSnapDoc not found')
@@ -637,8 +630,7 @@ async function updateChatData() {
             allUserData = docSnap.data();
             userMessageChats = allUserData.messages;
             unreadMessagesArray = allUserData.unreadMessages;
-            console.log('update called');
-            console.log(unreadMessagesArray.length)
+
             if (unreadMessagesArray.length > 0) {
                 openChatWindowButton.classList.add('red-border');
             } else {
