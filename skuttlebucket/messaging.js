@@ -17,7 +17,7 @@ const allUserNames = [];
 
 let filteredUsers = [];
 
-const alertAudio = new Audio('alert.mp3');
+const alertAudio = new Audio('assets/alert.mp3');
 
 let unreadMessagesArray = allUserData.unreadMessages;
 

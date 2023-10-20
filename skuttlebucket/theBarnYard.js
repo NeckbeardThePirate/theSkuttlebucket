@@ -51,9 +51,20 @@ const barnyardCollection = collection(firestore, 'barnyards');
 
 const allBarnyardsRef = await getDocs(barnyardCollection);
 
-// const allBarnyardsSnap = docSnap(allBarnyardsRef);
+let allBarnyards = [];
 
-// const allBarnyardsData = allBarnyardsSnap.data()
+allBarnyardsRef.forEach((doc) => {
+    if (doc.exists()) {
+        const byid = doc.id
+        allBarnyards.push(byid)
+    }
+});
+
+console.log(allBarnyards)
+
+// const allBarnyardsData = allBarnyardsRef.data()
+
+// console.log(allBarnyardsData)
 
 const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 
@@ -82,7 +93,7 @@ const createBarnyardButton = document.getElementById('create-button');
 
 const inviteToBarnyardButton = document.getElementById('invite-button');
 
-const alertAudio = new Audio('alert.mp3');
+const alertAudio = new Audio('assets/alert.mp3');
 
 
 inviteToBarnyardButton.addEventListener('click', function() {
@@ -403,11 +414,19 @@ async function createNewBarnyard() {
         elderlyMessages: [],
         recentMessages: [],
     }
-    try {
-        await setDoc(doc(firestore, 'barnyards', newBarnyardName), newBarnyard);
-    } catch (error) {
-        console.log('error: ', error)
+    const barnyardIndex = allBarnyards.indexOf(newBarnyardName);
+    console.log(barnyardIndex)
+    if (barnyardIndex !== -1) {
+        alert('that barnyard name is already take please choose another');
+    } else {
+        console.log('its not taken')
+        try {
+            await setDoc(doc(firestore, 'barnyards', newBarnyardName), newBarnyard);
+        } catch (error) {
+            console.log('error: ', error)
+        }
     }
+    
 
     usersBarnyards.push(newBarnyardName)
 }
