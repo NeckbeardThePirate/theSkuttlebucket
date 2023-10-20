@@ -1341,6 +1341,6 @@ a {
 }
 
 .red-border {
-    border: 3px solid red;
-    background-color: rgb(190, 20, 20);
+    border: 3px solid rgb(99, 0, 0);
+    background-color: rgb(255, 255, 255);
 }
