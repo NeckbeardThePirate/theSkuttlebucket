@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot, docSnap } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+// import { docSnap } from "./userProfile";
 
 
 const firebaseConfig = {
@@ -42,11 +43,17 @@ const userData = userDocSnap.data();
 
 const userName = userData.userName;
 
-const usersBarnyards = userData.barnyards;
+let usersBarnyards = userData.barnyards;
 
 const barnYardToLoad = 'barnyard1'
 
 const barnyardCollection = collection(firestore, 'barnyards');
+
+const allBarnyardsRef = await getDocs(barnyardCollection);
+
+const allBarnyardsSnap = docSnap(allBarnyardsRef);
+
+const allBarnyardsData = allBarnyardsSnap.data()
 
 const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 
@@ -65,6 +72,29 @@ const userProfileButton = document.getElementById('user-profile-button');
 let recentMessagesArray = barnyardData.recentMessages
 
 let elderlyMessagesArray = barnyardData.elderlyMessages
+
+const allUsersRef = await getDocs(usersCollection);
+
+let searchValue = '';
+
+const createBarnyardButton = document.getElementById('create-button');
+
+let allUserNames = [];
+
+let filteredUsers = [];
+
+let checkFilteredUsers = [];
+
+let AUList = [];
+
+allUsersRef.forEach((doc) => {
+    if(doc.exists()) {
+        const userData = doc.data();
+        const userName = userData.userName;
+        allUserNames.push(userName);
+        checkFilteredUsers.push(userName)
+    }
+})
 
 postButton.addEventListener('click', function() {
     createNewPost()
@@ -130,15 +160,19 @@ async function createNewPost() {
 
     postText.value = ''
     postText.focus()
-    recentMessagesArray.unshift(newPost);
-    console.log(recentMessagesArray);
-    updateRecentArray();
-    clearPosts();
-    loadRecentPosts();
+
+    
     try {
+        const refreshedData = await getDoc(barnyardRef)
+        barnyardData = refreshedData.data();
+        recentMessagesArray = barnyardData.recentMessages
+        elderlyMessagesArray = barnyardData.elderlyMessages
+        recentMessagesArray.unshift(newPost);
+        updateRecentArray();
         await updateDoc(barnyardRef, { 
             recentMessages: recentMessagesArray,
             elderlyMessages: elderlyMessagesArray
+         }).then(() => {
          })
     } catch (error) {
         console.log('error: ', error);
@@ -178,7 +212,7 @@ onSnapshot(barnyardRef, (doc) => {
 
 function loadBarnYardAnimals() {
     const animalsArray = barnyardData.authorizedUsers;
-    console.log(animalsArray)
+
     const membershipWindow = document.getElementById('membership-window');
     for (const animal of animalsArray) {
         const barnyardAnimalContainer = document.createElement('div');
@@ -210,6 +244,15 @@ timelineButton.addEventListener('keyup', function(event) {
     }
 })
 
+const textInputArea = document.getElementById('message-input')
+
+textInputArea.addEventListener('keyup', function(event) {
+    if (event.keyCode === 13) {
+        createNewPost();
+    }
+})
+
+
 function loadAvailableBarnYards() {
     const leftPanel = document.getElementById('left-sidebar')
     for (const barnyard in usersBarnyards) {
@@ -222,6 +265,8 @@ function loadAvailableBarnYards() {
         barnyardDescription.textContent = usersBarnyards[barnyard].barnyardDescription;
         barnyardMembers.textContent = stringBarnYardMemebers.toString();
 
+        barnyardContainer.classList.add('info-window')
+
         leftPanel.appendChild(barnyardContainer);
         barnyardContainer.appendChild(barnyardTitle);
         barnyardContainer.appendChild(barnyardDescription);
@@ -230,5 +275,198 @@ function loadAvailableBarnYards() {
     }
 }
 
+function openCreateNewBarnyardWindow() {
+    AUList = []
+    const displayCreateNewBarnyardWindowBackground = document.createElement('div');
+    const displayCreateNewBarnyardWindowContent = document.createElement('div');
+    const displayCreateNewBarnyardWindowHeader = document.createElement('h2');
+    const displayCreateNewBarnyardWindowHeaderContainer = document.createElement('div');
+    const displayCreateNewBarnyardWindowContentBlock = document.createElement('div');
+    const displayCreateNewBarnyardWindowContentBlockBarnyardNameHeaderContainer = document.createElement('div');
+    const displayCreateNewBarnyardWindowContentBlockBarnyardNameHeader = document.createElement('h3');
+    const displayCreateNewBarnyardWindowContentBlockBarnyardName = document.createElement('input');
+    const displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeaderContainer = document.createElement('div');
+    const displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeader = document.createElement('h3');
+    const displayCreateNewBarnyardWindowContentBlockAuthorizedUsers = document.createElement('input');
+    const displayCreateNewBarnyardWindowContentBlockSearchResultsContainer = document.createElement('div');
+    const finalizeBarnyardCreationButton = document.createElement('button');
+
+    displayCreateNewBarnyardWindowHeader.textContent = 'Fill in your Barnyard info: ';
+    // displayCreateNewBarnyardWindowContentBlockAuthorizedUsersAddButton.textContent = 'Add';
+    finalizeBarnyardCreationButton.textContent = 'Go!';
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeader.textContent = 'Add Users: ';
+    displayCreateNewBarnyardWindowContentBlockBarnyardNameHeader.textContent = 'Barnyard Name: ';
+
+    displayCreateNewBarnyardWindowContentBlockBarnyardName.id = 'new-barnyard-name'
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsers.id = 'new-barnyard-AU'
+    displayCreateNewBarnyardWindowContentBlockSearchResultsContainer.id = 'search-results-container';
+
+    displayCreateNewBarnyardWindowBackground.classList.add('modal');
+    displayCreateNewBarnyardWindowContent.classList.add('modal-content');
+    displayCreateNewBarnyardWindowContentBlock.classList.add('modal-content-block');
+    displayCreateNewBarnyardWindowHeaderContainer.classList.add('modal-header');
+    displayCreateNewBarnyardWindowHeader.classList.add('modal-header-content');
+    displayCreateNewBarnyardWindowHeader.classList.add('all-text');
+    displayCreateNewBarnyardWindowContentBlockBarnyardNameHeader.classList.add('all-text');
+    displayCreateNewBarnyardWindowContentBlockBarnyardNameHeaderContainer.classList.add('interior-element');
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeaderContainer.classList.add('interior-element');
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeader.classList.add('all-text');
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsers.classList.add('modal-content-piece');
+    displayCreateNewBarnyardWindowContentBlockBarnyardName.classList.add('modal-content-piece');
+
+    document.body.appendChild(displayCreateNewBarnyardWindowBackground);
+    displayCreateNewBarnyardWindowBackground.appendChild(displayCreateNewBarnyardWindowContent);
+    displayCreateNewBarnyardWindowContent.appendChild(displayCreateNewBarnyardWindowHeaderContainer);
+    displayCreateNewBarnyardWindowHeaderContainer.appendChild(displayCreateNewBarnyardWindowHeader);
+    displayCreateNewBarnyardWindowContent.appendChild(displayCreateNewBarnyardWindowContentBlock);
+    displayCreateNewBarnyardWindowContentBlock.appendChild(displayCreateNewBarnyardWindowContentBlockBarnyardNameHeaderContainer);
+    displayCreateNewBarnyardWindowContentBlockBarnyardNameHeaderContainer.appendChild(displayCreateNewBarnyardWindowContentBlockBarnyardNameHeader);
+    displayCreateNewBarnyardWindowContentBlock.appendChild(displayCreateNewBarnyardWindowContentBlockBarnyardName);
+    displayCreateNewBarnyardWindowContentBlock.appendChild(displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeaderContainer);
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeaderContainer.appendChild(displayCreateNewBarnyardWindowContentBlockAuthorizedUsersHeader);
+    displayCreateNewBarnyardWindowContentBlock.appendChild(displayCreateNewBarnyardWindowContentBlockAuthorizedUsers);
+    displayCreateNewBarnyardWindowContentBlock.appendChild(displayCreateNewBarnyardWindowContentBlockSearchResultsContainer)
+    displayCreateNewBarnyardWindowContent.appendChild(finalizeBarnyardCreationButton);
+
+    displayCreateNewBarnyardWindowContentBlockBarnyardName.focus();
+
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsers.addEventListener('keydown', function(event) {
+        if (event.keyCode === 8) {
+            searchValue = searchValue.slice(0, -1);
+            checkFilteredUsers = allUserNames;
+            checkForMatchingUserNames(checkFilteredUsers, searchValue);
+            displayMatchingUserNames(filteredUsers);
+        }
+    })
+
+    displayCreateNewBarnyardWindowContentBlockAuthorizedUsers.addEventListener('keypress', function(event) {
+        const charCode = event.which || event.keyCode;
+        const charStr = String.fromCharCode(charCode);
+        const allowedChars = /^[0-9a-zA-Z_-]*$/;
+        if (allowedChars.test(charStr)) {
+            const newLetter = event.key;
+            searchValue = searchValue+newLetter;
+            checkForMatchingUserNames(checkFilteredUsers, searchValue);
+            displayMatchingUserNames(filteredUsers);
+        }
+    })
+
+    finalizeBarnyardCreationButton.addEventListener('click', function() {
+        createNewBarnyard();
+    })
+
+    finalizeBarnyardCreationButton.addEventListener('keyup', function(event) {
+        if (event.keyCode === 13) {
+            createNewBarnyard();
+        }
+    })
+
+    window.addEventListener('click', function(event) {
+        if (event.target === displayCreateNewBarnyardWindowBackground) {
+            document.body.removeChild(displayCreateNewBarnyardWindowBackground);
+        }
+    });
+    
+    window.addEventListener('keyup', function(event) {
+        if (event.keyCode === 27) {
+            document.body.removeChild(displayCreateNewBarnyardWindowBackground);
+        }
+    });    
+}
+
+createBarnyardButton.addEventListener('click', openCreateNewBarnyardWindow);
+
+createBarnyardButton.addEventListener('keyup', function(event) {
+    if (event.keycode === 13) {
+        openCreateNewBarnyardWindow();
+    }
+})
+
+async function createNewBarnyard() {
+    const newBarnyardName = document.getElementById('new-barnyard-name').value;
+    const newBarnyardAU = document.getElementById('new-barnyard-AU').value;
+    AUList.push(userName)
+    const newBarnyard = {
+        barnyardOwner: userName,
+        authorizedUsers: AUList,
+        elderlyMessages: [],
+        recentMessages: [],
+    }
+    try {
+        await setDoc(doc(firestore, 'barnyards', newBarnyardName), newBarnyard);
+    } catch (error) {
+        console.log('error: ', error)
+    }
+
+    usersBarnyards.push(newBarnyardName)
+}
 
 loadAvailableBarnYards()
+
+function checkForMatchingUserNames(checkFilteredUsers, searchValue) {
+    filteredUsers = []
+    for (let i = 0; i < checkFilteredUsers.length; i++) {
+        const lowerSearchTerm = searchValue.toLowerCase();
+        const lowerAllUserNames = checkFilteredUsers[i].toLowerCase();
+        if(lowerAllUserNames.includes(lowerSearchTerm)) {
+            filteredUsers.push(checkFilteredUsers[i]);
+        }
+    }
+    checkFilteredUsers = filteredUsers;
+}
+
+function displayMatchingUserNames(filteredUsers) {
+    clearResultsContainer()
+    const resultsContainer = document.getElementById('search-results-container')
+    if (filteredUsers.length === 0){
+        const showNoResults = document.createElement('div');
+        const showNoResultsMessage = document.createElement('h3');
+        showNoResultsMessage.textContent = 'No results found';
+        showNoResults.classList.add('found-user');
+        showNoResultsMessage.classList.add('found-username');
+        showNoResultsMessage.classList.add('all-text');
+        resultsContainer.appendChild(showNoResults);
+        showNoResults.appendChild(showNoResultsMessage);
+    } else {
+        for (let i = 0; i < filteredUsers.length; i++) {
+            var matchingUserAndAddContainer = document.createElement('div');
+            const showMatchingUser = document.createElement('div');
+            const matchingUserName = document.createElement('h3');
+            const addUser = document.createElement('button');
+            matchingUserAndAddContainer.classList.add('matching-user-div')
+            matchingUserName.classList.add('all-text');
+            addUser.textContent = `Add`;
+            addUser.classList.add('add-button')
+            matchingUserName.textContent = `@${filteredUsers[i]}`
+            showMatchingUser.classList.add('found-user')
+            if (filteredUsers[i].length >= 16) {
+                matchingUserName.classList.add('sixteen-charachter-plus-username')
+            } if (filteredUsers[i].length >= 18) {
+                matchingUserName.classList.remove('sixteen-charachter-plus-username')
+                matchingUserName.classList.add('eighteen-charachter-plus-username')
+            } if (filteredUsers[i].length >= 20) {
+                matchingUserName.classList.remove('eighteen-charachter-plus-username')
+                matchingUserName.classList.add('twenty-charachter-plus-username')
+            }
+            matchingUserAndAddContainer.style.display = 'flex';
+            resultsContainer.appendChild(matchingUserAndAddContainer);
+            matchingUserAndAddContainer.appendChild(showMatchingUser);
+            matchingUserAndAddContainer.appendChild(addUser);
+            showMatchingUser.appendChild(matchingUserName);
+
+            addUser.addEventListener('click', function() {
+                const addToBarnyard = filteredUsers[i];
+                console.log('Add clicked for user:', addToBarnyard);
+                AUList.push(addToBarnyard)
+            });
+        };
+    }
+};
+
+function clearResultsContainer() {
+    const resultsContainer = document.getElementById('search-results-container')
+    while (resultsContainer.firstChild) {
+        const firstChild = resultsContainer.firstChild;
+        resultsContainer.removeChild(firstChild)
+    }
+}

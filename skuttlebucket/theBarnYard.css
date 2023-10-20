@@ -15,7 +15,7 @@
 }
 
 .all-text {
-    font-family: 'Lucida Console', 'Courier New', 'monospace';
+    font-family: 'cursive', 'Lucida Console', 'Courier New', 'monospace';
 }
 
 .bold-text {
@@ -32,6 +32,9 @@
     background-color: rgb(101, 67, 33);
     width: 20%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #main-display {
@@ -136,6 +139,32 @@
     transform: scale(1.05);
 }
 
+.action-button {
+    border-radius: 15px;
+    text-align: center;
+    align-items: center;
+    margin: 0.5rem;
+    margin-top: 1rem;
+    border: 0.15rem solid black;
+    background-color: tan;
+    width: 10rem;
+    max-width: 40%;
+    height: 3rem;
+    padding: 0.5rem;
+}
+   
+.action-button:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+
+.action-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 #membership-header {
     background-color: grey;
     font-size: 28px;
@@ -158,6 +187,18 @@
     overflow-y: auto;
 }
 
+.info-window {
+    height: fit-content;
+    width: 70%;
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: #D1D1D1;
+    padding: 1rem;
+    margin: auto;
+    margin-top: 1rem;
+    overflow-y: auto;  
+}
+
 .barnyard-animal-container {
     width: 90%;
     padding: 0.5rem;
@@ -169,4 +210,73 @@
 .post-data-block {
     margin: 0.5rem;
     max-width: 85%;
+}
+
+.modal {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(100, 20, 20);
+    border-radius: 25px;
+    max-height: 80%;
+    overflow-y: auto;
+    min-height: 60%;
+    min-width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 4px solid black;
+    overflow-x: hidden;
+}
+
+.modal-content-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: grey;
+    border: 2px solid black;
+    width: 85%;
+    min-height: 75%;
+    margin: 2rem;
+    border-radius: 20px;
+}
+
+.modal-content-piece {
+    margin: 1rem;
+    height: 4rem;
+    width: 70%;
+    border-radius: 12px;
+    font-size: 30px;
+    border: none;
+}
+
+.modal-header {
+    background-color: grey;
+    padding: 1.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+.modal-header-content {
+    font-size: 32px;
+}
+
+.interior-element {
+    background-color: grey;
+    border-radius: 15px;
+    padding: 1rem;
+    width: 50%;
+    text-align: center;
 }
