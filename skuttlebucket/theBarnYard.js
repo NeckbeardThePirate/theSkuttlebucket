@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot, docSnap } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 // import { docSnap } from "./userProfile";
 
@@ -51,9 +51,9 @@ const barnyardCollection = collection(firestore, 'barnyards');
 
 const allBarnyardsRef = await getDocs(barnyardCollection);
 
-const allBarnyardsSnap = docSnap(allBarnyardsRef);
+// const allBarnyardsSnap = docSnap(allBarnyardsRef);
 
-const allBarnyardsData = allBarnyardsSnap.data()
+// const allBarnyardsData = allBarnyardsSnap.data()
 
 const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 

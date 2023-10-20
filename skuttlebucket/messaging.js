@@ -87,7 +87,7 @@ function openChatWindow() {
                 messagesButton.classList.add('red-border')
             } else {
                 const messagesButton = document.getElementById('chat-button');
-                messagesButton.classList.remove('red-border')
+                messagesButton.classList.remove('new-border')
             }
             
         }
