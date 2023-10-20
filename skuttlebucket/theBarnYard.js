@@ -79,6 +79,16 @@ let searchValue = '';
 
 const createBarnyardButton = document.getElementById('create-button');
 
+
+const inviteToBarnyardButton = document.getElementById('invite-button');
+
+const alertAudio = new Audio('alert.mp3');
+
+
+inviteToBarnyardButton.addEventListener('click', function() {
+    alertAudio.play();
+})
+
 let allUserNames = [];
 
 let filteredUsers = [];
@@ -205,6 +215,7 @@ onSnapshot(barnyardRef, (doc) => {
     if (doc.exists()) {
         clearPosts()
         loadRecentPosts();
+        alertAudio.play();
     } else {
         console.log("No such document exists!");
     }

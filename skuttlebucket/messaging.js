@@ -17,6 +17,8 @@ const allUserNames = [];
 
 let filteredUsers = [];
 
+const alertAudio = new Audio('alert.mp3');
+
 let unreadMessagesArray = allUserData.unreadMessages;
 
 
@@ -202,6 +204,7 @@ function loadChatBlock(conversationID) {
         if (doc.exists()) {
             const userDataChangeData = doc.data();
             pullChatData(conversationID)
+            alertAudio.play();
         }
     })
 
@@ -219,6 +222,7 @@ function loadChatBlock(conversationID) {
 onSnapshot(docRef, (doc) => {
             if (doc.exists()) {
                 updateChatData()
+                alertAudio.play();
             } else {
                 console.log('no such document')
             }
