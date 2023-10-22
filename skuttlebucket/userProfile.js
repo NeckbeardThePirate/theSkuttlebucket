@@ -122,8 +122,8 @@ const timelineButton = document.getElementById('timeline-button');
 const barnyardButton = document.getElementById('barnyard-button')
 
 subProfileInfo.id = 'subprofile-info';
-followingCount.textContent = `Following: ${userData.followingCount}`;
-followerCount.textContent = `Followers: ${userData.followerCount}`;
+followingCount.textContent = `Neighbors You Like: ${userData.followingCount}`;
+followerCount.textContent = `Neighbors: ${userData.followerCount}`;
 joinDate.textContent = `Member since: ${formattedJoinDate}`;
 followingCount.id = 'following-count'
 followerCount.id = 'follower-count'
@@ -140,7 +140,7 @@ userHandle.id = 'handle';
 userHandle.textContent = `@${userData.userName}`;
 
 if (userData.userDescription === '') {
-    userDescription.textContent = `Click me to tell us a bit about yourself!`;
+    userDescription.textContent = `Write Your Farming Status: "Out in the Fields"`;
 
 } else {
     userDescription.textContent = `${userData.userDescription}`;
