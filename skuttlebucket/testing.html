@@ -2,27 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Page</title>
-    <link rel="stylesheet" type="text/css" href="testing.css">
+    <meta name="viewport" content="width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Farm Scuttlebucket</title>
     <link rel="icon" href="Favicontractor.ico" type="image/x-icon">
-   
+    
+
 </head>
 <body>
-    <div class="container">
-        <div id="search-header-box">
-            <h1 id="header-text">Find A Farmer</h1>
+    <div id="scuttle-content-block" class="content">
+        <div class='divider'></div>
+        <div class="header">
+            <a href="timeline.html">
+                <h1 class='all-text'>The Farm Scuttlebucket 🚜</h1>
+            </a>
         </div>
-        <div class="search-bars">
-         <input id='search-space' type="text" class="search-bar" placeholder="Waldo">
-        <button id='button-for-searching' class="search-button">Find</button>
+        <div class='divider'></div>
+        <div class="cover-photo">
+        </div>
+        <div id="profile-header">
+        </div>
+        <div id="logout-and-search-div">
+            <button id="timeline-button" class="all-text, nav-button, identifying-numbers" style="font-size: 20px;">Community Buckets</button>
+            
+            </button>
+            <button id="chat-button" class="all-text, identifying-numbers" style="font-size: 20px;">Farmer to Farmer (Demo)</button>
+            <button id="barnyard-button" class="all-text identifying-numbers" style="font-size: 20px;">Barnyard (Demo)</button>
+            <button id='search-link'class="identifying-numbers">
+                <h2 class="all-text" style="font-weight: 400;">Find a Farmer</h2>
+            <button id='logout-button'class="all-text, identifying-numbers" style="font-size: 20px;">Quit</button>
+        </div>
+        <div class="profile-details">
+            <div id="edit-profile-description-window" class="edit-description-window">
+                <span class="close" id="close-profile-description-window-button">&times;</span>
+                <div class="edit-profile-description-content">
+                    <h3 id="edit-profile-description-header" class="all-text">Your Farming Status</h3>
+                    <textarea id="edit-profile-description-text" class="all-text"></textarea>
+                <button id="save-profile-description-button" class="all-text">Save</button>
+                </div>
+            </div>
+            <div id="followers-list-window"> 
+                <div class="show-follower-list-window-content" id="show-followers-window-content">
+                    <span class="close" id="close-follower-list-window-button">&times;</span>
+                    <div class="popup-header-background">
+                        <h3 id="show-followers-window-header" class="all-text">Neighbors That Like You:</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="following-list-window">
+                <div class="show-following-list-window-content" id="show-following-window-content">
+                    <span class="close" id="close-following-list-window-button">&times;</span>
+                    <div class="popup-header-background">
+                        <h3 id="show-following-window-header" class="all-text">Neighbors That You Like:</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="buckets-column">
+            <div id="bucket-button">
+                <button id='buckets-header' class='all-text'>Create New Bucket</button>
+            </div>
+            <div id="buckets-wall">
+
+            </div>
+            <div id="create-bucket-window" class="new-bucket-window">
+                <span class="close" id="close-bucket-window-button">&times;</span>
+                <div class="new-bucket-content">
+                    <h3 id="new-bucket-header" class="all-text">Fill up your Bucket!</h3>
+                    <textarea id="new-bucket-text" class="all-text"></textarea>
+                <button id="dump-bucket-button" class="all-text">Dump This Bucket</button>  
+                </div>
+            </div>
+        </div>
     </div>
-        <div id="results-container"></div>
-    <div class="nav-button-container">
-        <button id="timeline-button"  class="nav-button"><h4>Water Trough</h4></button>
-        <button id="profile-button" class="nav-button"><h4>My Barn</h4></button>
-        <button id="logout-button" class="nav-button"><h4>Quiting Time</h4></button>
-    </div> 
-    </div>
-</body><script type="module" src="search.js"></script>
+    <script type="module" src="messaging.js"></script>
+    <!-- <script type="module" src="search.js"></script> -->
+    <script type="module" src="userProfile.js"></script>
+</body>
 </html>
+
