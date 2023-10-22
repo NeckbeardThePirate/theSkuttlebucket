@@ -17,6 +17,8 @@ const allUserNames = [];
 
 let filteredUsers = [];
 
+const alertAudio = new Audio('assets/alert.mp3');
+
 let unreadMessagesArray = allUserData.unreadMessages;
 
 
@@ -87,7 +89,7 @@ function openChatWindow() {
                 messagesButton.classList.add('red-border')
             } else {
                 const messagesButton = document.getElementById('chat-button');
-                messagesButton.classList.remove('red-border')
+                messagesButton.classList.remove('new-border')
             }
             
         }
@@ -202,6 +204,7 @@ function loadChatBlock(conversationID) {
         if (doc.exists()) {
             const userDataChangeData = doc.data();
             pullChatData(conversationID)
+            alertAudio.play();
         }
     })
 
@@ -219,6 +222,7 @@ function loadChatBlock(conversationID) {
 onSnapshot(docRef, (doc) => {
             if (doc.exists()) {
                 updateChatData()
+                alertAudio.play();
             } else {
                 console.log('no such document')
             }

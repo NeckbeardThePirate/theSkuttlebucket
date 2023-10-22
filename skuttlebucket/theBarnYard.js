@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot, docSnap } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 // import { docSnap } from "./userProfile";
 
@@ -45,15 +45,21 @@ const userName = userData.userName;
 
 let usersBarnyards = userData.barnyards;
 
-const barnYardToLoad = 'barnyard1'
+let barnYardToLoad = 'barnyard1'
 
 const barnyardCollection = collection(firestore, 'barnyards');
 
 const allBarnyardsRef = await getDocs(barnyardCollection);
 
-const allBarnyardsSnap = docSnap(allBarnyardsRef);
+let allBarnyards = [];
 
-const allBarnyardsData = allBarnyardsSnap.data()
+allBarnyardsRef.forEach((doc) => {
+    if (doc.exists()) {
+        const byid = doc.id
+        allBarnyards.push(byid)
+    }
+});
+
 
 const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 
@@ -78,6 +84,15 @@ const allUsersRef = await getDocs(usersCollection);
 let searchValue = '';
 
 const createBarnyardButton = document.getElementById('create-button');
+
+const inviteToBarnyardButton = document.getElementById('invite-button');
+
+const alertAudio = new Audio('assets/alert.mp3');
+
+
+inviteToBarnyardButton.addEventListener('click', function() {
+    alertAudio.play();
+})
 
 let allUserNames = [];
 
@@ -108,6 +123,10 @@ postButton.addEventListener('keyup', function(event) {
 
 async function loadRecentPosts() {
     const feedBin = document.getElementById('posted-messages-container')
+    const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
+
+    const barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
+
     const barnyardSnap = await getDoc(barnyardRef)
 
     let barnyardData = barnyardSnap.data();
@@ -205,6 +224,7 @@ onSnapshot(barnyardRef, (doc) => {
     if (doc.exists()) {
         clearPosts()
         loadRecentPosts();
+        alertAudio.play();
     } else {
         console.log("No such document exists!");
     }
@@ -272,6 +292,10 @@ function loadAvailableBarnYards() {
         barnyardContainer.appendChild(barnyardDescription);
         barnyardContainer.appendChild(barnyardMembers);
 
+        barnyardContainer.addEventListener('click', function() {
+            barnYardToLoad = usersBarnyards[barnyard].barnyardTitle;
+        })
+
     }
 }
 
@@ -298,6 +322,7 @@ function openCreateNewBarnyardWindow() {
     displayCreateNewBarnyardWindowContentBlockBarnyardNameHeader.textContent = 'Barnyard Name: ';
 
     displayCreateNewBarnyardWindowContentBlockBarnyardName.id = 'new-barnyard-name'
+    displayCreateNewBarnyardWindowBackground.id = 'new-barynard-window-background'
     displayCreateNewBarnyardWindowContentBlockAuthorizedUsers.id = 'new-barnyard-AU'
     displayCreateNewBarnyardWindowContentBlockSearchResultsContainer.id = 'search-results-container';
 
@@ -392,17 +417,49 @@ async function createNewBarnyard() {
         elderlyMessages: [],
         recentMessages: [],
     }
+    const barnyardIndex = allBarnyards.indexOf(newBarnyardName);
+    console.log(barnyardIndex)
+    if (barnyardIndex !== -1) {
+        alert('that barnyard name is already take please choose another');
+    } else {
+        console.log('its not taken')
+        try {
+            await setDoc(doc(firestore, 'barnyards', newBarnyardName), newBarnyard);
+        } catch (error) {
+            console.log('error: ', error)
+        }
+    }
+    barnYardToLoad = newBarnyardName;
+    clearPosts();
+    loadRecentPosts();
+    const newBarnyardToAdd = {
+        barnyardTitle: newBarnyardName,
+        barnyardMembers: AUList.length,
+        barnyardDescription: 'this is is still in dev lol'
+    }
+    // const displayCreateNewBarnyardWindowBackground = document.getElementById('new-barynard-window-background')
+    // document.body.removeChild(displayCreateNewBarnyardWindowBackground);
+    usersBarnyards.push(newBarnyardToAdd);
+
+    updateUsersBarnyards(usersBarnyards)
+    
+    
+}
+
+async function updateUsersBarnyards() {
     try {
-        await setDoc(doc(firestore, 'barnyards', newBarnyardName), newBarnyard);
-    } catch (error) {
+        await updateDoc(userDocRef, {usersBarnyards: usersBarnyards})
+        .then(() => {
+            console.log('success!')
+            console.log(usersBarnyards)
+        })
+    }  catch (error) {
         console.log('error: ', error)
     }
-
-    usersBarnyards.push(newBarnyardName)
 }
 
 loadAvailableBarnYards()
-
+console.log(usersBarnyards)
 function checkForMatchingUserNames(checkFilteredUsers, searchValue) {
     filteredUsers = []
     for (let i = 0; i < checkFilteredUsers.length; i++) {
