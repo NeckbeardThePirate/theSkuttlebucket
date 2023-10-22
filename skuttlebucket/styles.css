@@ -1344,3 +1344,7 @@ a {
     border: 3px solid rgb(99, 0, 0);
     background-color: rgb(255, 255, 255);
 }
+.new-border {
+    border: 3px solid rebeccapurple; 
+    background-color: rebeccapurple; 
+}
