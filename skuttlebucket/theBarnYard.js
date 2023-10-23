@@ -499,7 +499,6 @@ async function updateUsersBarnyards(usersBarnyards) {
 }
 
 loadAvailableBarnYards()
-console.log(usersBarnyards)
 function checkForMatchingUserNames(checkFilteredUsers, searchValue) {
     filteredUsers = []
     for (let i = 0; i < checkFilteredUsers.length; i++) {

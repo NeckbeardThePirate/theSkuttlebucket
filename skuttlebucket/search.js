@@ -40,32 +40,41 @@ const logoutButton = document.getElementById('logout-button');
 
 let filteredUsers = [];
 
+let checkFilteredUsers = [];
+
+let searchTerm = ''
+
 allUsersRef.forEach((doc) => {
     if(doc.exists()) {
         const userData = doc.data();
         const userName = userData.userName;
+        checkFilteredUsers.push(userName);
         allUserNames.push(userName);
     }
 })
 
-function checkForMatchingUserNames(allUserNames, searchTerm) {
+if (localStorage.length === 0) {
+    window.location.href = 'index.html'
+};
+
+function checkForMatchingUserNames(checkFilteredUsers, searchTerm) {
     filteredUsers = [];
     for (let i = 0; i < allUserNames.length; i++) {
         const lowerSearchTerm = searchTerm.toLowerCase();
-        const lowerAllUserNames = allUserNames[i].toLowerCase();
+        const lowerAllUserNames = checkFilteredUsers[i].toLowerCase();
         if(lowerAllUserNames.includes(lowerSearchTerm)) {
-            filteredUsers.push(allUserNames[i]);
+            filteredUsers.push(checkFilteredUsers[i]);
         }
     }
+    checkFilteredUsers = filteredUsers;
 }
+
 function delay(milliseconds) {
     return new Promise((resolve) => {
       setTimeout(resolve, milliseconds);
     });
   }
-if (localStorage.length === 0) {
-    window.location.href = 'index.html'
-};
+
 
 const userFromLogin = JSON.parse(localStorage.getItem('user'));
 const userUID = userFromLogin.uid
@@ -214,6 +223,7 @@ function unFollowUserFunction(goingToUnFollow) {
 }
 
 function displayMatchingSearchResults(filteredUsers) {
+    clearResultsContainer()
     if (filteredUsers.length === 0){
         const showNoResults = document.createElement('div');
         const showNoResultsMessage = document.createElement('h3');
@@ -324,8 +334,6 @@ function displayMatchingSearchResults(filteredUsers) {
                         localStorage.setItem('userToLoad', JSON.stringify(filteredUsers[i]));
                         window.location.href = 'otherUserProfile.html';
                     }
-                    console.log(loggedInUserName)
-                    console.log(filteredUsers[i])
                 });
             }
             
@@ -334,7 +342,13 @@ function displayMatchingSearchResults(filteredUsers) {
 };
 
 
-
+function clearResultsContainer() {
+    const resultsContainer = document.getElementById('results-container')
+    while (resultsContainer.firstChild) {
+        const firstChild = resultsContainer.firstChild;
+        resultsContainer.removeChild(firstChild)
+    }
+}
 
 function loadSearchResults() {
     console.log(resultsContainer)
@@ -346,18 +360,6 @@ function loadSearchResults() {
     checkForMatchingUserNames(allUserNames, searchTerm);
     displayMatchingSearchResults(filteredUsers);
 };
-
-// function chatLoadSearchResults() {
-//     console.log(chatUserSearchModalResultsContainer)
-//     while (chatUserSearchModalResultsContainer.firstChild) {
-//         chatUserSearchModalResultsContainer.removeChild(chatUserSearchModalResultsContainer.firstChild)
-//     }
-//     filteredUsers = []
-//     var searchTerm = searchBarField.value;
-//     checkForMatchingUserNames(allUserNames, searchTerm);
-//     displayMatchingSearchResults(filteredUsers);
-// };
-
 
 searchButton.addEventListener('click', loadSearchResults);
 
@@ -376,3 +378,24 @@ logoutButton.addEventListener('click', function() {
 });
 
 // export { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer }
+
+searchBarField.addEventListener('keydown', function(event) {
+    if (event.keyCode === 8) {
+        searchTerm = searchTerm.slice(0, -1);
+        checkFilteredUsers = allUserNames;
+        checkForMatchingUserNames(checkFilteredUsers, searchTerm);
+        displayMatchingSearchResults(filteredUsers);
+    }
+})
+
+searchBarField.addEventListener('keypress', function(event) {
+    const charCode = event.which || event.keyCode;
+    const charStr = String.fromCharCode(charCode);
+    const allowedChars = /^[0-9a-zA-Z_-]*$/;
+    if (allowedChars.test(charStr)) {
+        const newLetter = event.key;
+        searchTerm = searchTerm+newLetter;
+        checkForMatchingUserNames(checkFilteredUsers, searchTerm);
+        displayMatchingSearchResults(filteredUsers);
+    }
+})
