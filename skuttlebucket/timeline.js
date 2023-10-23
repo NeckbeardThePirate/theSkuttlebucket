@@ -301,16 +301,8 @@ returnToUserProfileButton.addEventListener('click', function() {
 });
 
 searchButton.addEventListener('click', function() {
-    while (resultsContainer.firstChild) {
-        resultsContainer.removeChild(resultsContainer.firstChild)
-    }
-    filteredUsers = []
-    searchModal.style.display = 'block';
+    window.location.href = 'search.html'
 });
-
-closeSearchButton.addEventListener('click', function() {
-    searchModal.style.display = 'none';
-})
 
 logoutButton.addEventListener('click', function() {
     localStorage.clear();
