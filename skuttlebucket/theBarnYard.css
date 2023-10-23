@@ -194,8 +194,7 @@
     border-radius: 20px;
     background-color: #D1D1D1;
     padding: 1rem;
-    margin: auto;
-    margin-top: 1rem;
+    margin: 1rem;
     overflow-y: auto;  
 }
 
@@ -282,5 +281,5 @@
 }
 
 .modal-button {
-    
+
 }

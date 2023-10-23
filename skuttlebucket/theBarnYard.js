@@ -63,7 +63,7 @@ allBarnyardsRef.forEach((doc) => {
 
 const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 
-const barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
+let barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
 
 const barnyardSnap = await getDoc(barnyardRef)
 
@@ -121,15 +121,55 @@ postButton.addEventListener('keyup', function(event) {
     }
 })
 
+let currentBarnyardLoadInstance = 0;
+
 async function loadRecentPosts() {
     const feedBin = document.getElementById('posted-messages-container')
-    const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
+    if (currentBarnyardLoadInstance === 0) {
+        currentBarnyardLoadInstance++;
+        const findbarnyardquery = query(barnyardCollection, where('DocID', '===', barnYardToLoad))
 
-    const barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
+        const barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
+        
+        const barnyardSnap = await getDoc(barnyardRef)
 
-    const barnyardSnap = await getDoc(barnyardRef)
+        let barnyardData = barnyardSnap.data();
 
-    let barnyardData = barnyardSnap.data();
+        const unsubscribe = onSnapshot(barnyardRef, (doc) => {
+            if (doc.exists()) {
+                const newData = doc.data();
+                if (JSON.stringify(newData) !== JSON.stringify(barnyardData)) {
+                    barnyardData = newData;
+                    clearPosts();
+                    loadRecentPosts();
+
+                }
+            } else {
+                console.log("No such document exists!");
+            }
+        });   
+    } else {
+        const unsubscribe = onSnapshot(barnyardRef, (doc) => {
+            if (doc.exists()) {
+                const newData = doc.data();
+                if (JSON.stringify(newData) !== JSON.stringify(barnyardData)) {
+                    barnyardData = newData;
+                    clearPosts();
+                    loadRecentPosts();
+                    alertAudio.play();
+                } else {
+                    console.log('they are the same')
+                    console.log(newData);
+                    console.log(barnyardData)
+                }
+            } else {
+                console.log("No such document exists!");
+            }
+        });   
+    }
+    
+
+
 
     let recentMessagesArray = barnyardData.recentMessages
 
@@ -180,18 +220,22 @@ async function createNewPost() {
     postText.value = ''
     postText.focus()
 
-    
+    console.log('preupdate', barnyardData)
     try {
-        const refreshedData = await getDoc(barnyardRef)
-        barnyardData = refreshedData.data();
-        recentMessagesArray = barnyardData.recentMessages
-        elderlyMessagesArray = barnyardData.elderlyMessages
-        recentMessagesArray.unshift(newPost);
-        updateRecentArray();
+        barnyardRef = doc(firestore, 'barnyards', barnYardToLoad);
+        // const refreshedData = await getDoc(barnyardRef)
+        // barnyardData = refreshedData.data();
+        // recentMessagesArray = barnyardData.recentMessages
+        // elderlyMessagesArray = barnyardData.elderlyMessages
+        // recentMessagesArray.unshift(newPost);
+        // updateRecentArray();
         await updateDoc(barnyardRef, { 
             recentMessages: recentMessagesArray,
             elderlyMessages: elderlyMessagesArray
          }).then(() => {
+        console.log('post update', barnyardData)
+
+            loadRecentPosts();
          })
     } catch (error) {
         console.log('error: ', error);
@@ -218,17 +262,9 @@ function updateRecentArray() {
 
 
 
-loadRecentPosts()
+// loadRecentPosts()
 
-onSnapshot(barnyardRef, (doc) => {
-    if (doc.exists()) {
-        clearPosts()
-        loadRecentPosts();
-        alertAudio.play();
-    } else {
-        console.log("No such document exists!");
-    }
-});
+
 
 function loadBarnYardAnimals() {
     const animalsArray = barnyardData.authorizedUsers;
@@ -243,7 +279,7 @@ function loadBarnYardAnimals() {
     }
 }
 
-loadBarnYardAnimals()
+// loadBarnYardAnimals()
 userProfileButton.addEventListener('keyup', function(event) {
     if (event.keycode === 13) {
         window.location.href = 'skuttlebukket_user.html'
@@ -294,6 +330,9 @@ function loadAvailableBarnYards() {
 
         barnyardContainer.addEventListener('click', function() {
             barnYardToLoad = usersBarnyards[barnyard].barnyardTitle;
+            clearPosts();
+            loadRecentPosts();
+            currentBarnyardLoadInstance = 0;
         })
 
     }
@@ -435,7 +474,8 @@ async function createNewBarnyard() {
     const newBarnyardToAdd = {
         barnyardTitle: newBarnyardName,
         barnyardMembers: AUList.length,
-        barnyardDescription: 'this is is still in dev lol'
+        barnyardDescription: 'this is is still in dev lol',
+        barnyardOwner: true,
     }
     // const displayCreateNewBarnyardWindowBackground = document.getElementById('new-barynard-window-background')
     // document.body.removeChild(displayCreateNewBarnyardWindowBackground);
@@ -446,9 +486,9 @@ async function createNewBarnyard() {
     
 }
 
-async function updateUsersBarnyards() {
+async function updateUsersBarnyards(usersBarnyards) {
     try {
-        await updateDoc(userDocRef, {usersBarnyards: usersBarnyards})
+        await updateDoc(userDocRef, {barnyards: usersBarnyards})
         .then(() => {
             console.log('success!')
             console.log(usersBarnyards)

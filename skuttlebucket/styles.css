@@ -1113,8 +1113,8 @@ a {
     margin: 0.75rem;
     border: 0.15rem solid black;
     background-color: grey;
-    width: 25%;
-    height: 2.5rem;
+    width: fit-content;
+    height: fit-content;
     padding: 1rem;
     font-size: 20px;
     font-weight: 700;
