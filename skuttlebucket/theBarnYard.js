@@ -91,7 +91,14 @@ const alertAudio = new Audio('assets/alert.mp3');
 
 
 inviteToBarnyardButton.addEventListener('click', function() {
-    alertAudio.play();
+    Notification.requestPermission().then(function(permission) {
+        if (permission === 'granted') {
+          // Create and show the notification
+          var notification = new Notification('Hello!', {
+            body: 'This is a desktop notification.',
+          });
+        }
+      });
 })
 
 let allUserNames = [];
@@ -228,7 +235,7 @@ async function createNewPost() {
         // recentMessagesArray = barnyardData.recentMessages
         // elderlyMessagesArray = barnyardData.elderlyMessages
         // recentMessagesArray.unshift(newPost);
-        // updateRecentArray();
+        updateRecentArray();
         await updateDoc(barnyardRef, { 
             recentMessages: recentMessagesArray,
             elderlyMessages: elderlyMessagesArray
@@ -253,13 +260,14 @@ function clearPosts() {
 }
 
 function updateRecentArray() {
-    while (recentMessagesArray.length > 100) {
+    while (recentMessagesArray.length > 30) {
         const toRotateOut = recentMessagesArray.length - 1;
         elderlyMessagesArray.unshift(recentMessagesArray[toRotateOut]);
         recentMessagesArray.pop()
     }
 }
 
+console.log(recentMessagesArray.length)
 
 
 // loadRecentPosts()
@@ -566,3 +574,13 @@ function clearResultsContainer() {
         resultsContainer.removeChild(firstChild)
     }
 }
+
+
+Notification.requestPermission().then(function(permission) {
+    if (permission === 'granted') {
+      // Create and show the notification
+      var notification = new Notification('Hello!', {
+        body: 'This is a desktop notification.',
+      });
+    }
+  });
