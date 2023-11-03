@@ -90,16 +90,31 @@ const inviteToBarnyardButton = document.getElementById('invite-button');
 const alertAudio = new Audio('assets/alert.mp3');
 
 
-inviteToBarnyardButton.addEventListener('click', function() {
+// inviteToBarnyardButton.addEventListener('click', function() {
+//     Notification.requestPermission().then(function(permission) {
+//         if (permission === 'granted') {
+//           // Create and show the notification
+//           var notification = new Notification('Hello!', {
+//             body: 'This is a desktop notification.',
+//           });
+//         }
+//       });
+    //   console.log(permission)
+// })
+document.querySelector('#invite-button').addEventListener('click', function() {
     Notification.requestPermission().then(function(permission) {
-        if (permission === 'granted') {
-          // Create and show the notification
-          var notification = new Notification('Hello!', {
-            body: 'This is a desktop notification.',
-          });
-        }
-      });
-})
+      if (permission === 'granted') {
+        var notification = new Notification('Hello!', {
+          body: 'This is a desktop notification.',
+        });
+      }
+    });
+  });
+  
+console.log(Notification)
+console.log(Notification.permission)
+
+
 
 let allUserNames = [];
 
