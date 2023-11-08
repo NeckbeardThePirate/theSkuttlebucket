@@ -4,6 +4,7 @@ import { DocID, userChats, getDoc, onSnapshot, docRef, query, usersCollection, w
 
 
 const openChatWindowButton = document.getElementById('chat-button')
+console.log(openChatWindowButton)
 
 let userDocSnap = await getDoc(docRef);
 
@@ -31,6 +32,7 @@ allUsersRef.forEach((doc) => {
 })
 
 openChatWindowButton.addEventListener('click', function() {
+    console.log('clicked')
     openChatWindow();
 })
 

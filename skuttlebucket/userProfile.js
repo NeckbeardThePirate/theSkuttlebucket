@@ -980,12 +980,12 @@ function clearComments(bucketDisplayContentComments) {
     }
 }
 
-barnyardButton.addEventListener('click', function() {
-    window.location.href = 'theBarnYard.html'
-})
+// barnyardButton.addEventListener('click', function() {
+//     window.location.href = 'theBarnYard.html'
+// })
 
-barnyardButton.addEventListener('keyup', function(event) {
-    if (event.keycode === 13) {
-        window.location.href = 'theBarnYard.html'
-    }
-})
+// barnyardButton.addEventListener('keyup', function(event) {
+//     if (event.keycode === 13) {
+//         window.location.href = 'theBarnYard.html'
+//     }
+// })
