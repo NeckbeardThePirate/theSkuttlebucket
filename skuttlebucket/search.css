@@ -145,14 +145,13 @@ body {
 }
 
 .nav-button {
+    margin: .5rem;
+    background-color: #D1D1D1;
+    padding: 0.75rem;
     border-radius: 15px;
-    text-align: center;
-    align-items: center;
-    margin: auto;
+    max-width: 85%;
     border: 0.15rem solid black;
-    margin: 0rem 0.3rem;
-    background-color: #C1C1C1;
-    width: 30%;
+    font-size: 20px;
 }
 
 .nav-button:hover {
