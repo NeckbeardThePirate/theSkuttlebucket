@@ -3,6 +3,11 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { firebaseConfig } from "../firebaseConfig.js";
 
+console.log('before', firebaseConfig)
+
+let testvar = firebaseConfig;
+
+console.log('after', firebaseConfig)
 
 
 const app = initializeApp(firebaseConfig);
