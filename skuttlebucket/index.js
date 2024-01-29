@@ -8,9 +8,11 @@ import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc
 // let testvar = firebaseConfig;
 
 // console.log('after', firebaseConfig)
-console.log(FIREBASE_CONFIG, 'MAYBE')
 
-const app = initializeApp(FIREBASE_CONFIG);
+const firebaseConfig = process.env.FIREBASE_CONFIG
+console.log(firebaseConfig, 'MAYBE')
+
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
 const firestore = getFirestore(app);
 
