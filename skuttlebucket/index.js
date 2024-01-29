@@ -8,7 +8,7 @@ console.log('before', firebaseConfig)
 let testvar = firebaseConfig;
 
 console.log('after', firebaseConfig)
-
+console.log(FIREBASE_CONFIG, 'MAYBE')
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); 
