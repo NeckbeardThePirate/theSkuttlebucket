@@ -1,9 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-import { getFirestore, collection, query, where, addDoc, updateDoc, getDocs, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+import { getFirestore, collection, query, where, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 
-// import { firebaseConfig } from "../firebaseConfig.js";
 
 
 const firebaseConfig = {
@@ -19,22 +18,28 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app); 
+
 const firestore = getFirestore(app);
 
 const switchToLoginButton = document.getElementById('switch-to-login-button');
 
+const passwordField = document.getElementById('password');
+
+
+
 function register() {
-  var email = document.getElementById('email').value
-  var password = document.getElementById('password').value
-  var fullName = document.getElementById('full-name').value
-  var userName = document.getElementById('username').value
+  const email = document.getElementById('email').value
+  const password = document.getElementById('password').value
+  const fullName = document.getElementById('full-name').value
+  const userName = document.getElementById('username').value
 
     if (
-        validateEmail(email) == false || 
-        validatePassword(password) == false || 
-        validateFields(fullName) == false ||
-        validateUsername(userName) == false
+        validateEmail(email) === false || 
+        validatePassword(password) === false || 
+        validateFields(fullName) === false ||
+        validateUsername(userName) === false
         ) {
         alert('invalid input')
         return
@@ -48,7 +53,7 @@ function register() {
             if (!querySnapshot.empty) {
               alert('that username is unavailable');
               return;
-          } else {
+            } else {
                 createUserWithEmailAndPassword(auth, email, password)
                   .then(async function() {
                     localStorage.setItem('userName', userName);
@@ -86,8 +91,8 @@ function register() {
 
                       alert(errorMessage, errorCode)
                   })
-                          }
-                      })
+                }
+        })
 }
 
 function validateEmail(email) {
@@ -108,16 +113,6 @@ function validateUsername(userName) {
   } else {
       return true;
   }
-}
-
-function validateName(fullName) {
-    var expression = /[^a-zA-Z]/g;
-    if (expression.test(userName) == true) {
-        alert('[INVALID FULL NAME]');
-        return false
-    } else {
-        return true;
-    }
 }
 
 function validatePassword(password) {
@@ -153,12 +148,9 @@ switchToLoginButton.addEventListener('click', function() {
     window.location.href = 'index.html';
 })
 
-// Does not work...
-// function sendVerificationEmail() {
-//     const user = auth.currentUser;
-//     user.sendEmailVerification().then(function() {
-//         console.log('email sent')
-//     }).catch(function(error) {
-//         console.log('email failed to send')
-//     });
-// }
+passwordField.addEventListener('keydown', function() {
+    if (event.key === 'Enter') {
+    register()
+}
+})
+

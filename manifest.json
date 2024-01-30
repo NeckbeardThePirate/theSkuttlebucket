@@ -1,0 +1,21 @@
+{
+    "name": "The SkuttleBucket by CF",
+    "short_name": "The SkuttleBucket",
+    "start_url": "skuttlebukket_user.html",
+    "scope": "./",
+    "icons": [
+      {
+        "src": "Favicontractor.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "Favicontractor.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#ffd31d",
+    "background_color": "#333",
+    "display": "standalone"
+  }

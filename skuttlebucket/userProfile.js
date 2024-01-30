@@ -360,7 +360,7 @@ function saveNewProfileDescription() {
 saveNewProfileDescriptionButton.addEventListener('click', saveNewProfileDescription);
 
 saveNewProfileDescriptionButton.addEventListener('keyup', function(event) {
-    if(event.keyCode === 13) {
+    if(event.key === 13) {
         saveNewProfileDescription();
     }
 });

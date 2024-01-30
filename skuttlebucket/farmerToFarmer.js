@@ -1,10 +1,13 @@
+console.log('loaded')
 import { DocID, userChats, getDoc, onSnapshot, docRef, query, usersCollection, where, userName, getDocs, doc, firestore, updateDoc, userData, months, daysOfWeek, docSnap } from './userProfile.js';
-// import { chatLoadSearchResults, checkForMatchingUserNames, displayMatchingSearchResults, resultsContainer } from './search.js';
-// let userMessageChats = userChats
+console.log('loaded')
+
 
 
 const openChatWindowButton = document.getElementById('chat-button')
 console.log(openChatWindowButton)
+
+openChatWindowButton.addEventListener('click', console.log('clicked'))
 
 let userDocSnap = await getDoc(docRef);
 
@@ -38,45 +41,38 @@ openChatWindowButton.addEventListener('click', function() {
 
 function openChatWindow() {
     updateChatData()
-    const chatMainDisplayBackgroundWindow = document.createElement('div');
-    const chatMainDisplayContent = document.createElement('div');
-    const chatMainDisplayContentChats = document.createElement('div');
-    const chatMainDisplayCloseButton = document.createElement('span');
-    const chatMainDisplayHeaderContainer = document.createElement('div');
-    const chatMainDisplayHeader = document.createElement('h3');
-    const chatMainDisplayUpperDiv = document.createElement('div');
-    const chatMainDisplayLowerDiv = document.createElement('div');
-    const chatMainDisplayNewChatButton = document.createElement('button');
-    const chatMainDisplayNewChatButtonTextContent = document.createElement('p');
 
-    chatMainDisplayContentChats.id = 'bucket-display-chats'
+    const chatWindow = 
+        `
+        <div class="chat-display-modal-content">
+            <span class="close"></span>
+            <div class="chat-display-header-container">
+                <h3 class="all-text">Your Messages</h3>
+            </div>
+            <button id='new-msg-btn' class="action-button">
+                <p class="all-text">Message Someone New</p>
+            </button>
+            <div class="chat-divider"></div>
+            <div id="bucket-display-chats" class="chats-column"></div>
+            <div class="chat-divider"></div>
+        </div>
+        `
+    
+
+
+    let chatMainDisplayBackgroundWindow = document.createElement('div');
+
+    chatMainDisplayBackgroundWindow.innerHTML = chatWindow;
+
     chatMainDisplayBackgroundWindow.id = 'chat-display-background-window'
     chatMainDisplayBackgroundWindow.classList.add('chat-display-modal');
-    chatMainDisplayContentChats.classList.add('chats-column');
-    chatMainDisplayContent.classList.add('chat-display-modal-content');
-    chatMainDisplayCloseButton.classList.add('close');
     chatMainDisplayBackgroundWindow.style.display = 'block';
-    chatMainDisplayHeaderContainer.classList.add('chat-display-header-container');
-    chatMainDisplayHeader.classList.add('all-text');
-    chatMainDisplayNewChatButton.classList.add('action-button');
-    chatMainDisplayNewChatButtonTextContent.classList.add('all-text');
-    chatMainDisplayHeader.textContent = `Your Messages`;
-    chatMainDisplayNewChatButtonTextContent.textContent = 'Message Someone New';
-    chatMainDisplayUpperDiv.classList.add('chat-divider')
-    chatMainDisplayLowerDiv.classList.add('chat-divider')
 
-    chatMainDisplayNewChatButton.focus();
 
     document.body.appendChild(chatMainDisplayBackgroundWindow);
-    chatMainDisplayBackgroundWindow.appendChild(chatMainDisplayContent);
-    chatMainDisplayContent.appendChild(chatMainDisplayCloseButton);
-    chatMainDisplayContent.appendChild(chatMainDisplayHeaderContainer);
-    chatMainDisplayHeaderContainer.appendChild(chatMainDisplayHeader);
-    chatMainDisplayContent.appendChild(chatMainDisplayNewChatButton);
-    chatMainDisplayNewChatButton.appendChild(chatMainDisplayNewChatButtonTextContent);
-    chatMainDisplayContent.appendChild(chatMainDisplayUpperDiv);
-    chatMainDisplayContent.appendChild(chatMainDisplayContentChats);
-    chatMainDisplayContent.appendChild(chatMainDisplayLowerDiv);
+
+    const chatMainDisplayNewChatButton = document.getElementById('new-msg-btn')
+    chatMainDisplayNewChatButton.focus();
 
     chatMainDisplayNewChatButton.addEventListener('click', function() {
         displayNewChatUserSearch();
@@ -85,17 +81,18 @@ function openChatWindow() {
         if (event.target === chatMainDisplayBackgroundWindow) {
             // unsubscribeLoadChats();
             document.body.removeChild(chatMainDisplayBackgroundWindow);
-            const unreadMessages = userData.unreadMessages;
-            if (unreadMessagesArray.length > 0) {
-                const messagesButton = document.getElementById('chat-button');
-                messagesButton.classList.add('red-border')
-            } else {
-                const messagesButton = document.getElementById('chat-button');
-                messagesButton.classList.remove('new-border')
-            }
+           
             
         }
     })
+    const unreadMessages = userData.unreadMessages;
+    if (unreadMessagesArray.length > 0) {
+        const messagesButton = document.getElementById('chat-button');
+        messagesButton.classList.add('red-border')
+    } else {
+        const messagesButton = document.getElementById('chat-button');
+        messagesButton.classList.remove('new-border')
+    }
 
     loadChats();
 }
@@ -217,6 +214,7 @@ function loadChatBlock(conversationID) {
             document.body.removeChild(chatMainDisplayBackgroundWindow)
             unsubscribe()
             openChatWindow()
+            // loadChats()
         }
     })
 }
@@ -472,8 +470,6 @@ async function displayNewChatUserSearch() {
         if (event.target === chatUserSearchModal) {
             document.body.removeChild(chatUserSearchModal)
             const chatMainDisplayContentChats = document.getElementById('bucket-display-chats')
-            chatMainDisplayContentChats.style.display = 'none';
-            loadChats();
         }
     })
 
