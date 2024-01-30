@@ -1,4 +1,4 @@
-export var firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
     authDomain: "theskuttlebucket.firebaseapp.com",
     projectId: "theskuttlebucket",
