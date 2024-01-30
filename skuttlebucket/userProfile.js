@@ -4,7 +4,12 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 
 // import { firebaseConfig } from "../firebaseConfig.js";
 
+if ("serviceWorker" in navigator) {
+    // register service worker
+    navigator.serviceWorker.register("service-worker.js");
+  }
 
+  
 const firebaseConfig = {
     apiKey: "AIzaSyAnvmVyCWmYiQlbXa8kF_bYeKbLmf8_Rhk",
     authDomain: "theskuttlebucket.firebaseapp.com",
