@@ -66,4 +66,4 @@ node_modules/
 .env
 
 # misc
-firebaseConfig.js
+# firebaseConfig.js
