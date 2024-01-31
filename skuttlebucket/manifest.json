@@ -1,7 +1,7 @@
 {
     "name": "The SkuttleBucket",
     "short_name": "The SkuttleBucket",
-    "start_url": "index.html",
+    "start_url": "../skuttlbucket/skuttlebukket_user.html",
     "scope": "./",
     "icons": [
       {
