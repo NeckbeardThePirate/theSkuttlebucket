@@ -1,7 +1,7 @@
 {
     "name": "The SkuttleBucket",
     "short_name": "The SkuttleBucket",
-    "start_url": "/skuttlebucket/index.html",
+    "start_url": "index.html",
     "scope": "./",
     "icons": [
       {
@@ -19,5 +19,3 @@
     "background_color": "#333",
     "display": "fullscreen"
   }
-
-  

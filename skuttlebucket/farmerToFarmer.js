@@ -353,6 +353,7 @@ async function sendMessage(conversationID, userMessageChats) {
 
             if (messageRecipientDocSnap.exists()) {
                 const workingConversationData = messageRecipientDocSnap.data();
+                
                 const workingConversationDataChats = workingConversationData.messages;
                 if (workingConversationDataChats.hasOwnProperty(userName)) {
                 }
@@ -367,7 +368,8 @@ async function sendMessage(conversationID, userMessageChats) {
                     }
                     workingConversationDataActiveChat.unshift(newMessageToAdd);
                     const recipientUnreadMessagesArray = workingConversationData.unreadMessages
-                    recipientUnreadMessagesArray.push(messageID);
+                    recipientUnreadMessagesArray.push({userName: userName, message: newMessageText, timestamp: Date.now()});
+                    console.log(recipientUnreadMessagesArray)
                     
 
                     workingConversationDataChats[userName] = workingConversationDataActiveChat
