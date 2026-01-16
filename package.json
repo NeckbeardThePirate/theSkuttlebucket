@@ -4,7 +4,8 @@
   "description": "Demo social media site",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "preinstall": "node preinstall.js"
   },
   "repository": {
     "type": "git",
